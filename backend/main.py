@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
+import numpy as np
 from config import anthropic_client, cohere_client, get_db_session
 
 app = FastAPI()
@@ -162,7 +163,6 @@ async def health():
 
 def cosine_similarity(vec1, vec2):
     """Calculate cosine similarity between two vectors"""
-    import numpy as np
     vec1 = np.array(vec1)
     vec2 = np.array(vec2)
     
