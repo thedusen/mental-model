@@ -1,0 +1,35 @@
+.app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .app-header {
+    background-color: #282c34;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .app-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .app-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+  
+  .graph-container {
+    flex: 1;
+    border-right: 1px solid #ddd;
+    position: relative;
+  }
+  
+  .chat-container {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+  }
