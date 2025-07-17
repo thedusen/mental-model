@@ -5,10 +5,11 @@ from config import cohere_client, get_db_session
 JSON_DATA_PATH = '../data/json'
 
 def generate_embedding(text):
+    # CORRECTED: Specify embedding_types and access the .float attribute.
     response = cohere_client.embed(
-        texts=[text], model="embed-english-v3.0", input_type="search_document"
+        texts=[text], model="embed-english-v3.0", input_type="search_document", embedding_types=["float"]
     )
-    return response.embeddings[0]
+    return response.embeddings.float[0]  # type: ignore
 
 def create_vector_index():
     with get_db_session() as session:
@@ -41,10 +42,18 @@ def import_json_files():
                                 if not entity_id or not description:
                                     continue
                                 embedding = generate_embedding(description)
-                                query = f"MERGE (e:Entity:{label} {{id: $id}}) SET e += $props, e.embedding = $embedding"
+                                
+                                # CORRECTED: Use apoc.merge.node for safer dynamic labels.
+                                query = """
+                                CALL apoc.merge.node($labels, {id: $id}, $props, {})
+                                YIELD node
+                                SET node.embedding = $embedding
+                                """
                                 props_to_set = item.copy()
                                 props_to_set.pop('name', None)
-                                session.run(query, id=entity_id, props=props_to_set, embedding=embedding)
+                                
+                                # Pass the dynamic labels as a list parameter.
+                                session.run(query, labels=['Entity', label], id=entity_id, props=props_to_set, embedding=embedding)
                                 print(f"  - Imported '{entity_id}' as a {label} node.")
     print("Data import complete.")
 

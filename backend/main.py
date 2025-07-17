@@ -16,10 +16,11 @@ class ChatQuery(BaseModel):
     question: str
 
 def generate_query_embedding(text):
+    # CORRECTED: Specify embedding_types and access the .float attribute.
     response = cohere_client.embed(
-        texts=[text], model="embed-english-v3.0", input_type="search_query"
+        texts=[text], model="embed-english-v3.0", input_type="search_query", embedding_types=["float"]
     )
-    return response.embeddings[0]
+    return response.embeddings.float[0]  # type: ignore
 
 @app.post("/api/chat")
 async def chat(query: ChatQuery):
@@ -50,7 +51,14 @@ async def chat(query: ChatQuery):
             {"role": "user", "content": f"{context_str}\n\nQuestion: {query.question}\n\nAnswer based on the context provided:"}
         ]
     )
-    return {"answer": response.content[0].text, "context": context_data}
+    
+    answer_text = ""
+    for block in response.content:
+        if block.type == 'text':
+            answer_text = block.text
+            break
+            
+    return {"answer": answer_text, "context": context_data}
 
 @app.get("/api/graph")
 async def get_graph():
