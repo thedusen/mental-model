@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Fairness as Depth-Forcing Tool",
+      "description": "'Fairness is how I get there' because 'you have to enforce fairness in that group' to force them to 'go deeper and not give me their surface-level BS complaints.' This requires them to 'think like an owner.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Owner-Perspective Requirement",
+      "description": "Fairness enforcement compels people to 'think like an owner' rather than from their narrow departmental perspective, leading to 'recognition of the bigger picture.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Self-Generated Silo Breaking",
+      "description": "'If the leaders of the business have a wider lens to look at the business with rather than their own department, then there will absolutely be better decision-making because now we're knocking down some silos without saying that we're knocking down some silos because it has to come from them. Not me.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Fairness-Driven Perspective Expansion",
+      "description": "Use fairness enforcement as a mechanism to force departmental leaders to adopt owner-level thinking and abandon narrow departmental perspectives.",
+      "context": "Strategic planning or cross-functional meetings where departmental silos need to be broken down through internal realization rather than external mandate."
+    },
+    {
+      "name": "Self-Discovered Silo Elimination",
+      "description": "Enable leaders to naturally break down silos by developing wider business perspectives, ensuring the change 'has to come from them. Not me.'",
+      "context": "Organizational development where sustainable change requires internal buy-in rather than imposed structural changes."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Fairness as Anti-BS Enforcement",
+      "content": "When asked why fairness is necessary, Dan explains it 'forces them to go deeper and not give me their surface-level BS complaints.' This works because fairness requires people to 'think like an owner' rather than from their departmental perspective, leading to 'recognition of the bigger picture.'",
+      "source": "Interview Transcript",
+      "timestamp": "58:18"
+    },
+    {
+      "name": "Self-Generated Silo Breaking Philosophy",
+      "content": "Dan explains that when leaders develop 'a wider lens to look at the business with rather than their own department, then there will absolutely be better decision-making because now we're knocking down some silos without saying that we're knocking down some silos because it has to come from them. Not me.'",
+      "source": "Interview Transcript",
+      "timestamp": "59:52"
+    }
+  ]
+}

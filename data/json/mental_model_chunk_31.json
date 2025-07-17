@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Lincoln's Complex Leadership Admiration",
+      "description": "'I still admire Lincoln. I just can't figure it out. I just love reading or hearing stories about even the \"Team of Rivals\" and the skill required to manage that cabinet and the Civil War and everything is just phenomenal.' Lincoln represents complex leadership under extreme pressure.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Rejection of Management Fads",
+      "description": "'I don't believe in any management tool or fed. Whereas maybe ten years ago I would have like this like we got to do the balanced scorecard or you know what, whatever.' Evolution away from standardized management approaches.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Owner-Centric Custom Solutions",
+      "description": "'The best plan is the plan that starts with a recognition of the owner's strengths and weaknesses and then you just borrow. You just borrow and put something together that fits because it has to feel like theirs.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Ownership vs. Imposition for Sustainability",
+      "description": "'If it always feels like someone else's, they do it for a year and then they quit all the time.' Solutions must feel authentic to the person implementing them for long-term success.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Management Fad Rejection Evolution",
+      "description": "Move away from believing in standardized management tools and approaches in favor of customized solutions based on individual leader characteristics.",
+      "context": "Consulting evolution where experience shows that one-size-fits-all management approaches fail when they don't align with leader personality and strengths."
+    },
+    {
+      "name": "Authentic Solution Design",
+      "description": "Create solutions that 'feel like theirs' to the owner by starting with their strengths and weaknesses, then borrowing elements that fit their style.",
+      "context": "Business consulting where sustainability requires solutions that align with the owner's natural operating style rather than imposed best practices."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Lincoln Leadership Fascination",
+      "content": "Dan maintains deep admiration for Lincoln, particularly 'the skill required to manage that cabinet and the Civil War and everything is just phenomenal.' He references 'Team of Rivals' and finds Lincoln's complex leadership under extreme pressure continuously fascinating, though he admits 'I just can't figure it out.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:45:00"
+    },
+    {
+      "name": "Evolution Away from Management Tools",
+      "content": "Dan describes moving away from management fads: 'I don't believe in any management tool or fed. Whereas maybe ten years ago I would have like this like we got to do the balanced scorecard.' He now believes 'the best plan is the plan that starts with a recognition of the owner's strengths and weaknesses' because if solutions 'always feels like someone else's, they do it for a year and then they quit.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:49:04"
+    }
+  ]
+}

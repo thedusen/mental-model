@@ -1,0 +1,42 @@
+{
+  "principles": [
+    {
+      "name": "Personalized Collaboration Orchestration",
+      "description": "Effective collaboration requires evaluating 'that person's arguments based on how well you understand their thinking style.' Some people 'go off very quickly' requiring processing adjustments, while others 'literally need to go away and then come back.' This personalized approach is 'part of the orchestration.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Emotional Intelligence Through Information Exchange",
+      "description": "Emotional intelligence manifests 'through the give and take of the collaborative process' where the focus is on 'knowing that they're free to say whatever is on their mind as we try to figure out a solution to the crisis.'",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "flow-state"
+    },
+    {
+      "name": "Answer-Timing Wisdom",
+      "description": "Recognizing when 'an answer is not necessarily what's needed right now because we don't have enough information,' even when 'they may be coming for an answer.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Thinking Style Adaptation",
+      "description": "Adjust collaboration approach based on individual thinking styles - account for those who 'go off very quickly' by processing their input differently, and allow space for those who need time to process.",
+      "context": "Team collaboration where you know individual team members' cognitive patterns and can adapt your interaction style accordingly."
+    },
+    {
+      "name": "Information-Before-Answers Framework",
+      "description": "Resist the pressure to provide immediate answers when insufficient information exists, instead creating space for comprehensive information gathering through collaborative exchange.",
+      "context": "Crisis situations where team members expect immediate answers but the situation requires more data collection first."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Collaboration Components Breakdown",
+      "content": "Dan identifies collaboration as having three components: ideas, information, and personalized evaluation based on understanding each person's thinking style. This includes accommodating those who 'go off very quickly' and allowing others who 'literally need to go away and then come back' to process.",
+      "source": "Interview Transcript",
+      "timestamp": "29:40"
+    }
+  ]
+}

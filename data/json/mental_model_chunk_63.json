@@ -1,0 +1,65 @@
+{
+  "principles": [
+    {
+      "name": "Family Harmony Over Financial Maximization",
+      "description": "'My goal is family harmony... We have to focus on family harmony first and the amount that you get paid second. I did not call me in for that.' Prioritizing relationship preservation over pure financial optimization in family business transitions.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Range Over Fixed Number Strategy",
+      "description": "'We can't go into this stuck on a number. We come up with a range. What feels good to you?' Using ranges to maintain negotiation flexibility and avoid positional bargaining.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Middle Ground for Mutual Concession",
+      "description": "'Family harmony becomes that middle ground where people ought to be willing to give a little bit. Both sides ought to be willing to give a little bit.' Creating shared values as foundation for compromise.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Family Business Relationship Fragility Recognition",
+      "description": "'I've seen too many family businesses where family members don't even talk to each other anymore.' Understanding long-term relationship costs of financial disputes in family contexts.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Financial Quarterback Role",
+      "description": "Positioned as 'sort of that financial quarterback to just be behind the scenes... pulling together the information that is needed and help craft the strategy' - operational support rather than legal advocacy.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Relationship-First Financial Strategy",
+      "description": "In family business transitions, prioritize maintaining family relationships over maximizing financial outcomes, using this as the framework for negotiation strategy.",
+      "context": "Family business succession where financial disputes can permanently damage relationships and create long-term costs beyond monetary considerations."
+    },
+    {
+      "name": "Range-Based Negotiation Framework",
+      "description": "Use valuation ranges rather than fixed numbers to prevent positional bargaining and maintain flexibility for relationship-preserving compromises.",
+      "context": "Business valuation disputes where rigid positions can escalate conflict and prevent mutually acceptable solutions."
+    },
+    {
+      "name": "Values-Based Middle Ground Creation",
+      "description": "Establish shared values (like family harmony) as the negotiation foundation that encourages both parties to make concessions for a larger shared goal.",
+      "context": "Family or partnership disputes where purely financial negotiations fail to account for relationship preservation needs."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Family Business Valuation Strategy Surprise",
+      "content": "In a family business valuation dispute between mother and son, Dan surprised the attorney by prioritizing 'family harmony based upon all of the family businesses that I've worked with.' He told the mother: 'We can't go into this stuck on a number. We come up with a range... we have to focus on family harmony first and the amount that you get paid second. I did not call me in for that.'",
+      "source": "Interview Transcript",
+      "timestamp": "11:49"
+    },
+    {
+      "name": "Family Harmony as Negotiation Foundation",
+      "content": "Dan's thinking: 'Once we start talking about a specific dollar amount, it's easy for either side to just dig in their heels, and family harmony becomes that middle ground where people ought to be willing to give a little bit. Both sides ought to be willing to give a little bit.' His experience: 'I've seen too many family businesses where family members don't even talk to each other anymore.'",
+      "source": "Interview Transcript",
+      "timestamp": "13:45"
+    }
+  ]
+}

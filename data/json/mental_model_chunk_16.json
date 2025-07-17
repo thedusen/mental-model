@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Paint the Future, Let Them Choose",
+      "description": "When difficult personnel decisions are needed, 'I just painted the picture that there is a future, and she's not part of it. I allowed her to think about it and come back.' This preserves dignity while achieving necessary outcomes.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Public Ownership of Difficult Decisions",
+      "description": "Ensure difficult decisions appear to be the person's choice publicly - 'It was all publicly... It was all her decision. I was the only one who could make that happen. It was entirely my decision.' The benevolent dictator takes responsibility while preserving dignity.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Negotiator Role Between Competing Interests",
+      "description": "When operations and HR conflict over discipline, act 'almost like a negotiator going back and forth between ops and HR. Both of them knew I could just make a decision to be done with it, but that's not how I wanted to do it. I just wanted to reach the best decision for the business.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "flow-state"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Dignified Exit Facilitation",
+      "description": "Handle necessary personnel removals by painting the future reality, allowing time for processing, and crafting solutions that preserve dignity while achieving business needs.",
+      "context": "Situations where valued but problematic employees need to be removed, particularly when they have personal circumstances requiring consideration."
+    },
+    {
+      "name": "Authority-Backed Negotiation",
+      "description": "Use clear decision-making authority as background leverage while actively facilitating negotiation between conflicting parties to reach optimal business decisions.",
+      "context": "Interdepartmental conflicts where quick executive decisions are possible but collaborative solutions are preferable for long-term team dynamics."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Leadership Team Member Retirement Facilitation",
+      "content": "At the manufacturing company, a leadership team member 'had to go for a million reasons' but no one would make the decision. Dan 'painted the picture that there is a future, and she's not part of it' and allowed her to process. She ultimately chose announced retirement with continued health insurance for upcoming surgery. 'It was all her decision' publicly, though 'I was the only one who could make that happen.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:02:11"
+    },
+    {
+      "name": "Operations vs HR Discipline Mediation",
+      "content": "When operations and HR conflicted over disciplining a valuable but problematic sawmill worker in rural Indiana, Dan acted 'almost like a negotiator going back and forth' between them. Though 'both of them knew I could just make a decision to be done with it,' he facilitated a compromise solution (suspension while keeping employment) that served 'the best decision for the business.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:02:11"
+    }
+  ]
+}

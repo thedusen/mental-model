@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Free-Flowing Authentic Response",
+      "description": "'I can't just keep trying to answer based on what I think my mental model is. I just have to answer it. If I go on a personal tangent, well, then I go on a personal tangent.' Authenticity requires abandoning preconceived self-narratives.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Don't Try to Connect the Dots",
+      "description": "'Don't try to connect the dots' - allowing natural responses rather than forcing coherent narratives during self-examination or conversation.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Unconscious Reframing Mastery",
+      "description": "'I think I reframe much more than I realize, but I don't think of it as reframing. When I think about collaborating, I try to encourage someone to do something different, and I end up reframing issues a lot until I find the one that resonates with them. I didn't realize I did that.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "energizing"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Iterative Reframing Until Resonance",
+      "description": "Continuously reframe issues during collaboration until finding the perspective that resonates with the other person, often without conscious awareness of doing so.",
+      "context": "Collaborative problem-solving where different people need different frames to understand and engage with the same underlying issue."
+    },
+    {
+      "name": "Natural Response Over Constructed Narrative",
+      "description": "Allow natural, authentic responses rather than trying to maintain consistency with preconceived self-understanding or desired image.",
+      "context": "Self-examination or coaching situations where discovery requires abandoning constructed narratives about oneself."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Unconscious Reframing Discovery",
+      "content": "Reflecting on the previous session, Dan realized 'I think I reframe much more than I realize, but I don't think of it as reframing. When I think about collaborating, I try to encourage someone to do something different, and I end up reframing issues a lot until I find the one that resonates with them. I didn't realize I did that.'",
+      "source": "Interview Transcript",
+      "timestamp": "07:31"
+    },
+    {
+      "name": "Free-Flowing Response Philosophy",
+      "content": "Dan emphasizes the importance of authentic response in interviews: 'I can't just keep trying to answer based on what I think my mental model is. I just have to answer it. If I go on a personal tangent, well, then I go on a personal tangent.' He advocates for not trying to 'connect the dots' but letting responses emerge naturally.",
+      "source": "Interview Transcript",
+      "timestamp": "07:31"
+    }
+  ]
+}

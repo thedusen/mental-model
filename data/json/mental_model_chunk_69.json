@@ -1,0 +1,71 @@
+{
+  "principles": [
+    {
+      "name": "All Paths Through Owner Authority",
+      "description": "'I don't understand. All paths go through the owner.' Fundamental operating principle that owner authority is the central organizing principle for all business change efforts.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Reining In Over Redirecting",
+      "description": "'I tend not to challenge much where they want to go unless they're trying to do too many different things. Then it's more about just reining it in.' Management of scope rather than direction changes.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Employee Alignment Focus",
+      "description": "'95% of my one-on-one conversations with the individuals are to align them with where that owner wants to go.' Employee development serves owner vision rather than independent assessment of best practices.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Trust Outcome, Question Diagnosis",
+      "description": "'I don't always trust their diagnosis, but I'm comfortable with where the outcome is because it's where they want to go.' Separating destination acceptance from path validation.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Better Operations Over Innovation",
+      "description": "'Most of the time, it's more about just better operations, not necessarily anything new, but just better.' Focus on execution improvement rather than strategic innovation.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Owner-Centric Change Architecture",
+      "description": "Structure all business improvement efforts around owner vision and direction, using employee alignment rather than independent assessment of optimal business strategies.",
+      "context": "Business consulting where sustainable change requires owner buy-in and leadership, making owner-driven direction more important than theoretically optimal solutions."
+    },
+    {
+      "name": "Diagnosis Skepticism with Outcome Acceptance",
+      "description": "Question how owners analyze their problems while accepting their desired outcomes as legitimate goals, focusing efforts on better execution of owner vision.",
+      "context": "Advisory relationships where owners may misdiagnose causes but understand their business needs and have legitimate authority to set direction."
+    },
+    {
+      "name": "Scope Management Over Direction Change",
+      "description": "When owners have problematic approaches, focus on reducing the number of initiatives rather than changing the fundamental direction or goals.",
+      "context": "Working with unfocused leaders where the primary issue is too many simultaneous efforts rather than wrong strategic direction."
+    }
+  ],
+  "examples": [
+    {
+      "name": "All Paths Through Owner Philosophy",
+      "content": "When asked about parallel paths versus owner-centered approach, Dan is clear: 'I don't understand. All paths go through the owner.' He explains that '95% of my one-on-one conversations with the individuals are to align them with where that owner wants to go' and focuses on 'just better operations, not necessarily anything new, but just better.'",
+      "source": "Interview Transcript",
+      "timestamp": "31:06"
+    },
+    {
+      "name": "Trust Outcome, Question Diagnosis",
+      "content": "Dan's approach to owner reliability: 'I don't always trust their diagnosis, but I'm comfortable with where the outcome is because it's where they want to go.' This represents accepting owner authority over direction while maintaining skepticism about their problem analysis.",
+      "source": "Interview Transcript",
+      "timestamp": "32:56"
+    },
+    {
+      "name": "Reining In Over Challenging Direction",
+      "content": "Dan's intervention approach: 'I tend not to challenge much where they want to go unless they're trying to do too many different things. Then it's more about just reining it in.' This focuses on scope management rather than strategic redirection.",
+      "source": "Interview Transcript",
+      "timestamp": "31:55"
+    }
+  ]
+}

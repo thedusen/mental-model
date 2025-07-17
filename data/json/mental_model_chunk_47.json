@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Revenue Quality Over Quantity",
+      "description": "'Not every sale is a good sale depending upon your business' - understanding that revenue growth must include customer selectivity and pricing strategy, not just volume.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Gross Margin as Overlooked Driver",
+      "description": "'Most businesses don't pay enough attention to gross margin. They accept the price that they're charging because that's what they think the market allows, and their costs are their costs because the supplier has told them that's just what it is.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Above-the-Line vs Below-the-Line Focus",
+      "description": "'The real drivers are above the line more so than below the line. Any business can find 10% or 20% savings in overhead easily, but that's not driving your business anywhere. It's really about the revenue and the cost of sale.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Paper Clips Fallacy",
+      "description": "Businesses 'spend all their time trying to not by paper clips this month or cut back on supplies so that they could make their number' instead of focusing on major profit drivers.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Above-the-Line Profit Focus",
+      "description": "Prioritize revenue optimization and cost of goods sold management over overhead reduction, recognizing that gross margin improvements drive business growth more than expense cutting.",
+      "context": "Small business profit improvement where owners often focus on easily visible overhead costs rather than more impactful revenue and direct cost management."
+    },
+    {
+      "name": "Gross Margin Challenge and Optimization",
+      "description": "Challenge accepted pricing and supplier costs rather than treating them as fixed constraints, actively managing gross margin as a key profit lever.",
+      "context": "Business situations where market positioning and supplier relationships can be renegotiated to improve profitability."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Profit Levers Hierarchy",
+      "content": "Dan identifies key profit levers starting with 'revenue growth, which involves whether that is marketing, pricing, really understanding who your customer is' with the caveat that 'not every sale is a good sale.' He emphasizes that 'most businesses don't pay enough attention to gross margin' and focus too much on cutting overhead when 'the real drivers are above the line more so than below the line.'",
+      "source": "Interview Transcript",
+      "timestamp": "49:37"
+    },
+    {
+      "name": "Paper Clips vs. Real Drivers",
+      "content": "Dan describes the common mistake where businesses 'spend all their time trying to not by paper clips this month or cut back on supplies so that they could make their number' when they should focus on 'revenue and the cost of sale.' While 'any business can find 10% or 20% savings in overhead easily... that's not driving your business anywhere.'",
+      "source": "Interview Transcript",
+      "timestamp": "49:37"
+    }
+  ]
+}

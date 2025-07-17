@@ -1,0 +1,25 @@
+{
+  "principles": [
+    {
+      "name": "Benevolent Dictatorship with Collaborative Tools",
+      "description": "'I get the best results when I am the benevolent dictator and using my collaborative skills to pull the team together.' This represents the integration of authority with collaborative methodology.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "flow-state"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Authority-Enabled Collaboration",
+      "description": "Combine benevolent dictatorial authority with collaborative skills to achieve optimal team results, using authority to create the framework within which collaboration can flourish.",
+      "context": "Leadership situations where both structure and participation are needed to achieve the best outcomes from diverse team members."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Benevolent Dictatorship Definition",
+      "content": "When asked to clarify the relationship between collaboration and dictatorship, Dan explains 'I get the best results when I am the benevolent dictator and using my collaborative skills to pull the team together,' showing how authority and collaboration work together rather than in opposition.",
+      "source": "Interview Transcript",
+      "timestamp": "01:01:05"
+    }
+  ]
+}

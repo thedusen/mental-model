@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Results Match Decisions - Harsh Accountability",
+      "description": "'You are achieving exactly the results you deserve... The market doesn't care. If you're afraid to raise your prices, you're achieving the results that you want.' Direct accountability for business outcomes through decision consequences.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Control-Based Responsibility",
+      "description": "'Most of it is within your control. Even the customers are within your control.' Rejecting victim mentality by emphasizing areas of business control and influence.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Value Message Over Activity Description",
+      "description": "'Be as long as you're out there with a message of value and not what you do. You have a consistent message out there, you'll have customers.' Focus on value proposition rather than operational details.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Decision Cascade Responsibility",
+      "description": "Poor results stem from decision chains: afraid to raise prices, unwilling to enforce supplier accountability leading to missed shipping dates and lost customers - all controllable decisions.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Harsh Accountability Delivery",
+      "description": "Deliver direct, uncomfortable truths about business responsibility during planning sessions, linking current results directly to owner decisions and risk tolerance.",
+      "context": "Business planning sessions where owners need to accept responsibility for their role in creating current problems before solutions can be implemented."
+    },
+    {
+      "name": "Control Area Focus",
+      "description": "Redirect attention from external factors to areas within business control, including pricing decisions, supplier management, and customer communication.",
+      "context": "Business consulting where owners blame external factors rather than examining their own decision-making and control areas."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Harsh Accountability Statement",
+      "content": "Dan's most controversial perspective: standing 'in front of people and said, \"Look, you are achieving exactly the results you deserve.\" That's pretty rough, but I do stand by it.' He explains this means if 'you're afraid to raise your prices, you're achieving the results that you want' and that 'most of it is within your control. Even the customers are within your control.'",
+      "source": "Interview Transcript",
+      "timestamp": "51:45"
+    },
+    {
+      "name": "Decision Cascade Example",
+      "content": "Dan illustrates controllable decisions: 'If you're not willing, you'll miss a shipping date because someone else didn't do their job and get the materials in on time, and then the customer's pissed, and you lose the client. You're getting exactly the results that you deserve.' Success comes from having 'a message of value and not what you do' with 'a consistent message out there.'",
+      "source": "Interview Transcript",
+      "timestamp": "52:29"
+    }
+  ]
+}

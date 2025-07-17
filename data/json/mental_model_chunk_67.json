@@ -1,0 +1,71 @@
+{
+  "principles": [
+    {
+      "name": "Person Decisions as Core Business Issue",
+      "description": "'Most often, the decision is what do I do about this person? That's the pain point... that becomes a core issue from the person I'm working with.' People decisions represent the fundamental challenge in most business situations.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Collaboration as Decision Architecture Foundation",
+      "description": "'I know it's a tired word, but it still comes back to collaboration.' Despite overuse, collaboration remains the core approach to major decision-making processes.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Owner Recognition Over Planning as Offsite Purpose",
+      "description": "'I do that so that the owner either remembers or recognizes that the people on their team have some really good ideas and you need to listen to them instead of just running around in a frenzy.' Team meetings designed for owner education rather than planning output.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Tactics vs. Team Health Hierarchy",
+      "description": "'The pricing stuff and profit, those are tactics... the only way the company becomes healthier, and it doesn't matter what its problem is, it's only going to help become healthier if those key people in the owner become much more of a team.' Team cohesion as foundation for all other improvements.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Team Exhaustion Recognition",
+      "description": "'There is no doubt that she's wearing them down as well.' Understanding that owner dysfunction affects entire team energy and effectiveness.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Team Building as Decision Foundation",
+      "description": "Address major business decisions by first creating conditions where owners recognize and listen to team member ideas rather than making isolated decisions.",
+      "context": "Business situations where owner-driven decision-making bypasses valuable team input and creates implementation challenges."
+    },
+    {
+      "name": "Owner Education Through Team Interaction",
+      "description": "Use team meetings and offsites to educate owners about their team's capabilities rather than to create plans or strategies.",
+      "context": "Leadership development where owners need to discover their team's value rather than being told about it directly."
+    },
+    {
+      "name": "Health-First Business Philosophy",
+      "description": "Treat team cohesion as the prerequisite for all other business improvements, viewing tactics like pricing and profit optimization as secondary.",
+      "context": "Organizational consulting where structural relationship issues prevent successful implementation of technical business strategies."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Person Decisions as Core Business Pain",
+      "content": "When asked about important business decisions, Dan immediately identifies: 'Most often, the decision is what do I do about this person? That's the pain point... that becomes a core issue from the person I'm working with.' This represents the fundamental challenge in most business consulting situations.",
+      "source": "Interview Transcript",
+      "timestamp": "23:35"
+    },
+    {
+      "name": "Offsite for Owner Recognition, Not Planning",
+      "content": "Dan planned to suggest a 'half-day offsite with all of her key people' for the shiny-object-chasing owner, 'not to create some great plan. I do that so that the owner either remembers or recognizes that the people on their team have some really good ideas and you need to listen to them instead of just running around in a frenzy.'",
+      "source": "Interview Transcript",
+      "timestamp": "24:35"
+    },
+    {
+      "name": "Team Health Over Tactical Solutions",
+      "content": "Dan's decision architecture: 'The pricing stuff and profit, those are tactics... the only way the company becomes healthier, and it doesn't matter what its problem is, it's only going to help become healthier if those key people in the owner become much more of a team because they're not right now.'",
+      "source": "Interview Transcript",
+      "timestamp": "24:35"
+    }
+  ]
+}

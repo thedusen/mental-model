@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Time as Emotional Processing Tool",
+      "description": "'I try to just put time on my side. I try not to... If I cannot deal with it at that time, I don't... Because I think that's really hard to move someone from one side to the other.' Avoids direct confrontation of emotion in the moment.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Non-Confrontational Emotional Management",
+      "description": "'I don't know that I ever confront the emotion directly.' Instead, uses phrases like 'Okay, let's just stop. I'm not going to make a decision right now. I hear what you're saying. Let me go back and see if we can get it resolved that way.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Emotional Balloon Deflation Strategy",
+      "description": "With chronically emotional people, 'I gotta let that air out of the balloon because... Until he just obloviates whatever it is that he's doing... until he is finished bloviating, even though I'm not listening until he does that, he's not hearing me.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    },
+    {
+      "name": "Extreme Detail as Emotional Counterbalance",
+      "description": "After letting emotional people vent, 'I sort of go over back to the extreme on the other side and get really detailed on what I need and when I need it. It's almost like the counterbalance to that.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Pause-and-Postpone Emotional De-escalation",
+      "description": "When emotion arises, immediately pause the conversation, acknowledge what was heard, and postpone decision-making to allow emotional processing time.",
+      "context": "High-stakes business discussions where emotional responses threaten logical decision-making and immediate resolution isn't critical."
+    },
+    {
+      "name": "Bloviation Tolerance followed by Extreme Precision",
+      "description": "Allow chronically emotional people to fully express themselves without listening engagement, then counterbalance with extremely detailed, specific requirements and timelines.",
+      "context": "Working with team members who have persistent emotional communication styles that disrupt logical discourse."
+    }
+  ],
+  "examples": [
+    {
+      "name": "HR Manager Emotional Response Management",
+      "content": "When an typically logical HR person became emotional during a discipline discussion, Dan said 'Okay, let's just stop. I'm not going to make a decision right now. I hear what you're saying. Let me go back and see if we can get it resolved that way.' He notes 'I don't know that I ever confront the emotion directly.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:09:15"
+    },
+    {
+      "name": "Marketing Guy Bloviation Strategy",
+      "content": "With a marketing team member who was chronically emotional, Dan realized 'I gotta let that air out of the balloon because... Until he just obloviates whatever it is that he's doing... until he is finished bloviating, even though I'm not listening until he does that, he's not hearing me.' His response was to 'go over back to the extreme on the other side and get really detailed on what I need and when I need it.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:10:54"
+    }
+  ]
+}

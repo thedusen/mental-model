@@ -1,0 +1,53 @@
+{
+  "principles": [
+    {
+      "name": "Culture Gap as Core Uncertainty Anchor",
+      "description": "'What is always in my mind and what is behind almost all the questions is the culture the owner describes is not the culture they have.' The gap between stated and actual culture serves as the primary diagnostic framework.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Employee Perspective Analysis",
+      "description": "'I'm trying to get a feel for the owner and how they communicate and put myself in the shoes of employees about how I'm hearing it.' Actively translating owner communication through employee perception filters.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "People Issues Disguised as Financial Issues",
+      "description": "'The real issue is likely a people issue. It's not a financial issue. I just don't know what it is. They rarely are willing to offer that up early in the relationship. They'll describe it as a financial issue.' Understanding the pattern of misattributed problem sources.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Culture Gap Investigation",
+      "description": "When facing uncertainty, consistently examine the gap between the culture owners claim to have and the culture that actually exists, using this as a diagnostic anchor.",
+      "context": "Organizational consulting where surface problems often mask deeper cultural or communication issues that owners are reluctant to acknowledge."
+    },
+    {
+      "name": "Employee Perspective Translation",
+      "description": "Systematically translate owner communications and descriptions through the lens of how employees likely receive and interpret them, identifying disconnects.",
+      "context": "Organizational diagnosis where owner self-perception often differs significantly from employee experience of leadership and culture."
+    },
+    {
+      "name": "Financial-to-People Problem Reframing",
+      "description": "When problems are presented as financial issues, investigate underlying people and communication problems that are often the actual root causes.",
+      "context": "Business consulting where financial symptoms are easier for owners to discuss than interpersonal or leadership challenges."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Culture Gap as Uncertainty Anchor",
+      "content": "When navigating uncertainty in business situations, Dan's core anchor is: 'What is always in my mind and what is behind almost all the questions is the culture the owner describes is not the culture they have.' He tries to 'get a feel for the owner and how they communicate and put myself in the shoes of employees about how I'm hearing it.'",
+      "source": "Interview Transcript",
+      "timestamp": "16:04"
+    },
+    {
+      "name": "People Issues Disguised as Financial Problems",
+      "content": "Dan's pattern recognition: 'The real issue is likely a people issue. It's not a financial issue. I just don't know what it is. They rarely are willing to offer that up early in the relationship. They'll describe it as a financial issue.' This represents his default assumption when facing unclear business problems.",
+      "source": "Interview Transcript",
+      "timestamp": "16:24"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "principles": [
+    {
+      "name": "Verify Claims Through Independent Analysis",
+      "description": "'Until I prove it, I'm not going to say that you're wrong. I'm not going to say that you're right. I just have to know for myself that it's true.' Independent verification of claimed performance metrics, even from reputable sources.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Advisor Role in Growth Moderation",
+      "description": "When owner gets excited about scaling ('why don't we just increase it 20% every month'), respond with 'Well, let's just slow down a little bit. Let's just be a little bit more deliberate with that and make sure we understand what we're doing.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Framing Role as Company Enablement",
+      "description": "To warehouse manager: 'Dan really thinks he's got the formula figured out and he really wants to grow. I said my job is to make sure the rest of the company can keep up with his plans.' Positioning as supporting growth rather than controlling it.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Urgent vs. Important Priority Correction",
+      "description": "'We have a priority problem here... We're not working on what's important. We're working on what's urgent. All day long.' Distinguishing between crisis management and strategic focus.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Badgering for Delegation Acceptance",
+      "description": "'The way I'm getting there is I am badger her with texts and requests for meetings... Just give it to me.' Persistent pressure to force owners to delegate tasks they shouldn't be doing.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Claims Verification Process",
+      "description": "Independently verify performance claims from external vendors or internal reports, even when sources are reputable, to establish baseline truth.",
+      "context": "Business optimization where claimed performance metrics may be inflated or measured incorrectly, requiring independent analysis."
+    },
+    {
+      "name": "Growth Enthusiasm Moderation",
+      "description": "Counterbalance owner excitement about scaling with measured, deliberate planning to ensure sustainable growth rather than reckless expansion.",
+      "context": "Successful businesses where initial wins create overconfidence about scaling capabilities and speed."
+    },
+    {
+      "name": "Persistent Delegation Enforcement",
+      "description": "Use persistent pressure and communication to force owners to delegate operational tasks so they can focus on strategic activities like sales.",
+      "context": "Owner-operated businesses where founders resist delegating even routine tasks that prevent them from higher-value activities."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Google Ads Verification and Growth Moderation",
+      "content": "Dan found Google Ads represented 'the single biggest expense in overhead' with claimed 10x ROI. He said 'Until I prove it, I'm not going to say that you're wrong... I just have to know for myself that it's true.' The actual ROI was 7.6x. When the owner wanted to 'increase it 20% every month,' Dan advised 'let's just slow down a little bit. Let's just be a little bit more deliberate.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:23:34"
+    },
+    {
+      "name": "Urgent vs. Important Priority Problem",
+      "content": "With a business owner 45 days behind in billing with no cash, Dan identified the core issue: 'We have a priority problem here... We're not working on what's important. We're working on what's urgent. All day long.' He forces delegation by 'badger her with texts and requests' until she agrees to hand over operational tasks.",
+      "source": "Interview Transcript",
+      "timestamp": "01:28:56"
+    },
+    {
+      "name": "Company Enablement Framing",
+      "content": "When meeting the warehouse manager, Dan framed his role: 'Dan really thinks he's got the formula figured out and he really wants to grow. I said my job is to make sure the rest of the company can keep up with his plans.' This positions him as supporting the owner's vision rather than imposing external control.",
+      "source": "Interview Transcript",
+      "timestamp": "01:25:00"
+    }
+  ]
+}

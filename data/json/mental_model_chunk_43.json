@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Physical Comfort as Guard-Lowering Tool",
+      "description": "'There's always an element of making sure they're physically comfortable... I had my desk, and then I had a small round table with chairs. I always met unless I was pissed and then you met at the desk.' Physical environment signals relationship dynamic.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Territory Advantage Through Location Choice",
+      "description": "'If possible, I would go to that person. I'll go into their territory versus making them come to me.' Power dynamics shift when you enter someone else's space rather than summoning them.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Self-Deprecation for Tension Relief",
+      "description": "'During the conversation, there's usually, like, you know, I just get into some self deprecating comments and stuff to try to just ease the tension.' Using vulnerability to create comfort and authenticity.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Desk vs. Table Meeting Signal",
+      "description": "Meeting at the desk when 'pissed' versus the round table for normal conversations creates clear power dynamic signals through furniture choice.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Environmental Psychology Application",
+      "description": "Use physical space, furniture choice, and location to signal relationship dynamics and comfort levels, adjusting based on the nature of the conversation needed.",
+      "context": "Leadership situations where the physical environment can either support or hinder the type of communication desired."
+    },
+    {
+      "name": "Vulnerability-Based Trust Building",
+      "description": "Use self-deprecating comments and personal vulnerability to ease tension and encourage others to lower their professional guards.",
+      "context": "Interview or coaching situations where authentic communication requires breaking down formal barriers."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Office Setup for Different Conversations",
+      "content": "Dan's office had 'my desk, and then I had a small round table with chairs. I always met unless I was pissed and then you met at the desk.' This deliberate furniture choice signals the nature of the conversation - collaborative (round table) versus disciplinary (desk).",
+      "source": "Interview Transcript",
+      "timestamp": "41:05"
+    },
+    {
+      "name": "Management Scale Experience",
+      "content": "Dan has managed '350 to 400' people over his career across 'multiple layers' with about 60 direct reports at peak. He has hired '30 to 40' people and fired 'easily get to a dozen, but I don't think I could get to twenty' - showing relatively low termination rate compared to hiring volume.",
+      "source": "Interview Transcript",
+      "timestamp": "42:28"
+    }
+  ]
+}

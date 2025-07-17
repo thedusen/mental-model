@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Context-Dependent Empathy Development",
+      "description": "Empathy wasn't needed at The Limited because 'everyone in our department, we were all the same, and they were very much black and white, but a big company. There's not a lot of gray.' But at the family sawmill 'they're gray all over the place' requiring empathy to manage effectively.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Holistic People Assessment",
+      "description": "At the sawmill, managing people requires understanding they're 'in rural Indiana. They're not very well educated. They work hard as hell, but some of these guys are learnedly farmers. They've already been up five hours. So you have to put all that together when you're thinking about people's performance.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "People-Centered Problem Solving",
+      "description": "'When you're working with any small business owner, one of the problems eventually becomes people. If your solution to everything is firearms or something like that, then you're not really helping them solve the problem.' Solutions must account for human complexity.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "People-Centered Identity",
+      "description": "When asked to articulate his holistic approach as a soft skill, Dan states simply 'I am people-centered.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Environmental Context Integration",
+      "description": "Assess employee performance by integrating their full life context - education level, work ethic, background, and daily circumstances before work begins.",
+      "context": "Managing diverse workforces, particularly in rural or blue-collar environments where workers' backgrounds significantly impact their work performance and needs."
+    },
+    {
+      "name": "People-First Solution Design",
+      "description": "Ensure business solutions account for human complexity rather than defaulting to simple disciplinary or systematic fixes.",
+      "context": "Small business consulting where people issues are inevitable and solutions must work with human nature rather than against it."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Rural Indiana Sawmill Empathy Learning",
+      "content": "At the family sawmill, Dan had to develop empathy because workers were 'in rural Indiana. They're not very well educated. They work hard as hell, but some of these guys are learnedly farmers. They've already been up five hours.' This required putting 'all that together when you're thinking about people's performance' - a stark contrast to The Limited where everyone was 'black and white.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:27:56"
+    },
+    {
+      "name": "People-Centered Problem Solving Philosophy",
+      "content": "Dan explains that in small business consulting, 'one of the problems eventually becomes people. If your solution to everything is firearms or something like that, then you're not really helping them solve the problem.' When asked to name this soft skill, he identifies as 'people-centered.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:27:56"
+    }
+  ]
+}

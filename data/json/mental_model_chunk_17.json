@@ -1,0 +1,36 @@
+{
+  "principles": [
+    {
+      "name": "Resistance Detection and Classification",
+      "description": "'I'm listening for resistance to whatever I'm saying' and determining 'whether that resistance is passing any logical test or whether it's pure emotion.' This applies equally to agreement: 'are you just agreeing with me on a logical side or on an emotional side?'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Logic-Side Landing Requirement",
+      "description": "'I need to know that you're landing on the logic side. If I will probably dismiss what you have to say from the emotional side.' This represents a clear hierarchy of reasoning validity.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Emotion vs Logic Filtering",
+      "description": "Actively assess whether responses (both resistance and agreement) are emotionally or logically driven, prioritizing logical reasoning while dismissing purely emotional responses.",
+      "context": "Business discussions where emotional reactions might cloud judgment or prevent optimal decision-making."
+    },
+    {
+      "name": "Resistance Quality Assessment",
+      "description": "Distinguish between resistance that 'is passing any logical test' versus 'pure emotion' to determine which objections deserve consideration and response.",
+      "context": "Change management or decision-making processes where pushback needs to be evaluated for its rational merit rather than dismissed automatically."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Reading People - Logic vs Emotion Assessment",
+      "content": "When reading people as individuals beyond their roles, Dan focuses on 'listening for resistance to whatever I'm saying' and determining 'whether that resistance is passing any logical test or whether it's pure emotion.' The same applies to agreement - he needs to know people are 'landing on the logic side' because he will 'probably dismiss what you have to say from the emotional side.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:07:58"
+    }
+  ]
+}

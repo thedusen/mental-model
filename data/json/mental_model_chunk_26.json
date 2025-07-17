@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Early Leadership Reality - Not Everyone Wants to be Led",
+      "description": "Class president experience taught 'at an early age... that you can't lead all people? Some people don't want to be led.' This fundamental leadership reality was learned through direct experience in high school.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Team Success Over Personal Gain",
+      "description": "As soccer coach, 'you're trying to figure out how to orchestrate this mess for the greater good. It wasn't for my greater good. It was really for the team's success.' Leadership focused on collective outcomes rather than personal benefit.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Collaboration-Authority Balance",
+      "description": "'If you're a coach and you're not a collaborator, I suspect that you're not very successful.' However, 'sometimes, you had to put your foot down and all that. So, that's that. That balance.' Leadership requires both collaborative and authoritative approaches.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Authority Despite Age/Experience Disadvantage",
+      "description": "As 'a freshman coach to 22 women, most of whom were older than me, it was quite telling' - learning to lead people with more experience and maturity created early lessons in authority without traditional credentials.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Early Leadership Responsibility Seeking",
+      "description": "Consistently take on leadership roles from high school through college, creating situations where 'people relying on me' becomes a pattern.",
+      "context": "Personal development where leadership skills are built through volunteering for responsibility rather than waiting for appointment."
+    },
+    {
+      "name": "Leading Up and Across Experience Gaps",
+      "description": "Learn to lead people who are older, more experienced, or in peer relationships where formal authority is limited.",
+      "context": "Situations where leadership must be earned through competence and collaboration rather than granted through hierarchical position."
+    }
+  ],
+  "examples": [
+    {
+      "name": "High School Class President Leadership Lessons",
+      "content": "Dan was class president for 'three or four years' in high school, missing only junior year because he 'didn't run' due to other commitments. This experience taught him early 'that you can't lead all people? Some people don't want to be led.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:33:17"
+    },
+    {
+      "name": "College Soccer Coach Collaboration Challenge",
+      "content": "As women's soccer coach in college, Dan had to 'orchestrate this mess for the greater good' focused on 'the team's success' rather than personal gain. As 'a freshman coach to 22 women, most of whom were older than me,' he learned that successful coaching requires being 'a collaborator' while also knowing when to 'put your foot down.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:34:10"
+    }
+  ]
+}

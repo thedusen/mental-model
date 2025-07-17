@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Daily Financial Foundation Reliance",
+      "description": "'I go back to the financial foundation almost every day, whether I want to or not.' The accounting/CPA background provides constant practical value regardless of conscious intent to use it.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Small Business Owner Knowledge Gap Recognition",
+      "description": "The accounting foundation is valuable 'because it's knowledge that most small business owners don't have.' This creates a consistent competitive advantage and value proposition.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Elevated Status Through Association",
+      "description": "Working at Arthur Anderson provided 'elevated status' in Cincinnati because 'if you worked there, you had an elevated status.' This early credibility foundation influences ongoing professional positioning.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Financial Foundation as Constant Resource",
+      "description": "Leverage financial and accounting knowledge as a daily, automatic resource that provides value even when not consciously deployed.",
+      "context": "Business consulting or advisory work where financial literacy provides consistent analytical advantage over business owners who lack this background."
+    },
+    {
+      "name": "Credibility Through Prestigious Association",
+      "description": "Use early association with prestigious organizations (like major accounting firms) to establish ongoing credibility and elevated status in professional relationships.",
+      "context": "Professional services where client confidence is influenced by past institutional affiliations and credentials."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Accounting Foundation as Daily Tool",
+      "content": "Dan identifies his 'master's in accounting, CPA, and working at a large public accounting CPA firm' as the foundation he returns to 'almost every day, whether I want to or not.' This knowledge is valuable 'because it's knowledge that most small business owners don't have.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:16:15"
+    },
+    {
+      "name": "Arthur Anderson Elevated Status",
+      "content": "Working at Arthur Anderson, 'one of the largest firms in the world,' provided elevated status in Cincinnati where 'if you worked there, you had an elevated status,' establishing early credibility that influences ongoing professional positioning.",
+      "source": "Interview Transcript",
+      "timestamp": "01:16:57"
+    }
+  ]
+}

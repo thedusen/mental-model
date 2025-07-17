@@ -1,0 +1,60 @@
+{
+  "principles": [
+    {
+      "name": "Self-Employment Influence as Foundation",
+      "description": "'My dad being self-employed was a factor. I think seeing a couple of brothers who own businesses was a factor.' These early exposures to entrepreneurship shaped fundamental perspectives on work and autonomy.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Intentional Problem Creation for Stimulation",
+      "description": "'I can get... I did get bored easily to the point where if I had the opportunity to break something, I would. That way, I had something else to do or to push just to go do something new.' Boredom drives destructive behavior to create new challenges.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "draining"
+    },
+    {
+      "name": "Corporate Cycle Monotony Recognition",
+      "description": "'I view company life as pretty much a 12-month cycle, and not that much new happens year to year... You're doing the same shit every 12 months. You're just maybe doing it with more people, fewer people, bigger budget, smaller budget. You're still doing the same shit.'",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "draining"
+    },
+    {
+      "name": "Need for External Stimulation",
+      "description": "'I need that phone to ring because it's nothing to do.' The requirement for external, unpredictable inputs to maintain engagement and energy.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Boredom-Driven Disruption",
+      "description": "When organizational work becomes predictable, intentionally create problems or disruptions to generate new challenges and maintain engagement.",
+      "context": "Corporate or structured environments where routine work cycles create understimulation for high-need-for-variety personalities."
+    },
+    {
+      "name": "External Variety Dependency",
+      "description": "Require external, unpredictable inputs (like phone calls or new problems) to maintain energy and interest in work.",
+      "context": "Professional situations where internal motivation is insufficient and external stimulation is needed for sustained performance."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Early Business Exposure Foundation",
+      "content": "Dan identifies formative influences as 'my dad being self-employed' and 'seeing a couple of brothers who own businesses' as factors that shaped his approach to work and business.",
+      "source": "Interview Transcript",
+      "timestamp": "01:13:21"
+    },
+    {
+      "name": "Corporate Boredom and Disruption Pattern",
+      "content": "Dan describes getting 'bored easily to the point where if I had the opportunity to break something, I would. That way, I had something else to do or to push just to go do something new.' He views 'company life as pretty much a 12-month cycle' where 'not that much new happens year to year.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:13:21"
+    },
+    {
+      "name": "Realization About External Stimulation Need",
+      "content": "When leaving Macy's for public accounting, a friend said 'I get why you left, but you are where you need to be.' This led to the realization 'I need that phone to ring because it's nothing to do' - recognizing the need for external stimulation and variety.",
+      "source": "Interview Transcript",
+      "timestamp": "01:14:46"
+    }
+  ]
+}

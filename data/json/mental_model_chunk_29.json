@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Father's Work Ethic and Duty Foundation",
+      "description": "Father provided foundational influence through 'work ethic, sense of duty' - establishing core values around commitment and responsibility.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Mother's Stoicism and Introvert Leadership Model",
+      "description": "Mother demonstrated 'stoicism and logic to some extent, and how you don't have to be an extrovert, and yet, people are still attracted to you.' This provided a model for non-extroverted leadership and influence.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Boss's Work-Family Balance Excellence",
+      "description": "Limited boss 'did a great job of balancing work and family. Even while he traveled internationally, he worked really hard at it' - demonstrating that high-level professional success can coexist with family commitment.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Aspirational Organization Standards",
+      "Description": "Limited boss 'remains the most organized person I've ever met at a level that I am comfortable with now that I will not achieve' - providing an aspirational but realistic benchmark for organizational excellence.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Parent-Derived Core Values Integration",
+      "description": "Integrate different but complementary parental influences - father's work ethic/duty with mother's stoic logic and introvert leadership model.",
+      "context": "Personal development where foundational family influences provide complementary strengths for professional effectiveness."
+    },
+    {
+      "name": "Professional Role Model Observation",
+      "description": "Learn from professional role models who demonstrate excellence in areas you value, accepting their standards as aspirational even when knowing you may not achieve their level.",
+      "context": "Professional development where observing excellence in others provides both inspiration and realistic self-assessment."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Parental Influence Combination",
+      "content": "Dan's father provided 'work ethic, sense of duty' while his mother demonstrated 'stoicism and logic to some extent, and how you don't have to be an extrovert, and yet, people are still attracted to you.' These combined influences shaped both his work approach and leadership style.",
+      "source": "Interview Transcript",
+      "timestamp": "01:41:44"
+    },
+    {
+      "name": "Limited Boss as Work-Life Balance Model",
+      "content": "Dan's boss at The Limited 'did a great job of balancing work and family. Even while he traveled internationally, he worked really hard at it.' This boss also 'remains the most organized person I've ever met at a level that I am comfortable with now that I will not achieve' - providing both an aspirational model and realistic self-assessment.",
+      "source": "Interview Transcript",
+      "timestamp": "01:42:25"
+    }
+  ]
+}

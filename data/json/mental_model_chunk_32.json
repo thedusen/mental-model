@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Internalization Over Recall",
+      "description": "'I just don't think I read. I don't even try to recall as much as if it was a good experience. Well, then I've somehow internalized it and it'll come out' - knowledge integration through internalization rather than conscious memorization.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Photographic Memory Skepticism",
+      "description": "'Everyone was just so impressed by it, and I thought, I don't know, I don't care. It's not a skill... To me, that's not useful knowledge' when referring to a partner with photographic memory who could recall exact document locations.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Useful vs. Impressive Knowledge Distinction",
+      "description": "Distinguishes between impressive recall abilities ('where a piece of paper was in a file from three years ago') and actually useful knowledge for problem-solving and decision-making.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Amalgamation Learning Style",
+      "description": "Learn through internalization where good experiences become part of operating knowledge without conscious effort to recall specific sources or details.",
+      "context": "Knowledge work where synthesis and integration matter more than precise recall of sources and specific facts."
+    },
+    {
+      "name": "Utility-Based Knowledge Valuation",
+      "description": "Value knowledge based on its practical utility for problem-solving rather than its impressiveness or precision of recall.",
+      "context": "Professional environments where being able to recall specific details is less important than having internalized principles for decision-making."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Photographic Memory Partner Experience",
+      "content": "Dan worked with a partner who had 'at least at the time, we called it a photographic memory' and could recall exactly 'where a piece of paper was in a file from three years ago.' While 'everyone was just so impressed by it,' Dan thought 'I don't know, I don't care. It's not a skill... To me, that's not useful knowledge.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:51:46"
+    },
+    {
+      "name": "Internalization Learning Approach",
+      "content": "When asked about leveraging specific content from reading, Dan identifies as closer to the 'amalgamation' approach: 'I just don't think I read. I don't even try to recall as much as if it was a good experience. Well, then I've somehow internalized it and it'll come out' naturally in relevant situations.",
+      "source": "Interview Transcript",
+      "timestamp": "01:51:18"
+    }
+  ]
+}

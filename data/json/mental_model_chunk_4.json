@@ -1,0 +1,36 @@
+{
+  "principles": [
+    {
+      "name": "Intuition Recognition Without Action",
+      "description": "'I will often come to an instant conclusion. But I know that I don't act on it. So, I may have a thought, but I don't... I don't express it typically because I'm still in the mode of just gathering more, so I do not act a lot on intuition.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Intuitive Process Selection",
+      "description": "Intuition operates at the process level in crisis situations where 'there's no plan in front of you.' It guides whether to 'blur out something and solve the problem' or recognize 'I need to get more information, and I need these people to... I need someone else to help me make this decision.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "flow-state"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Instant Conclusion Restraint",
+      "description": "Allow instant conclusions to form while maintaining discipline to not express or act on them immediately, staying in information-gathering mode instead.",
+      "context": "Crisis or complex decision-making situations where first instincts may be valuable but premature action could be harmful."
+    },
+    {
+      "name": "Meta-Intuitive Process Choice",
+      "description": "Use intuition to determine the appropriate decision-making process - whether to act quickly on a solution or shift into collaborative information-gathering mode.",
+      "context": "Unplanned crisis situations where there's 'no plan in front of you' and the process itself must be intuitively selected."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Crisis Intuition Branching",
+      "content": "In crisis situations without a plan, Dan describes intuition as having two potential paths: 'It could be blur out something and solve the problem. Or your intuition could be, I need to get more information, and I need these people to... I need someone else to help me make this decision.' The intuition guides process selection rather than direct answers.",
+      "source": "Interview Transcript",
+      "timestamp": "33:23"
+    }
+  ]
+}

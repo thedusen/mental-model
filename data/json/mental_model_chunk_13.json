@@ -1,0 +1,42 @@
+{
+  "principles": [
+    {
+      "name": "Fairness as Signal Management",
+      "description": "Challenge both sales and manufacturing equally to signal 'to everyone else right away that, well, sales is going to get their way today' would be wrong. When manufacturing claims low margins because 'we give it away,' respond firmly because 'we're all on the same team.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Business-First Governor Over Fairness",
+      "description": "'The governor over sense of fairness is what do we have to do to make the business better? That's not necessarily what the owner says.' The ultimate arbiter is business improvement, not owner preference or departmental fairness.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Implicit Assumption Challenge",
+      "description": "Sales saying customers 'buy on price' implicitly treats the product as 'a commodity.' Manufacturing saying they have 'low margins because we give it away' implies 'we work really hard to get this done, but they're giving it away.' Both assumptions need direct challenge.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Equal Challenge Methodology",
+      "description": "Challenge both conflicting departments equally and immediately to establish that neither will 'get their way' unfairly, using direct but gentle confrontation of their implicit assumptions.",
+      "context": "Planning sessions or meetings where traditional departmental conflicts (sales vs manufacturing) need to be neutralized early to establish collaborative foundation."
+    },
+    {
+      "name": "Business-Optimal vs Owner-Optimal Decision Making",
+      "description": "Use 'what do we have to do to make the business better' as the ultimate decision criterion, which may override both departmental preferences and owner preferences.",
+      "context": "Strategic planning or operational decisions where the optimal business outcome may conflict with political considerations or owner bias."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Sales vs Manufacturing Challenge Example",
+      "content": "In planning sessions, when sales claims customers 'buy on price,' Dan goes 'right at him not hard... but gently but firmly' to signal that sales won't get their way. When manufacturing claims 'low margins because we give it away,' he challenges them equally because 'we're all on the same team.' Sales is implicitly saying the product is 'a commodity' while manufacturing implies they work hard but 'they're giving it away.'",
+      "source": "Interview Transcript",
+      "timestamp": "55:02"
+    }
+  ]
+}

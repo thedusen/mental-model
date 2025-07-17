@@ -1,0 +1,77 @@
+{
+  "principles": [
+    {
+      "name": "SWOT as Weakness-Focused Exercise",
+      "description": "'It's all about weaknesses.' The entire SWOT analysis is designed to identify and address organizational weaknesses rather than building on strengths or pursuing opportunities.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Sandbox Ownership Model",
+      "description": "'You own the sandbox... no one else is allowed in your sandbox' including the owner. Clear responsibility boundaries that prevent interference once roles are defined.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Strategy as Luxury for Well-Functioning Organizations",
+      "description": "'Most companies couldn't be strategic. If their life depended on it, they would fail. They're not doing that well now because of the stuff that's in their way.' Strategy requires operational excellence first.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Root Cause Drilling in Weaknesses",
+      "description": "'I try to get them to drill down to the root cause pretty hard... it's not about an answer, it's about having the open discussion with everyone on your team.' Process over solution focus.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Collective Responsibility for All Priorities",
+      "description": "'Everyone who attended the meeting is now responsible for all of these... If someone asks you to help, you have to help. It's not optional.' Shared accountability beyond individual assignments.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "On Track vs. Off Track Binary Assessment",
+      "description": "'The entire focus is it's on track or it's off track. That's all we need to know.' Eliminating debate and complexity in status reporting.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Weakness-First Business Development",
+      "description": "Structure organizational development around identifying and removing obstacles rather than building on strengths or pursuing new opportunities.",
+      "context": "Small business improvement where operational dysfunction prevents successful strategy execution."
+    },
+    {
+      "name": "Low-Stakes Consensus Building",
+      "description": "Practice consensus-building on external topics (like global trends) before applying the same process to internal business priorities.",
+      "context": "Team development where groups need to learn collaborative decision-making skills before tackling high-stakes business issues."
+    },
+    {
+      "name": "Binary Status Reporting System",
+      "description": "Use simple on-track/off-track status updates to eliminate debate and maintain meeting focus on problem-solving rather than explanation.",
+      "context": "Team meetings where detailed status explanations can consume time and energy better spent on addressing actual problems."
+    }
+  ],
+  "examples": [
+    {
+      "name": "SWOT as Weakness Discovery Tool",
+      "content": "Dan's SWOT process is 'all about weaknesses' - using strengths and opportunities as setup to focus on obstacles. The key question: 'Are the weaknesses so pronounced that unless you get those corrected, the business cannot legitimately pursue the opportunities?' Most priorities address weaknesses because teams realize 'we can't get out of our own way.'",
+      "source": "Interview Transcript",
+      "timestamp": "55:43"
+    },
+    {
+      "name": "Sandbox Ownership and Collective Responsibility",
+      "content": "Dan creates 'sandbox' ownership where 'no one else is allowed in your sandbox' including the owner, but also establishes that 'everyone who attended the meeting is now responsible for all of these... If someone asks you to help, you have to help. It's not optional.' This combines individual authority with collective support.",
+      "source": "Interview Transcript",
+      "timestamp": "38:28"
+    },
+    {
+      "name": "Binary Meeting Structure",
+      "content": "Dan's recurring meetings use EOS-flavored structure with fixed format: good news, metrics review, individual tasks, then open discussion. For all updates, 'the entire focus is it's on track or it's off track. That's all we need to know' to maintain pace and focus.",
+      "source": "Interview Transcript",
+      "timestamp": "59:07"
+    }
+  ]
+}

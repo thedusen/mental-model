@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Universal Strength Claims Pattern",
+      "description": "'Everyone says they're responsive. Everyone says they're adaptable. Everyone says that they value teamwork and or collaborators, or they engage in consultative selling... then you get into dedication and throw away stuff like that.' Common self-descriptions across companies.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Responsiveness Skepticism",
+      "description": "'I think they're full of shit about responsiveness... It's hard for me to know. I don't know the company that well.' Default skepticism about the most commonly claimed strength.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Truth Secondary to Consensus",
+      "description": "'I want team consensus... Even if this has happened, even if I don't believe it, not my plan.' Team agreement matters more than factual accuracy in the SWOT process.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Generic Strength Recognition and Bypass",
+      "description": "Recognize that most companies claim identical strengths (responsiveness, adaptability, teamwork, consultative selling) but focus on building consensus rather than validating accuracy.",
+      "context": "SWOT analysis where the goal is team alignment rather than objective assessment of capabilities."
+    },
+    {
+      "name": "Consensus Over Accuracy Priority",
+      "description": "Prioritize team consensus on strengths and weaknesses over determining objective truth, especially when external validation would be difficult or counterproductive.",
+      "context": "Team building exercises where shared understanding and buy-in are more valuable than precise capability assessment."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Universal Strength Claims Pattern",
+      "content": "Dan observes that in SWOT analysis, 'Everyone says they're responsive. Everyone says they're adaptable. Everyone says that they value teamwork and or collaborators, or they engage in consultative selling.' He's particularly skeptical of responsiveness claims: 'I think they're full of shit about responsiveness.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:02:16"
+    },
+    {
+      "name": "Consensus Priority Over Truth",
+      "content": "When asked how important it is to verify claimed strengths, Dan emphasizes: 'I want team consensus... Even if this has happened, even if I don't believe it, not my plan.' Team agreement takes precedence over factual accuracy in the SWOT process.",
+      "source": "Interview Transcript",
+      "timestamp": "01:03:04"
+    }
+  ]
+}

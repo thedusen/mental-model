@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Critical Thinking Improvement Ceiling",
+      "description": "'You can teach critical thinking... But if you're lousy, you can't become excellent. You can improve.' There are natural limits to how much critical thinking ability can be developed through training.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Poor Critical Thinking as Dot Connection Failure",
+      "description": "'To me, it's an inability to connect the dots' combined with drawing 'incorrect conclusions based upon either inferring facts which aren't there or based on emotion.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Problem-Solving as Critical Thinking Subset",
+      "description": "'I think of problem-solving as a subset of critical thinking skills' because critical thinking has broader applications beyond specific problem-solving contexts.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Critical Thinking as Information Immunity",
+      "description": "Critical thinking 'enables you to go through an election season and not get crazy from the ads. Because the left is as full of shit as the right... I don't act on it because they haven't given me enough information to draw the conclusion they want me to draw.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Fact Inference vs. Evidence-Based Conclusion",
+      "description": "Distinguish between drawing conclusions based on actual evidence versus inferring facts that aren't present or making emotion-based judgments.",
+      "context": "Decision-making situations where incomplete information or emotional pressure can lead to false conclusions."
+    },
+    {
+      "name": "Information Sufficiency Assessment",
+      "description": "Evaluate whether provided information is sufficient to support the conclusions being promoted, maintaining immunity to persuasion when evidence is inadequate.",
+      "context": "Media consumption, advertising, or persuasive communications where the goal is to influence behavior without providing complete information."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Critical Thinking Teachability Limits",
+      "content": "Dan acknowledges 'You can teach critical thinking. I've done it. I taught a short course on critical thinking' to explain what it is and why it's important. However, 'if you're lousy, you can't become excellent. You can improve' - there are natural ceilings to development.",
+      "source": "Interview Transcript",
+      "timestamp": "30:26"
+    },
+    {
+      "name": "Critical Thinking as Media Immunity",
+      "content": "Dan sees critical thinking as broader than problem-solving, enabling you to 'go through an election season and not get crazy from the ads. Because the left is as full of shit as the right. It's just an ad... I don't act on it because they haven't given me enough information to draw the conclusion they want me to draw.'",
+      "source": "Interview Transcript",
+      "timestamp": "31:48"
+    }
+  ]
+}

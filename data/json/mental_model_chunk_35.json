@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Business-First Decision Framework",
+      "description": "'Acting in the best interest of the business is the best way to act.' This represents a core mental model for decision-making that prioritizes business sustainability over other considerations.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Financial-Customer Balance Recognition",
+      "description": "'He tends to put the customer first, regardless of the financial implications... it's a balance. It's not always about the financial decision. It's not always about the customer. There's a balance that needs to be struck between it.' Business decisions require balancing competing priorities.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Recognition vs. Learning Distinction",
+      "description": "'I probably should say recognize, because he's not a... He's a bright guy.' The issue isn't intelligence or capability but awareness of principles already within reach.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Higher Standards Challenge",
+      "description": "'He doesn't ask more of himself or the team. I don't know. I don't know where I'd go with that. That's tougher.' Identifying the need for higher performance standards while acknowledging the difficulty of instilling this mindset.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Mental Model Transplantation",
+      "description": "Systematically work to help others 'recognize' (rather than learn) core business principles like business-first thinking and financial-customer balance.",
+      "context": "Leadership development where the goal is helping capable people adopt more sophisticated decision-making frameworks."
+    },
+    {
+      "name": "Balance Perspective Instillation",
+      "description": "Help people move from single-variable optimization (customer satisfaction) to multi-variable balancing (customer needs vs. financial reality).",
+      "context": "Business operations where employees naturally optimize for one factor but need to consider multiple competing priorities."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Brian's Business-First Mental Model Development",
+      "content": "Dan wants warehouse manager Brian to 'recognize' that 'acting in the best interest of the business is the best way to act.' Brian 'tends to put the customer first, regardless of the financial implications,' so Dan teaches balance: 'It's not always about the financial decision. It's not always about the customer. There's a balance that needs to be struck.' Dan also notes Brian 'doesn't ask more of himself or the team' but finds this harder to address.",
+      "source": "Interview Transcript",
+      "timestamp": "12:46"
+    }
+  ]
+}

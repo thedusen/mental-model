@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Accumulation Over Linear Path",
+      "description": "'I don't see it as a path. I see it as an accumulation of experiences that has landed here, that represents more experience than most.' Career development is viewed as experiential accumulation rather than strategic progression.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Corporate as Means, Consulting as End",
+      "description": "'The corporate stuff isn't is helpful, but it was more of a means to the end, whereas the coaching CPA stuff is the vehicle to help.' Different types of work serve different purposes in the larger mission.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Help as Core Motivation",
+      "description": "In consulting and CPA work, 'it was just all about helping people. That's all I really that because that's all I really wanted to do.' This represents the fundamental driving force behind career choices.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Corporate for Knowledge and People Skills",
+      "description": "Corporate experience was valuable because 'it was more about knowledge and. And working with people' - serving as skill-building foundation for later helping-focused work.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Experience Accumulation Strategy",
+      "description": "Approach career development as accumulating diverse experiences rather than following a linear path, viewing each role as adding to overall capability.",
+      "context": "Professional development where varied experiences create more value than specialized expertise in a single area."
+    },
+    {
+      "name": "Means-End Career Segmentation",
+      "description": "Distinguish between roles that serve as means (corporate knowledge-building) and roles that serve as ends (helping others), with different evaluation criteria for each.",
+      "context": "Career planning where some roles are stepping stones to build capabilities while others represent the ultimate purpose."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Non-Linear Career Philosophy",
+      "content": "When asked about defining career decisions, Dan explains 'I don't see it as a path. I see it as an accumulation of experiences that has landed here, that represents more experience than most.' This view emphasizes experiential breadth over strategic career progression.",
+      "source": "Interview Transcript",
+      "timestamp": "01:39:36"
+    },
+    {
+      "name": "Corporate vs Consulting Purpose Distinction",
+      "content": "Dan differentiates between corporate and consulting work: corporate was 'more about knowledge and working with people' while consulting/CPA work 'was just all about helping people. That's all I really wanted to do.' The corporate work was 'more of a means to the end, whereas the coaching CPA stuff is the vehicle to help.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:40:12"
+    }
+  ]
+}

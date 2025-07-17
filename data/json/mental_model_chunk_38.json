@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Connecting Dots as Critical Thinking Result",
+      "description": "'Connecting the dots to me ends up being the result' of critical thinking, not the process itself. It represents the synthesis outcome rather than the method.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Investigation Over Binary Reaction",
+      "description": "When sales decline despite adding staff, poor critical thinking leads to 'fire the first salesperson, or maybe you fire all the salespeople because it's always binary and it's anything but binary. Whereas if you employ critical thinking, then you are naturally doing much more investigation to understand the problem.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Modified Socratic Method as Toolbox Item",
+      "description": "'I don't think of it as... It might be natural, but I don't know that about instinct as much as it's in my toolbox. It is a modification of the Socratic method. It's really all that it is. We're just trying to ask a question in response to your first question.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Questioning to Understand Origins",
+      "description": "'The intention of the questioning is to figure out where the person's coming from. So, yeah, their assumptions, what caused them to say what they just said?' Focus on understanding reasoning behind statements.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Assumption Investigation Through Questioning",
+      "description": "Use modified Socratic questioning to understand the assumptions and reasoning that led to someone's conclusion, avoiding binary reactions in favor of deeper investigation.",
+      "context": "Problem-solving situations where initial explanations may be oversimplified and require deeper understanding of underlying assumptions."
+    },
+    {
+      "name": "Multi-Layer Data Synthesis",
+      "description": "Synthesize multiple layers of relevant data rather than accepting surface-level explanations or jumping to binary solutions.",
+      "context": "Business problem-solving where complex issues require understanding multiple contributing factors rather than single-cause explanations."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Sales Decline Critical Thinking Example",
+      "content": "When a business owner says 'Our sales declined 10% last year. By the way, we added another person to the sales staff,' poor critical thinking leads to binary solutions like firing salespeople. Good critical thinking employs 'much more investigation to understand the problem' rather than jumping to simple cause-and-effect conclusions.",
+      "source": "Interview Transcript",
+      "timestamp": "22:51"
+    },
+    {
+      "name": "Modified Socratic Method as Critical Thinking Tool",
+      "content": "Dan describes his critical thinking approach as 'a modification of the Socratic method' where the goal is 'trying to ask a question in response to your first question.' The intention is 'to figure out where the person's coming from... their assumptions, what caused them to say what they just said?'",
+      "source": "Interview Transcript",
+      "timestamp": "24:42"
+    }
+  ]
+}

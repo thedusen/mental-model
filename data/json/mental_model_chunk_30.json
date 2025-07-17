@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Human Element Integration",
+      "description": "Drucker 'never let go of the human element of anything that he did, and he still doesn't seem to get very much credit for that' - emphasizing the importance of maintaining human considerations in business analysis.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Focus on the Real",
+      "description": "'He focused on the real because what I learned from him was what's the real?' This represents looking beyond surface appearances to understand underlying drivers and actual customer needs.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Predictive Analysis Through Real Understanding",
+      "description": "Drucker's 'ability to look into the future' demonstrated through writing 'an article about department stores in the seventies, telling us why they're not going to survive' by understanding real underlying changes rather than surface trends.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Real Issue Recognition Over Surface Focus",
+      "description": "Department stores 'kept focusing on fashion' while 'everything became about time' due to changing demographics. 'Target and Costco came because they addressed the real issue of time' rather than the perceived issue of fashion.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Real vs. Apparent Issue Analysis",
+      "description": "Look beyond what organizations think their value proposition is to understand what customers actually need, particularly when underlying conditions change.",
+      "context": "Business analysis where organizations may be focused on historical strengths that no longer address current customer realities."
+    },
+    {
+      "name": "Demographic Change Impact Assessment",
+      "description": "Understand how fundamental demographic shifts (like women entering workforce) create new 'real' customer needs that may conflict with traditional business models.",
+      "context": "Strategic planning where long-term societal changes require businesses to adapt their core value propositions."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Drucker's Department Store Prediction",
+      "content": "Dan admires Drucker's predictive ability, citing how he wrote 'an article about department stores in the seventies, telling us why they're not going to survive.' Drucker understood that department stores originally offered 'a different experience for each class' but failed to adapt when 'everything became about time' due to more women entering the workforce. While department stores 'kept focusing on fashion,' Target and Costco succeeded because 'they addressed the real issue of time.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:44:04"
+    },
+    {
+      "name": "Drucker's Human Element Focus",
+      "content": "Dan values Drucker not primarily for knowledge worker concepts but because Drucker 'never let go of the human element of anything that he did, and he still doesn't seem to get very much credit for that.' From Drucker, Dan learned to focus on 'what's the real' - understanding underlying human needs rather than surface business assumptions.",
+      "source": "Interview Transcript",
+      "timestamp": "01:43:15"
+    }
+  ]
+}

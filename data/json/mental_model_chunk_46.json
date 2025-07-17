@@ -1,0 +1,60 @@
+{
+  "principles": [
+    {
+      "name": "Profit as Managed Goal vs. Natural Result",
+      "description": "'I do have a greater focus on profit than ever before because earlier, my focus was more about profit as a result, not something to be managed.' Evolution from passive to active profit management approach.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Profit-Cash Equivalency Understanding",
+      "description": "'I have realized that profit and cash are essentially the same thing. What is holding them back from their dreams, their employees' dreams, and just a better life is a lack of understanding of what it takes to create profit.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Multi-Area Continuous Improvement",
+      "description": "'You're not going to hit a home run on any one of those areas and declare victory. You're always improving each one of those areas. That is what creates a better opportunity for profit.' No single breakthrough creates lasting profit improvement.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Profit as Pressure Relief",
+      "description": "Better profit management 'relieves so much of the pressure that the owner is feeling' - profit isn't just financial but psychological relief.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Evolution from Single-Variable Focus",
+      "Description": "'When I was younger, I would get fixated on just revenue, expenses, taxes, or something like that. It's much more complex to get there.' Moving from narrow focus to systems thinking.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Multi-Variable Profit Optimization",
+      "description": "Focus on continuously improving multiple profit drivers (revenue, expenses, taxes, etc.) rather than seeking breakthrough improvements in single areas.",
+      "context": "Small business consulting where sustainable profit improvement requires systematic attention to all contributing factors."
+    },
+    {
+      "name": "Profit as Enabler Philosophy",
+      "description": "Frame profit not as greed but as the enabler of 'dreams' for owners, employees, and better life quality, while providing psychological pressure relief.",
+      "context": "Working with business owners who may have conflicted feelings about profit-seeking or who undervalue profit management."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Evolution from Profit as Result to Profit as Managed Goal",
+      "content": "Dan's approach has evolved to have 'greater focus on profit than ever before because earlier, my focus was more about profit as a result, not something to be managed.' He now realizes 'profit and cash are essentially the same thing' and that profit understanding is what enables 'their dreams, their employees' dreams, and just a better life.'",
+      "source": "Interview Transcript",
+      "timestamp": "47:40"
+    },
+    {
+      "name": "Multi-Area Improvement Philosophy",
+      "content": "Dan's thinking evolved from fixating 'on just revenue, expenses, taxes, or something like that' to understanding 'it's much more complex to get there. You're not going to hit a home run on any one of those areas and declare victory. You're always improving each one of those areas' to create better profit opportunities.",
+      "source": "Interview Transcript",
+      "timestamp": "47:40"
+    }
+  ]
+}

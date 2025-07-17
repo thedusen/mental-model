@@ -1,0 +1,72 @@
+{
+  "principles": [
+    {
+      "name": "Early Passion for Influence and Events",
+      "description": "'The passion was to be involved in influence events in effect. I don't know if it was to lead or not... I had a passion for playing soccer. I didn't have a passion for school. I had a passion for being class president.' Early drive focused on impact and involvement rather than pure leadership.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Promotion-Focused vs. Work-Focused Passion",
+      "description": "'I had a passion to be successful at the CPA firm... I was working to be promoted, but that was the passion. It wasn't about the work itself.' Motivation driven by advancement rather than intrinsic work satisfaction.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Money and Prestige as Early Drivers",
+      "description": "'That would have been the money and the prestige... because the goal was partner.' Clear acknowledgment of external validation and financial success as primary motivators.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Role Model Disillusionment",
+      "description": "'Very few of the partners served as very good role models for me... they were rich, but I don't know that they were leading lives that really interested me.' Success without lifestyle appeal led to career redirection.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Uncertainty and Unpredictability Craving",
+      "description": "'I missed the uncertainty of a client problem or a client picking up the phone and calling... Same shit, different day is a little bit extreme, but it was far more predictable than unpredictable.' Need for variety and surprise over stability.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Family as Career Catalyst",
+      "description": "'When the kids came along... I began to realize... The cost in hours required was not going to be worth it.' Children created values clarification that changed career trajectory.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Values Evolution Through Life Stages",
+      "description": "Allow major life changes (like having children) to prompt reevaluation of career priorities and role model quality rather than maintaining fixed goals.",
+      "context": "Career development where external success markers may conflict with evolving personal values and lifestyle preferences."
+    },
+    {
+      "name": "Unpredictability as Energy Source",
+      "description": "Seek work environments that provide uncertainty and client-driven variety rather than predictable corporate routines, even when the predictable work is enjoyable.",
+      "context": "Professional choices where stimulation and variety matter more than security and routine for maintaining engagement and energy."
+    }
+  ],
+  "examples": [
+    {
+      "name": "High School Passion Foundation",
+      "content": "Dan's earliest passion was 'to be involved in influence events in effect. I don't know if it was to lead or not' including 'passion for playing soccer... passion for being class president' but notably 'I didn't have a passion for school.' This established a pattern of wanting to influence outcomes and be central to important activities.",
+      "source": "Interview Transcript",
+      "timestamp": "01:40:38"
+    },
+    {
+      "name": "CPA Firm Passion vs. Work Content",
+      "content": "Early business passion was 'to be successful at the CPA firm... I was working to be promoted, but that was the passion. It wasn't about the work itself.' The motivation was 'money and the prestige... because the goal was partner' rather than intrinsic work satisfaction.",
+      "source": "Interview Transcript",
+      "timestamp": "01:42:10"
+    },
+    {
+      "name": "Role Model Disillusionment and Career Shift",
+      "content": "Having children prompted realization that CPA firm partners 'were rich, but I don't know that they were leading lives that really interested me.' This led to leaving accounting, but corporate life was too predictable: 'I missed the uncertainty of a client problem or a client picking up the phone and calling.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:43:39"
+    }
+  ]
+}

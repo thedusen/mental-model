@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Team Collaboration as Third Pillar",
+      "description": "'If I think about my best hires... there's some sort of either, collaborator or team, you know, teamwork, approach that's embedded in the personality, you know, not a loaner.' This adds to critical thinking and business acumen as core hiring criteria.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Linear Answers as Guardedness Signal",
+      "description": "'What I'm listening for is if it's like every answer is very linear, it just comes across as guarded. So I end up trusting them less because now they're just telling me what I want to hear.' Overly polished responses indicate inauthentic communication.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Nonverbal Cue Baseline Assessment",
+      "description": "Standard awareness of 'nonverbal cues of whether they're nervous or whether they're looking away when they answer, or fidgety' but these are less important than communication style assessment.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Authenticity Detection Through Response Style",
+      "description": "Evaluate response authenticity by listening for overly linear, guarded answers that suggest the person is telling you what they think you want to hear.",
+      "context": "Interview situations where candidates may be coached to give perfect answers rather than authentic responses that reveal their actual thinking."
+    },
+    {
+      "name": "Three-Pillar Hiring Framework",
+      "description": "Assess candidates on critical thinking, business acumen, and collaborative/teamwork personality as core requirements for hiring decisions.",
+      "context": "Hiring processes where both analytical capability and interpersonal effectiveness are crucial for role success."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Third Pillar - Team Collaboration",
+      "content": "When asked what he might add to critical thinking and business acumen as hiring pillars, Dan identifies team collaboration: 'if I think about my best hires... there's some sort of either, collaborator or team, you know, teamwork, approach that's embedded in the personality, you know, not a loaner.'",
+      "source": "Interview Transcript",
+      "timestamp": "38:28"
+    },
+    {
+      "name": "Detecting Guardedness Through Linear Responses",
+      "content": "Beyond standard nonverbal cues, Dan listens for 'if it's like every answer is very linear, it just comes across as guarded. So I end up trusting them less because now they're just telling me what I want to hear.' This overly polished response style signals inauthentic communication.",
+      "source": "Interview Transcript",
+      "timestamp": "39:49"
+    }
+  ]
+}

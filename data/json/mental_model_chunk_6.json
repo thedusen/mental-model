@@ -1,0 +1,25 @@
+{
+  "principles": [
+    {
+      "name": "External Reliance Activation",
+      "description": "'I have to know someone is relying on me. I can't just do it. Not that I can't do it for myself, but for me to reach a level of intensity of not only quality but just thought process, I need to know that the output will be used by someone else.'",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Stakeholder-Dependent Performance",
+      "description": "Peak performance and flow states require knowing that others are depending on the output, which elevates both quality and thought process intensity beyond what self-directed work can achieve.",
+      "context": "Personal projects or self-directed work where external accountability and impact are needed to reach optimal performance levels."
+    }
+  ],
+  "examples": [
+    {
+      "name": "External vs Internal Project Performance Difference",
+      "content": "When asked about achieving flow state on his own projects versus external consulting work, Dan reveals that he needs to 'know someone is relying on me' to reach peak 'intensity of not only quality but just thought process.' While he can work for himself, optimal performance requires knowing 'the output will be used by someone else.'",
+      "source": "Interview Transcript",
+      "timestamp": "37:38"
+    }
+  ]
+}

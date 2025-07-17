@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Root Cause Over Surface Solutions",
+      "description": "'Root cause... You'll never get to the root cause in the first conversation, obviously. But even two or three conversations in, you still haven't drilled down into the core issue.' Emphasis on deep causal understanding rather than quick fixes.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Tool-Throwing as False Victory",
+      "description": "'What a lot of people in my position do is just throw ideas and tools out to try to solve those surface-level issues and then declare victory. But it hasn't necessarily built a stronger company.' Critique of superficial consulting approaches.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Multi-Conversation Root Cause Discovery",
+      "description": "Root cause analysis requires patience across 'two or three conversations' or more, rejecting the pressure for immediate problem identification and solution.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Fractional Advisor Identity",
+      "description": "'It's that fractional advisor. You know, COO CFO.' Current role conception as hybrid operational and financial leadership rather than pure consulting.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Deep Causal Investigation Process",
+      "description": "Resist pressure for quick solutions by systematically drilling down through multiple conversations to identify root causes rather than addressing symptoms.",
+      "context": "Business consulting where surface problems are often symptoms of deeper organizational or systemic issues that require patience to uncover."
+    },
+    {
+      "name": "Sustainable Strength Building Over Quick Wins",
+      "description": "Focus on building stronger companies through root cause resolution rather than achieving quick victories through surface-level tool application.",
+      "context": "Organizational development where long-term health requires addressing fundamental issues rather than implementing popular solutions."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Root Cause vs. Tool-Throwing Approach",
+      "content": "Dan's decision architecture centers on 'Root cause' analysis, requiring patience: 'You'll never get to the root cause in the first conversation... even two or three conversations in, you still haven't drilled down into the core issue.' He contrasts this with others who 'just throw ideas and tools out to try to solve those surface-level issues and then declare victory. But it hasn't necessarily built a stronger company.'",
+      "source": "Interview Transcript",
+      "timestamp": "06:00"
+    },
+    {
+      "name": "Current Role Frame",
+      "content": "When asked about his current role perspective, Dan identifies as 'that fractional advisor. You know, COO CFO' - positioning himself as operational and financial leadership rather than pure consulting.",
+      "source": "Interview Transcript",
+      "timestamp": "07:15"
+    }
+  ]
+}

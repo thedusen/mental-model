@@ -1,0 +1,60 @@
+{
+  "principles": [
+    {
+      "name": "Critical Thinking as Umbrella Skill",
+      "description": "'If you have high critical thinking skills, you are a problem solver. But it's not just about solving problems. It's just how you look at things.' Critical thinking encompasses multiple cognitive abilities including problem-solving.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Emotional Intelligence as Critical Thinking Component",
+      "description": "'I'm tempted to put emotional intelligence under there. I'd probably have to think about that one a little bit longer, though.' This represents an unconventional but potentially valid connection.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Critical Thinking vs. Moonshot Tension",
+      "description": "'Too much critical thinking could get in the way because your logic brain is shutting down too much of the \"what if\"... moonshot goals probably don't sit well with a critical thinker because I can't envision it, but I certainly can't figure out how to get there.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Uncovering vs. Creating in Dot Connection",
+      "description": "'I would suspect it has more to do with uncovering what's already there. It's your ability to draw conclusions, not out of thin air, but by seeing relationships that others don't see.' However, 'I think you can create a relationship. Sure.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Concreteness as Critical Thinking Characteristic",
+      "description": "Critical thinking is 'more about being concrete' rather than being inflexible or impatient with big ideas.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Balance-Based Critical Thinking",
+      "description": "Apply critical thinking as 'a balance of all of those things' rather than pure logic, avoiding excessive analytical thinking that shuts down creative possibilities.",
+      "context": "Complex problem-solving where both analytical rigor and creative thinking are needed for optimal solutions."
+    },
+    {
+      "name": "Relationship Discovery and Creation",
+      "description": "Use critical thinking to both uncover hidden relationships that already exist and create new relationships between previously unconnected elements.",
+      "context": "Innovation and strategic thinking where both pattern recognition and novel connection-making drive breakthrough insights."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Critical Thinking vs. Moonshot Goals Tension",
+      "content": "Dan explores the tension between critical thinking and creative problem-solving, noting that 'too much critical thinking could get in the way because your logic brain is shutting down too much of the \"what if\".' He suggests 'moonshot goals probably don't sit well with a critical thinker because I can't envision it, but I certainly can't figure out how to get there.'",
+      "source": "Interview Transcript",
+      "timestamp": "34:54"
+    },
+    {
+      "name": "Uncovering vs. Creating Relationships",
+      "content": "When asked about the creative aspect of connecting dots, Dan initially says it's 'more to do with uncovering what's already there. It's your ability to draw conclusions, not out of thin air, but by seeing relationships that others don't see.' However, he acknowledges 'I think you can create a relationship. Sure.'",
+      "source": "Interview Transcript",
+      "timestamp": "37:00"
+    }
+  ]
+}

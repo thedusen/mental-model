@@ -1,0 +1,43 @@
+{
+  "principles": [
+    {
+      "name": "Business as Profit-Making Entity",
+      "description": "'It's an awareness that a business is a profit-making entity. Not to not exclusively, but it is in the business of making profit because otherwise, it doesn't survive.' Fundamental understanding that profit is necessary for business survival.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Risk-Reward Owner Recognition",
+      "description": "'A recognition that it's the owner who has taken on the risk, not the employee, and they are entitled to greater rewards because that is the way the system is set up.' Understanding the risk-reward structure of business ownership versus employment.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Market Reward for Consistent Performance",
+      "description": "'A recognition that if you do a good job for your customer or your client, you will get rewarded. But you have to do it consistently. The market rewards you for that work.' Understanding the customer-value-reward cycle.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Non-Exploitative Hierarchy Understanding",
+      "description": "'It doesn't mean that it's master-slave or anything like that' - acknowledging business hierarchy without accepting abusive power dynamics.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Three-Component Business Acumen Framework",
+      "description": "Assess business acumen through three core recognitions: profit necessity for survival, risk-reward structure of ownership, and market reward for consistent customer value delivery.",
+      "context": "Hiring or team development where understanding basic business dynamics is crucial for decision-making and role effectiveness."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Business Acumen Definition - Three Components",
+      "content": "Dan defines business acumen through three key recognitions: 1) 'a business is a profit-making entity... because otherwise, it doesn't survive,' 2) 'it's the owner who has taken on the risk, not the employee, and they are entitled to greater rewards,' and 3) 'if you do a good job for your customer or your client, you will get rewarded. But you have to do it consistently. The market rewards you for that work.'",
+      "source": "Interview Transcript",
+      "timestamp": "46:03"
+    }
+  ]
+}

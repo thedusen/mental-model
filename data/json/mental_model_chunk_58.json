@@ -1,0 +1,72 @@
+{
+  "principles": [
+    {
+      "name": "Six Core Business Benefits",
+      "description": "Primary value delivered: 'Financial clarity, sounding board for the owner, the person who ensures the execution of the owner's wishes, improved profitability, improved accountability' plus 'a happier team.' These represent the complete value proposition.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Happier Team as Afterthought Recognition",
+      "description": "'Yeah, a happier team' added after initial five benefits, suggesting this outcome is valued but not always consciously positioned as primary benefit.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Trusted Advisor Continuity",
+      "description": "'In some ways, I think it's no different than coming right out of college into a public accounting firm. I was still working with business owners in a much more specialized capacity, but I was still advising, and I was acting as a trusted advisor.' Career consistency in advisory role.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Unconscious Career Choice",
+      "description": "'I don't even know that it was conscious' about choosing accounting, suggesting career evolution happened organically rather than through strategic planning.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Logic and Symmetry Appeal",
+      "description": "'Probably the symmetry of dividends equalling credits and the logic of it. So, I got it.' Attraction to systematic, logical frameworks that have clear rules and balance.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Practical Field Selection",
+      "description": "'Probably at the time, I knew it was a very solid field to go into.' Career choice influenced by stability and security considerations alongside intellectual appeal.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Six-Benefit Value Proposition",
+      "description": "Deliver financial clarity, owner advisory support, execution management, profitability improvement, accountability enhancement, and team happiness as comprehensive business value.",
+      "context": "Business consulting where multiple stakeholder benefits need to be articulated clearly for different audiences (owners, employees, prospects)."
+    },
+    {
+      "name": "Organic Career Evolution",
+      "description": "Allow career development to happen through natural attraction to logical systems and advisory relationships rather than forcing strategic career planning.",
+      "context": "Professional development where authentic interests and natural abilities guide career direction more effectively than forced planning."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Six Core Business Benefits",
+      "content": "Dan's value proposition includes five primary benefits: 'Financial clarity, sounding board for the owner, the person who ensures the execution of the owner's wishes, improved profitability, improved accountability.' He adds a sixth: 'a happier team' when prompted, noting 'That a big one.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:37:43"
+    },
+    {
+      "name": "Unconscious Accounting Attraction",
+      "content": "When asked what attracted him to accounting, Dan responds 'God I ask myself that every day... I don't even know that it was conscious.' He traces it to high school bookkeeping: 'Probably the symmetry of dividends equalling credits and the logic of it. So, I got it' plus knowing 'it was a very solid field to go into.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:39:36"
+    },
+    {
+      "name": "Trusted Advisor Continuity",
+      "content": "Dan sees his current work as continuous with his early career: 'in some ways, I think it's no different than coming right out of college into a public accounting firm. I was still working with business owners in a much more specialized capacity, but I was still advising, and I was acting as a trusted advisor.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:39:05"
+    }
+  ]
+}

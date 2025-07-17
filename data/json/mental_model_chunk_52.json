@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Human Connection as Consultant-Friend-Confidant",
+      "description": "The effectiveness comes from being 'both a consultant and a friend, to a degree, or a confidant' - combining professional expertise with personal relationship depth.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Focus and Clarity Over Clarity and Confidence",
+      "description": "'I talk a lot about focus and clarity more so than clarity and confidence.' The more established framework emphasizes cognitive clarity and attention management.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Medical Model of Stress as Framework",
+      "description": "References a 'medical model of stress' that he uses in presentations but doesn't often think about outside of presentation contexts.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Marketing Self-Awareness and Limitation",
+      "description": "'Part of, you know, me and why I'm such a horrible marketer' - only thinking about core frameworks during presentations rather than leveraging them for consistent marketing.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "frustration"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Presentation-Only Framework Activation",
+      "description": "Only consciously access and articulate core frameworks when creating presentations, missing opportunities to use them consistently in marketing and daily practice.",
+      "context": "Professional development where valuable intellectual frameworks remain underutilized due to lack of systematic application beyond formal presentation contexts."
+    },
+    {
+      "name": "Consultant-Confidant Role Integration",
+      "description": "Blend professional consulting expertise with personal relationship depth to provide both technical solutions and emotional support for difficult decisions.",
+      "context": "Professional services where technical competence alone is insufficient and clients need personal trust and emotional support to implement recommendations."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Focus and Clarity vs. Clarity and Confidence",
+      "content": "When asked if 'clarity and confidence' is language he's used before, Dan clarifies 'I don't know that I've used it in that connection. I talk a lot about focus and clarity more so than clarity and confidence.' He references a 'medical model of stress' that he uses in presentations but admits he's 'such a horrible marketer' because he only thinks about these frameworks when presenting.",
+      "source": "Interview Transcript",
+      "timestamp": "01:02:12"
+    },
+    {
+      "name": "Consultant-Friend-Confidant Recognition",
+      "content": "Mitch observes that Dan's effectiveness comes from being 'both a consultant and a friend, to a degree, or a confidant' - recognizing the human connection aspect as central to his consulting approach rather than purely technical expertise.",
+      "source": "Interview Transcript",
+      "timestamp": "01:01:39"
+    }
+  ]
+}

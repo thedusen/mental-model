@@ -1,0 +1,43 @@
+{
+  "principles": [
+    {
+      "name": "The Unexpected Call as Ultimate Validation",
+      "description": "What would be most missed in retirement is 'the unexpected phone call' - calls about deeply personal business decisions like divorce from business partners or firing someone for the first time.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Guidance Over Direction",
+      "description": "The value provided is 'not to tell them what to do, but to give them guidance so that they feel better and a little bit more confident about whatever it is, whatever that next step is.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Trusted Advisor for Life-Changing Moments",
+      "description": "Being the person someone calls for guidance on major life transitions - from business partnership divorces to first-time firings - represents the deepest level of professional trust and reliance.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Crisis Confidence Building",
+      "description": "Provide guidance during high-stakes personal and business decisions that helps people 'feel better and a little bit more confident' rather than dictating specific actions.",
+      "context": "Major business or personal transitions where decision-makers need emotional support and confidence-building rather than directive advice."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Unexpected Call Examples",
+      "content": "Dan describes receiving unexpected calls from business owners about deeply personal decisions: 'getting a divorce. About their business partner' and decisions about 'finally fire their first person.' These calls represent moments when people rely on him for guidance to feel 'better and a little bit more confident about whatever that next step is.'",
+      "source": "Interview Transcript",
+      "timestamp": "43:46"
+    },
+    {
+      "name": "What Would Be Most Missed",
+      "content": "When asked what he would miss most if he retired, Dan immediately responds 'The unexpected phone call' - indicating that spontaneous moments of being needed for major life and business decisions represent the core value and satisfaction of his work.",
+      "source": "Interview Transcript",
+      "timestamp": "43:40"
+    }
+  ]
+}

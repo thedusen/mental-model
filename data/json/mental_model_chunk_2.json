@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Crisis Perspective Management",
+      "description": "When crisis hits, 'communicate through words or behavior that we're not looking at something that is the end of the world. It is important and it needs to be dealt with, but we're going to take a beat to make sure that we understand it and then move forward.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Collaborative Crisis Response",
+      "description": "Crisis flow state involves 'go into collaborator mode' where 'I'm not really head down trying to do it myself, but I'm trying to take in as much information as I can on the crisis.' For crises, 'it tends not to be directive.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "flow-state"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Crisis Information Gathering",
+      "description": "Immediately shift into 'collaborator mode' and rapidly solicit opinions from people and sources, prioritizing information intake over individual problem-solving.",
+      "context": "Acute crisis situations requiring immediate response, where collaborative intelligence gathering is more effective than individual analysis."
+    },
+    {
+      "name": "Calm-Then-Collaborate Sequence",
+      "description": "First establish perspective that the crisis is manageable, then 'take a beat to make sure that we understand it' before moving into collaborative information gathering mode.",
+      "context": "High-pressure situations where team emotional regulation is crucial for effective crisis response."
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Crisis Information Gathering",
+      "description": "Immediately shift into 'collaborator mode' and rapidly solicit opinions from people and sources, prioritizing information intake over individual problem-solving.",
+      "context": "Acute crisis situations requiring immediate response, where collaborative intelligence gathering is more effective than individual analysis."
+    },
+    {
+      "name": "Calm-Then-Collaborate Sequence",
+      "description": "First establish perspective that the crisis is manageable, then 'take a beat to make sure that we understand it' before moving into collaborative information gathering mode.",
+      "context": "High-pressure situations where team emotional regulation is crucial for effective crisis response."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Tuesday Crisis Response Pattern",
+      "content": "When a crisis happens on a Tuesday requiring immediate response, Dan's innate response is to first communicate that 'we're not looking at something that is the end of the world' while acknowledging its importance, then shift into collaborative mode to rapidly gather information rather than working alone.",
+      "source": "Interview Transcript",
+      "timestamp": "28:00"
+    }
+  ]
+}

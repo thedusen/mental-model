@@ -1,0 +1,42 @@
+{
+  "principles": [
+    {
+      "name": "Family as Perspective Transformer",
+      "description": "'Being a parent of three with now six grandchildren, it gives you a completely different perspective on things.' This family experience fundamentally alters how one approaches work and problems.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Grandchildren as Mental Recharge Vehicle",
+      "description": "'What the grandkids serve as in effect is they're like the recharge vehicle, mental. I can take on other people's problems all day long and help as much as I can and produce data or whatever they want. But then, at the end of the day, if you stop by and see some of the kids, you're forced to comment on how pretty the dresses that they're wearing today is an exact copy from some Disney movie.'",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Forced Attention Shift for Grounding",
+      "description": "'By moving all of your attention over there, even if it's for a short period of time, probably healthy, maybe keeps you more grounded.' The complete attention shift from business problems to simple, present-moment interactions with children provides psychological balance.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Total Attention Shifting",
+      "description": "Use interactions with grandchildren to completely shift attention from complex business problems to simple, present-moment experiences like commenting on Disney dresses.",
+      "context": "High-stress professional work that requires periodic mental breaks and grounding through completely different types of human interaction."
+    },
+    {
+      "name": "Family-Based Mental Recharging",
+      "description": "Leverage family relationships, particularly with grandchildren, as a systematic way to restore mental energy after taking on others' problems professionally.",
+      "context": "Consulting or advisory work where emotional and mental energy is constantly given to solve others' problems, requiring intentional restoration methods."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Grandchildren as Mental Recharge",
+      "content": "Dan describes his six grandchildren as 'the recharge vehicle, mental' where after taking on 'other people's problems all day long,' stopping by to see the kids forces him to focus on simple things like 'how pretty the dresses that they're wearing today is an exact copy from some Disney movie.' This complete attention shift 'probably healthy, maybe keeps you more grounded.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:31:12"
+    }
+  ]
+}

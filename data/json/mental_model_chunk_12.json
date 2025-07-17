@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Beneficial Dictatorship Leadership Model",
+      "description": "'My collaboration probably works best when I'm managing the rules because I have a very deep sense of fairness in it, and people respond to that.' This involves setting rules and managing participation to ensure equity.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "flow-state"
+    },
+    {
+      "name": "Deep Fairness as Authority Foundation",
+      "description": "Leadership authority derives from 'a very deep sense of fairness' where 'everyone has an equal contribution this day, even though we have different places in the business.' This fairness is actively managed through 'who I call on and who I pull stuff from.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Neutral Facilitation Across Conflicts",
+      "description": "'I'm not taking the side of sales or ops. I'm going to, we're going to be fair. We're going to be fair. You two have to work together' - maintaining neutrality while enforcing collaboration.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Rule-Based Collaborative Leadership",
+      "description": "Lead collaborative sessions by establishing and managing rules that ensure fairness and equal contribution, using authority to orchestrate rather than dominate discussions.",
+      "context": "Group planning sessions, team meetings, or consulting engagements where multiple stakeholders with different power levels need to collaborate effectively."
+    },
+    {
+      "name": "Equity Through Orchestration",
+      "description": "Manage who speaks when and how much through 'who I call on and who I pull stuff from' to ensure equal contribution despite different organizational positions.",
+      "context": "Situations where natural hierarchy or conflict would prevent equal participation without active facilitation."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Director of Consulting Team Peak Performance",
+      "content": "As Director of consulting with three more experienced consultants who had 'grown and sold a business for a bunch of money,' Dan achieved peak performance through collaboration where 'each of them, without any prompting, would just talk about how well our get-togethers went and how much work we got done together.'",
+      "source": "Interview Transcript",
+      "timestamp": "51:38"
+    },
+    {
+      "name": "Beneficial Dictatorship Definition",
+      "content": "Dan defines his peak collaborative performance as 'beneficial dictatorship' - managing planning sessions or consultant meetings by setting and managing rules based on 'a very deep sense of fairness.' This involves not taking sides between departments like sales and ops, ensuring 'everyone has an equal contribution this day' through orchestrating participation.",
+      "source": "Interview Transcript",
+      "timestamp": "53:29"
+    }
+  ]
+}

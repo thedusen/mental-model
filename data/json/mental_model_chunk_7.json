@@ -1,0 +1,36 @@
+{
+  "principles": [
+    {
+      "name": "Knowledge Seeking Time Distortion",
+      "description": "'I will tend to lose track of time when I'm seeking knowledge, maybe a little bit too much time on that podcast or reading an article or a book or something like that. I don't balance that time very well.'",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Gap-Listening for Conversation Extension",
+      "description": "The most energizing work is 'learning about anybody's business. Anybody's business. Because all I'm listening for are gaps. Not to. Not to sell something. But I'm listening for gap to further the conversation.'",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "flow-state"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Business Gap Detection",
+      "description": "Actively listen for gaps in any business while learning about it, with the specific intent to 'further the conversation' rather than to sell or exploit the gaps.",
+      "context": "Business conversations, consultations, or learning scenarios where understanding business operations and identifying improvement opportunities drives engagement."
+    },
+    {
+      "name": "Knowledge Consumption Immersion",
+      "description": "Lose track of time when consuming knowledge through podcasts, articles, or books, often to the point of poor time balance.",
+      "context": "Personal learning time where curiosity-driven exploration takes precedence over structured time management."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Universal Business Learning Energy",
+      "content": "When asked about what most energizes him in work, Dan identifies 'learning about anybody's business. Anybody's business' as the source of flow state. His focus is on 'listening for gaps' with the intent to 'further the conversation' rather than to sell something, indicating genuine curiosity about business operations and improvement opportunities.",
+      "source": "Interview Transcript",
+      "timestamp": "40:17"
+    }
+  ]
+}

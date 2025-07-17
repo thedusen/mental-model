@@ -1,0 +1,36 @@
+{
+  "principles": [
+    {
+      "name": "Flow Through Environmental Preparation",
+      "description": "Flow states emerge when 'prior actions have basically minimized disruption, and everyone around me knows what they need to do.' The expert creates conditions where they can operate in a supporting role while maintaining decision authority.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "flow-state"
+    },
+    {
+      "name": "Anticipatory Leadership",
+      "description": "Effective leadership involves 'thinking ahead on what procurement needs were' and positioning team members (like hiring a sales assistant a year before) to step into roles when needed.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Disruption Minimization Setup",
+      "description": "Create environmental conditions where potential disruptions are anticipated and mitigated through advance preparation, allowing focus to shift to core execution.",
+      "context": "Leadership situations requiring sustained performance, particularly in manufacturing or operational environments where multiple variables need coordination."
+    },
+    {
+      "name": "Supporting Leader Role",
+      "description": "Position yourself as both the decision-maker and supporter of your team, where 'my job ought to be a supporting role while still needing to be the person to call the shots.'",
+      "context": "When teams are properly prepared and know their roles, allowing the leader to focus on strategic decisions rather than tactical management."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Manufacturing Facility Summer 2012 Flow State",
+      "content": "In summer 2012, after losing top sales for eight years, Dan achieved a flow state when multiple preparation elements aligned: a sales assistant hired the previous year stepped in, procurement needs were anticipated, and family relationships were stable. This created conditions where disruption was minimized and everyone knew their roles.",
+      "source": "Interview Transcript",
+      "timestamp": "25:11"
+    }
+  ]
+}

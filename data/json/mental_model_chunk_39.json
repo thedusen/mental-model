@@ -1,0 +1,59 @@
+{
+  "principles": [
+    {
+      "name": "Repetition as Critical Thinking Reinforcement",
+      "description": "'One of the tools that I use very consciously is repetition... I'm pretty sure the next time that issue comes around, they're not going to remember... So I keep coming back and saying, \"Okay, now, remember what we talked about last week?\"'",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Critical Thinking Limitation Recognition",
+      "description": "'I can't turn someone into a strong critical thinker.' Acknowledging the fundamental limitation that critical thinking ability has natural boundaries that coaching cannot overcome.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Process Breakdown with Check-ins",
+      "description": "'Break it up into as many parts as you can and put in some check-in points along the way to where you're literally just checking their thinking... Like, stop. Don't do this until you've checked with me.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Intuitive Challenge with Fact Request",
+      "description": "'That doesn't feel right, and here's why it doesn't feel right. So, if you have some facts that will change my mind, I'm very open to it, but until then, I'm not there... What can you do to bring me some facts to help me understand where you are?'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Conscious Repetition for Pattern Building",
+      "description": "Deliberately repeat important thinking patterns and conclusions to help people remember and apply them to similar future situations.",
+      "context": "Working with team members who struggle to transfer learning from one situation to similar situations without explicit reinforcement."
+    },
+    {
+      "name": "Staged Critical Thinking Support",
+      "description": "Break complex decisions into smaller parts with check-in points, allowing guided thinking without taking over the domain expertise role.",
+      "context": "Situations where you need to improve someone's thinking process but cannot directly solve their technical problems due to lack of domain knowledge."
+    },
+    {
+      "name": "Intuitive Challenge with Evidence Requirement",
+      "description": "Use intuitive sense that something 'doesn't feel right' to challenge thinking, then require the person to provide facts that address the concern.",
+      "context": "Coaching situations where you sense flawed reasoning but cannot directly identify the technical errors due to domain limitations."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Repetition for Critical Thinking Reinforcement",
+      "content": "Dan uses 'repetition' consciously because when people reach conclusions through guided thinking, 'the next time that issue comes around, they're not going to remember... They're not going to go back and connect the dots again.' So he keeps 'coming back and saying, \"Okay, now, remember what we talked about last week?\"'",
+      "source": "Interview Transcript",
+      "timestamp": "26:28"
+    },
+    {
+      "name": "Intuitive Challenge Method",
+      "content": "When working with poor critical thinkers in domains where he lacks expertise, Dan says 'that doesn't feel right, and here's why it doesn't feel right. So, if you have some facts that will change my mind, I'm very open to it, but until then, I'm not there, so we can't move forward.' He pushes responsibility back: 'What can you do to bring me some facts to help me understand where you are?'",
+      "source": "Interview Transcript",
+      "timestamp": "29:37"
+    }
+  ]
+}

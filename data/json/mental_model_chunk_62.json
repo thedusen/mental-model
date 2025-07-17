@@ -1,0 +1,65 @@
+{
+  "principles": [
+    {
+      "name": "Owner as Own Roadblock Recognition",
+      "description": "'She remains the roadblock two months later, even giving stuff to me that I should be doing. So she just puts it off, puts it off, puts it off.' Understanding that owners often prevent their own progress despite hiring help.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Urgent vs. Important Distinction",
+      "description": "'Some of which might be urgent, most are not. They just happen to be weighing on her mind and probably represent some future path to revenue, some extremely undefined path to future revenue.' Mental burden doesn't equal actual priority.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "True Priorities vs. Revenue Impact",
+      "description": "'I'm just listening for what the true priorities are, not necessarily based on revenue impact but based on what it's going to take to get her working on the right things to get her out of the mud.' Priority assessment based on operational effectiveness rather than revenue potential.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Self-Discovery Through Questioning",
+      "description": "'I just start asking questions about each of those so-called priorities. I try to let her talk it through so that she realizes that some of them aren't priorities.' Facilitation over direction for genuine understanding.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Time Freedom as Priority Test",
+      "description": "'What if this week we did nothing more than number two and number three? What impact would that have?' Using time liberation as a metric for identifying true priorities that enable higher-value work.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Owner Roadblock Diagnosis and Resolution",
+      "description": "Identify when owners themselves are preventing progress through inability to delegate or prioritize, then use questioning to help them recognize this pattern.",
+      "context": "Business consulting where owners hire help but continue to bottleneck progress through their own behaviors and decision-making patterns."
+    },
+    {
+      "name": "Priority Clarification Through Impact Testing",
+      "description": "Test claimed priorities by exploring their impact on time freedom and ability to focus on high-value activities rather than just revenue potential.",
+      "context": "Strategic planning situations where multiple competing priorities need to be evaluated based on their systemic impact rather than just financial metrics."
+    },
+    {
+      "name": "Socratic Priority Discovery",
+      "description": "Use questioning to guide owners through their own priority list, letting them discover which items aren't actually priorities through their own analysis.",
+      "context": "Coaching situations where self-discovery creates stronger buy-in than imposed priorities or external analysis."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Shiny Object Owner Roadblock Example",
+      "content": "Dan worked with an owner who 'loves to chase shiny red objects' and 'remains the roadblock two months later' despite hiring help. When she presented a laundry list of 'fires that have to be put out,' he listened for 'what the true priorities are, not necessarily based on revenue impact but based on what it's going to take to get her working on the right things to get her out of the mud.'",
+      "source": "Interview Transcript",
+      "timestamp": "07:57"
+    },
+    {
+      "name": "Time Freedom Priority Test",
+      "content": "Dan used a specific test: 'what if this week we did nothing more than number two and number three? What impact would that have?' When she said it 'would free up a lot of time long-term,' he reframed: 'is that really our priority to get you to do what you're best at versus all the stuff that you're doing right now? She got it.'",
+      "source": "Interview Transcript",
+      "timestamp": "07:57"
+    }
+  ]
+}

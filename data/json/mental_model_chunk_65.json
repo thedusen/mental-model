@@ -1,0 +1,59 @@
+{
+  "principles": [
+    {
+      "name": "Financial Verification as Trust Baseline",
+      "description": "'What the owner is saying isn't backed up by the financial results that I'm seeing. So, there's a gap... at the beginning of any relationship, I don't accept very much of what they say until I can verify it on my own.' Independent verification as foundation for trust and understanding.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Uncertainty Tolerance with Trauma Boundary",
+      "description": "'I guess I'm okay with the uncertainty as long as it's not creating some major business trauma.' Comfortable operating in ambiguous situations unless they threaten business stability.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Internalization and Conversation Weaving",
+      "description": "'I think I just internalize that uncertainty and weave it into conversations with everyone, often the owner, just to get their take on things.' Using ongoing dialogue to gradually resolve uncertainty rather than forcing immediate clarity.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Multi-Perspective Verification Process",
+      "description": "'Whenever I get something verified, it's only after having had different conversations with different people.' Truth emerges through triangulation across multiple sources rather than single verification.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Uncertainty Internalization and Gradual Resolution",
+      "description": "Accept and internalize uncertainty when it doesn't threaten business stability, using ongoing conversations with multiple people to gradually build understanding.",
+      "context": "Complex organizational situations where immediate clarity isn't available and forcing quick resolution could be counterproductive."
+    },
+    {
+      "name": "Multi-Source Triangulation for Truth",
+      "description": "Verify information and resolve uncertainty through conversations with different people rather than relying on single sources or formal verification methods.",
+      "context": "Business consulting where understanding requires combining perspectives from owners, employees, and stakeholders who may have different views of reality."
+    },
+    {
+      "name": "Trauma-Threshold Uncertainty Management",
+      "description": "Operate comfortably with uncertainty unless it creates 'major business trauma,' using this threshold to determine when uncertainty needs immediate resolution.",
+      "context": "Advisory roles where some ambiguity is normal but certain types of uncertainty could threaten business operations or relationships."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Financial Gap Uncertainty",
+      "content": "Dan describes uncertainty when 'what the owner is saying isn't backed up by the financial results that I'm seeing. So, there's a gap.' He doesn't 'accept very much of what they say until I can verify it on my own' at the beginning of relationships.",
+      "source": "Interview Transcript",
+      "timestamp": "17:26"
+    },
+    {
+      "name": "Uncertainty Tolerance and Resolution Process",
+      "content": "For non-verifiable uncertainty, Dan is 'okay with the uncertainty as long as it's not creating some major business trauma.' His approach: 'I think I just internalize that uncertainty and weave it into conversations with everyone... whenever I get something verified, it's only after having had different conversations with different people.'",
+      "source": "Interview Transcript",
+      "timestamp": "18:40"
+    }
+  ]
+}

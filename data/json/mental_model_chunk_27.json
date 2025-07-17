@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Family Over Career Priority Decision",
+      "description": "'I was clearly putting the family ahead of my career. What I should just say is what I thought was best for the family.' This represents a fundamental values-based decision that shaped future operating principles.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Big Company Breathlessness Recognition",
+      "description": "'I'd been there nine years, and I was breathless. So, I turned down other opportunities because my whole family was here' - recognizing when career progression conflicts with personal well-being and family priorities.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "draining"
+    },
+    {
+      "name": "Long-term Thinking Over Short-term Gain",
+      "description": "'I thought in the long run, the kids would thrive back here or do better' - prioritizing long-term family outcomes over immediate career advancement opportunities.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Finality and Root-Setting",
+      "description": "'Moving back felt final, meaning I never put down roots in Columbus. So, that's a very local feeling.' The decision represented commitment to place and community rather than career mobility.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Values-Based Career Decision Making",
+      "description": "Make major career decisions based on family and personal values rather than purely professional advancement opportunities.",
+      "context": "Career transition points where professional opportunities conflict with personal or family priorities."
+    },
+    {
+      "name": "Community Root-Setting",
+      "description": "Choose to establish deep community roots rather than remaining mobile for career advancement, accepting the finality of geographic commitment.",
+      "context": "Mid-career decisions where establishing stability and community connection becomes more important than career flexibility."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Cincinnati Return Decision",
+      "content": "Dan left The Limited after nine years, feeling 'breathless' at the 'big, dumb company.' He was 'clearly putting the family ahead of my career' by moving back to Cincinnati where 'my whole family was here.' He believed 'in the long run, the kids would thrive back here or do better' and it 'turned out to be just absolutely the right decision.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:36:00"
+    },
+    {
+      "name": "Finality of Root-Setting",
+      "content": "The move back to Cincinnati 'felt final, meaning I never put down roots in Columbus.' This represents a commitment to place and community over career mobility, which Dan describes as 'a very local feeling' but 'kind of important.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:38:05"
+    }
+  ]
+}

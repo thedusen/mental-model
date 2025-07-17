@@ -1,0 +1,65 @@
+{
+  "principles": [
+    {
+      "name": "Months-Long Process Acceptance",
+      "description": "'I don't think I do it any differently than any other issue because I'm not looking for the quick fix anyway. If most of the issues are people-related, none of that gets fixed quickly anyway. It's months.' Inherent expectation that meaningful change takes extended time.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Chipping Away Over Solution Delivery",
+      "description": "'The process is much more about chipping away than just bringing a solution and saying, \"Here you go. This will solve all of your problems.\"' Incremental progress methodology rather than comprehensive solutions.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Employee Trust Through One-on-One Engagement",
+      "description": "'That involves establishing trust with the employees, which means dealing with them one on one without the owner present, and in doing so, acknowledging some of the inconsistencies that I see in the business.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Balanced Acknowledgment and Defense",
+      "description": "'When they just start bitching, I do come back and I jump back and forth between acknowledging some of the inconsistencies and defending the owner... Reminding them that the owner is the one who has risk.' Maintaining neutrality while educating about different perspectives.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Owner Description Accuracy Skepticism",
+      "description": "'Pulling in the description I heard from the owner, which is rarely accurate, but I'll ask questions to try to verify that.' Default assumption that owner descriptions need verification through employee perspectives.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Long-Term Uncertainty Navigation Through Trust Building",
+      "description": "Accept that complex people problems require months to resolve and focus on building trust with employees through one-on-one conversations that acknowledge inconsistencies while defending owner perspectives.",
+      "context": "Organizational change where results won't be visible for months and understanding must be built gradually through relationship development."
+    },
+    {
+      "name": "Balanced Perspective Facilitation",
+      "description": "Acknowledge employee complaints about inconsistencies while defending owner decisions by explaining risk and responsibility differences, maintaining neutrality while educating both sides.",
+      "context": "Employee relations where complaints about leadership need to be heard and validated while also helping employees understand owner perspectives."
+    },
+    {
+      "name": "Incremental Information Gathering",
+      "description": "Gradually learn about jobs and people through ongoing conversations that verify or contradict owner descriptions, building understanding through accumulated interactions rather than formal assessment.",
+      "context": "Organizational diagnosis where formal processes may not reveal actual dynamics and informal relationship-building provides better insight."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Long-Term Uncertainty Process",
+      "content": "For problems with no clear path to certainty and months before results, Dan doesn't approach it differently: 'I'm not looking for the quick fix anyway. If most of the issues are people-related, none of that gets fixed quickly anyway. It's months... The process is much more about chipping away than just bringing a solution.'",
+      "source": "Interview Transcript",
+      "timestamp": "20:40"
+    },
+    {
+      "name": "Employee Trust and Balanced Perspective Process",
+      "content": "Dan builds understanding through 'establishing trust with the employees... dealing with them one on one without the owner present, and in doing so, acknowledging some of the inconsistencies.' When employees complain, he 'jump back and forth between acknowledging some of the inconsistencies and defending the owner... Reminding them that the owner is the one who has risk.'",
+      "source": "Interview Transcript",
+      "timestamp": "20:40"
+    }
+  ]
+}

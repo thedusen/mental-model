@@ -1,0 +1,42 @@
+{
+  "principles": [
+    {
+      "name": "Professionalism as Dedication, Not Rigidity",
+      "description": "'The importance of moving your company toward professionalism and not just... I don't mean rigidity either, but I mean professionalism in the sense of a dedication that it's worth it, but it's really freaking heart. That's why they are where they are.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Scalable Discipline Principles",
+      "description": "Large organizations succeed through 'discipline that was non-negotiable for them.' Small businesses can adopt this discipline even without the same resources: 'we can't do it. We don't have the resources that they do. But they knew their numbers and they knew this and they knew that.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Decentralized Success Model Translation",
+      "description": "At The Limited, 'individual divisions just running their own business' provides a model for small businesses: 'I know how this $500 million business ran. They ran their own.' This shows scalable principles regardless of size.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Professional Discipline Translation",
+      "description": "Extract the discipline and knowledge management practices from large organizations and adapt them for small business contexts, focusing on core principles rather than resource-dependent systems.",
+      "context": "Small business consulting where introducing enterprise-level discipline around metrics, processes, and accountability can drive significant improvement."
+    },
+    {
+      "name": "Division-Level Business Model Application",
+      "description": "Use examples of how large company divisions operate independently to show small businesses that sophisticated business practices are achievable at their scale.",
+      "context": "Situations where small business owners believe professional management practices are only for large companies."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Limited Division Model for Small Business",
+      "content": "Dan uses his experience at The Limited, where 'individual divisions just running their own business' in a decentralized structure, to help small businesses. He tells them 'I know how this $500 million business ran. They ran their own. Yeah, we can't do it. We don't have the resources that they do. But they knew their numbers and they knew this and they knew that.' The key is adopting 'discipline that was non-negotiable for them.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:22:10"
+    }
+  ]
+}

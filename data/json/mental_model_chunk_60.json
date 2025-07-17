@@ -1,0 +1,65 @@
+{
+  "principles": [
+    {
+      "name": "Passion for Problem-Based Helping",
+      "description": "'I just help someone has a problem... When we're finished talking about it or I go off and do something and come back to them, they feel better for it. It's not about giving an answer.' Passion centered on providing relief and improvement rather than solution delivery.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Teaching as Career Analog",
+      "description": "'The closest thing that comes to mind is teaching... you're not helping with a current problem but you're taking all of your experience and helping them to understand the problem and maybe avoid them down the road.' Similar helping function with prevention focus.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Limited Current Interests",
+      "description": "'Being a right-wing reactionary is really important to me on a daily basis... My interest, even in sports, is waning a little bit. Outside of family, I read and stuff... Don't have any other interests.' Narrow range of current passions beyond work and family.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "draining"
+    },
+    {
+      "name": "Evolution from Giving Answers to Leading to Solutions",
+      "description": "'Earlier... I thought help meant giving answers. Help really means leading people to a better solution.' Fundamental shift in helping philosophy from directive to facilitative approach.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Problem Relief Over Solution Provision",
+      "description": "Focus on helping people feel better about their problems rather than necessarily providing definitive answers or solutions.",
+      "context": "Consulting or advisory work where emotional relief and clarity may be more valuable than specific technical solutions."
+    },
+    {
+      "name": "Preventive Teaching Approach",
+      "description": "Use experience to help people understand and potentially avoid future problems rather than just solving current issues.",
+      "context": "Mentoring or educational roles where long-term development is more important than immediate problem-solving."
+    },
+    {
+      "name": "Helping Philosophy Evolution",
+      "description": "Transition from directive advice-giving to facilitative guidance that leads people to discover their own better solutions.",
+      "context": "Professional development where effectiveness requires moving from expert-driven to client-driven problem-solving approaches."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Current Passion Definition",
+      "content": "When asked about passion for his current work, Dan explains: 'I just help someone has a problem... When we're finished talking about it or I go off and do something and come back to them, they feel better for it. It's not about giving an answer.' The satisfaction comes from providing relief rather than solutions.",
+      "source": "Interview Transcript",
+      "timestamp": "01:45:32"
+    },
+    {
+      "name": "Teaching as Career Analog",
+      "content": "When asked about applying his skills to another career, Dan identifies teaching: 'you're not helping with a current problem but you're taking all of your experience and helping them to understand the problem and maybe avoid them down the road.' This represents the same helping function with a prevention focus.",
+      "source": "Interview Transcript",
+      "timestamp": "01:46:33"
+    },
+    {
+      "name": "Help Philosophy Evolution",
+      "content": "Dan describes a fundamental shift in his understanding: 'Earlier... I thought help meant giving answers. Help really means leading people to a better solution.' This represents evolution from directive to facilitative helping approach.",
+      "source": "Interview Transcript",
+      "timestamp": "01:48:43"
+    }
+  ]
+}

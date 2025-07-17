@@ -1,0 +1,60 @@
+{
+  "principles": [
+    {
+      "name": "Good People Over Perfect Fit",
+      "description": "'Everyone likes to run around saying, right people on the bus in the right seats. What has changed? A lot for me is you just need good people and give them direction. You don't need to spend as much time as you do trying to make sure there's an exact fit.'",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Environment-Driven Self-Management",
+      "description": "'The right person in the right environment becomes self-managing over time if you allow it' - good people naturally adapt and become autonomous when given proper conditions.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Value-Based vs. Task-Based Recruitment",
+      "description": "'Every single time, I would throw out the tasks and I would write about the importance or the value because that's what will attract people.' Focus on meaning rather than specific duties in job descriptions.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Critical Thinking as Universal Currency",
+      "description": "'Critical thinking is everything. Business acumen is really important. If you get those right, you can put that person in almost any role and they'll do well.' These core capabilities matter more than specific skills.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Skills Tests Skepticism",
+      "description": "'When I come across someone who relies on a bunch of skills tests to decide whether they want to hire the right person, I don't think that they've changed their odds of success at all.' Technical assessments don't predict success.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Core Capability Hiring",
+      "description": "Hire for critical thinking and business acumen rather than exact role fit, trusting that good people will adapt and contribute quickly across various roles.",
+      "context": "Hiring decisions where flexibility and growth potential matter more than immediate technical skill match."
+    },
+    {
+      "name": "First Conversation Critical Thinking Assessment",
+      "description": "Evaluate critical thinking capability during initial conversations rather than relying on formal testing or skills assessments.",
+      "context": "Hiring processes where identifying thinking quality is more important than measuring specific competencies."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Job Description Philosophy Evolution",
+      "content": "Dan's approach to hiring evolved from trying to find 'right people on the bus in the right seats' to believing 'you just need good people and give them direction.' When reviewing job descriptions 15-20 years ago, he would 'throw out the tasks and I would write about the importance or the value because that's what will attract people.'",
+      "source": "Interview Transcript",
+      "timestamp": "15:37"
+    },
+    {
+      "name": "Critical Thinking Discovery and Application",
+      "content": "Dan discovered the importance of critical thinking '10 or 15 years ago' and now believes 'critical thinking is everything. Business acumen is really important. If you get those right, you can put that person in almost any role and they'll do well.' He evaluates 'critical thinking in our first conversation' rather than using skills tests.",
+      "source": "Interview Transcript",
+      "timestamp": "16:59"
+    }
+  ]
+}

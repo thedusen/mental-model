@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Clarity Before Confidence Sequence",
+      "description": "'I give the owner confidence and clarity... It's strike that clarity then confidence. They have to have the clarity first of why they're doing it, because if there's this much hesitation, it gets blown up and whatever change that we agreed needs to happen.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Evidence Confirmation of Known Problems",
+      "description": "The investigation with phone logs and tracking 'was just confirming what he already knew' - providing data to support decisions they already sense need to be made.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Process Over Outcome Confidence Building",
+      "description": "'He knew he had to do it, he wanted to do it, but he didn't know how, which really was just saying I'm still nervous. Even though I have the clarity, I don't have the confidence yet.' Confidence comes from understanding the process, not just the need.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "90-Minute Confidence Investment",
+      "description": "Spending 90 minutes on vacation to talk through the process until the owner was ready to act, resulting in 'He has not looked back since. He has felt no regret.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Clarity-First Decision Support",
+      "description": "Establish clear understanding of why a decision is necessary before building confidence in how to execute it, preventing hesitation from derailing implementation.",
+      "context": "Difficult business decisions where owners intellectually understand the need but lack emotional readiness to act."
+    },
+    {
+      "name": "Extended Confidence Building Conversations",
+      "description": "Invest significant time in process-focused conversations that build implementation confidence, even during personal time, to ensure decisive action.",
+      "context": "Critical business decisions where the cost of delayed or incomplete action exceeds the time investment in thorough preparation."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Customer Service Employee Termination Support",
+      "content": "Dan worked with a small company owner who struggled to fire an evasive customer service employee who avoided phone calls and worked remotely while 'riding his bike.' Despite evidence from phone logs and tracking, the owner 'knew he had to do it, he wanted to do it, but he didn't know how.' Dan spent '90 minutes' on vacation talking through the process until the owner had both clarity and confidence to act.",
+      "source": "Interview Transcript",
+      "timestamp": "58:35"
+    },
+    {
+      "name": "Clarity Before Confidence Process",
+      "content": "Dan's unique approach is giving owners 'confidence and clarity... It's strike that clarity then confidence. They have to have the clarity first of why they're doing it, because if there's this much hesitation, it gets blown up.' The sequence ensures that understanding the rationale precedes building courage to act.",
+      "source": "Interview Transcript",
+      "timestamp": "58:00"
+    }
+  ]
+}

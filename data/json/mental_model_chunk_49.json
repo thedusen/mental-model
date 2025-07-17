@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Implementation Experience Over Theory",
+      "description": "'Because I've tried to do it within an organization instead of just talking about it.' Differentiation comes from having actually executed profit improvement strategies rather than just advising on them.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Context Understanding and Impact Assessment",
+      "description": "'I think I can give context better than most, and I think I can understand the impact on the business better than most. That's still a function of experience.' Context and impact understanding as core differentiators.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Interconnected Systems Thinking",
+      "description": "'Nothing's in isolation. Raising prices is a lot more than raising prices. It impacts others in the organization as well as the customer.' Rejecting simple cause-and-effect thinking in favor of systems impact analysis.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Implementation Complexity Recognition",
+      "description": "'Giving them context in that here is what it could mean and here is how you can go about it so that they understand the pluses and minuses versus... Look, if you increase prices 10%, you're going to make X. Well, it's just not that easy.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Systems Impact Analysis",
+      "description": "Analyze profit improvement strategies through their interconnected effects on organization, customers, and implementation challenges rather than simple financial calculations.",
+      "context": "Business consulting where recommendations must account for real-world implementation complexities and organizational dynamics."
+    },
+    {
+      "name": "Experience-Based Context Provision",
+      "description": "Leverage direct implementation experience to provide realistic context about what profit strategies actually mean in practice, including challenges and unintended consequences.",
+      "context": "Consulting situations where clients need to understand not just what to do but how to do it and what to expect during implementation."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Implementation Experience as Differentiator",
+      "content": "When asked what makes him different from other profit consultants, Dan emphasizes 'Because I've tried to do it within an organization instead of just talking about it.' He believes he can 'give context better than most, and I think I can understand the impact on the business better than most' due to actual implementation experience.",
+      "source": "Interview Transcript",
+      "timestamp": "53:57"
+    },
+    {
+      "name": "Price Increase Complexity Example",
+      "content": "Dan illustrates systems thinking with pricing: 'Nothing's in isolation. Raising prices is a lot more than raising prices. It impacts others in the organization as well as the customer.' He provides context about 'what it could mean and here is how you can go about it so that they understand the pluses and minuses versus... Look, if you increase prices 10%, you're going to make X. Well, it's just not that easy.'",
+      "source": "Interview Transcript",
+      "timestamp": "55:08"
+    }
+  ]
+}

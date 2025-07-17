@@ -1,0 +1,78 @@
+{
+  "principles": [
+    {
+      "name": "Creative Owners Focus",
+      "description": "'I help creative owners get back to doing what they were doing that made the business great.' Core mission focused on enabling founders to return to their strengths.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Switzerland Neutrality Model",
+      "description": "'I am Switzerland if the employee... I freely admit I am being paid by the owner, but I work for the company, and I'm going to do the... I'm going to work in the best interest of the company, not the owner.' Neutral position between owner and employees.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Leadership Term Rejection",
+      "description": "'I won't say leadership because I don't think that word means anything anymore. It's just squishy, and people just run around saying that they're practicing leadership.' Preferring concrete terms like accountability and responsibility.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Accountability and Responsibility Over Leadership",
+      "description": "'I help people become more accountable, and I help them take on more responsibility... I work to figure out who owns what in the organization and who is capable of taking on more and helping them get it.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Early Passion for Influence and Events",
+      "description": "'The passion was to be involved in influence events in effect. I don't know if it was to lead or not... I had a passion for being class president.' Early drive to shape outcomes and be central to important activities.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Partner Role Model Disillusionment",
+      "description": "'Very few of the partners served as very good role models for me... they were rich, but I don't know that they were leading lives that really interested me.' Success without lifestyle appeal led to career redirection.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Multi-Role Capability Deployment",
+      "description": "Function as CFO, warehouse manager, treasurer, accountant, advisor, board member, integrator, strategist, or CEO depending on business needs.",
+      "context": "Small business consulting where role flexibility allows filling multiple organizational gaps as needed."
+    },
+    {
+      "name": "Company-First Allegiance Declaration",
+      "description": "Explicitly state loyalty to company interests rather than owner preferences, creating trust with employees while maintaining owner relationship.",
+      "context": "Organizational consulting where employee buy-in is crucial but owner funding creates potential conflict of interest."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Comprehensive Expertise Inventory",
+      "content": "Dan's mini-expertise areas include: 'Financial analysis, accounting, bookkeeping, sales tax planning, relationship building, pricing, margin analysis, inventory analysis, vendor negotiation... delegation model... clarifying roles and responsibilities. Being a sounding board and being willing to tell the owner what they want to hear, whether they want to hear it or not.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:31:25"
+    },
+    {
+      "name": "Switzerland Neutrality Metaphor",
+      "content": "Dan describes his role as 'Switzerland' to employees: 'I freely admit I am being paid by the owner, but I work for the company, and I'm going to work in the best interest of the company, not the owner, understanding that if I do something that is not in the best interest of the owner, I'll get fired.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:33:54"
+    },
+    {
+      "name": "Early Passion for Influence",
+      "content": "Dan traces his motivation back to high school: 'The passion was to be involved in influence events in effect. I don't know if it was to lead or not... I had a passion for being class president.' Early career passion was 'money and the prestige' with 'the goal was partner.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:40:38"
+    },
+    {
+      "name": "Partner Role Model Disillusionment",
+      "content": "After having children, Dan realized 'very few of the partners served as very good role models for me... they were rich, but I don't know that they were leading lives that really interested me.' This led him to leave the partnership track.",
+      "source": "Interview Transcript",
+      "timestamp": "01:43:39"
+    }
+  ]
+}

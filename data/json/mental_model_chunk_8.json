@@ -1,0 +1,42 @@
+{
+  "principles": [
+    {
+      "name": "Empathetic Experience Recognition",
+      "description": "'I know that there are things that they wish were better in some way, and I've... Chances are, I've experienced some of what they're feeling.' This creates the foundation for meaningful help.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Solution-Oriented vs Answer-Oriented Help",
+      "description": "'What energizes me is not to give them an answer, but to give them a possible solution.' This distinction between definitive answers and exploratory possibilities drives engagement.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Reliance as Validation",
+      "description": "'What I really want... But I want them to rely on me.' This desire for reliance serves as validation that 'my previous work has helped them. Chances are, they want more. It's not about whether they want more to pay more. They want more.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Shared Experience Bridge-Building",
+      "description": "Use personal experience of similar challenges to create empathetic connection and credibility when offering solutions to others' business problems.",
+      "context": "Consulting or advisory situations where trust-building through shared experience enhances solution acceptance."
+    },
+    {
+      "name": "Validation Through Dependency",
+      "description": "Seek validation of value through others' desire to rely on your help, measuring success by their continued need for your contributions rather than just payment.",
+      "context": "Professional relationships where ongoing reliance indicates genuine value creation and successful problem-solving."
+    }
+  ],
+  "examples": [
+    {
+      "name": "The Drive for Client Reliance",
+      "content": "When pressed about what emotionally drives his excitement in helping businesses, Dan reveals 'what I really want... But I want them to rely on me.' This reliance validates that 'my previous work has helped them' and indicates 'they want more' - not necessarily to pay more, but because they genuinely value the ongoing help.",
+      "source": "Interview Transcript",
+      "timestamp": "41:25"
+    }
+  ]
+}

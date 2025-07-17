@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Professional Circle Exposure as Learning Catalyst",
+      "description": "'The exposure of working with various attorneys in thirty different states... you just get to know them, and you go out to dinner and things like that. You just learn a lot, not about law and taxes, but in everything. You learn from them.' This broad professional exposure creates knowledge beyond core competencies.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Judgment Over Technical Skills Application",
+      "description": "At the Limited, 'being a CPA wasn't that important... It was more about just taking that. I was making a lot of their judgments on appeals and litigation and everything. So it was more about judgment than anything versus advising a client.'",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Big Company Perspective as Small Business Advantage",
+      "description": "'I can bring them a big company and big CPA firm perspective that they otherwise don't get.' The combination of large organization experience applied to small business contexts creates unique value.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Responsibility Progression Through Specialization",
+      "description": "Career progression from 'super specialist' at big CPA firm where 'I was a step removed from helping them' to Limited where 'I'm still a specialist, but I have greater responsibility.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Cross-Professional Learning Integration",
+      "description": "Actively absorb knowledge from diverse professional contacts beyond core technical areas, using social interactions to build broader perspective.",
+      "context": "Professional roles involving extensive interaction with experts from other fields, where relationship-building creates learning opportunities."
+    },
+    {
+      "name": "Large Organization Experience Translation",
+      "description": "Apply big company systems, perspectives, and judgment frameworks to small business contexts where such sophistication is typically unavailable.",
+      "context": "Consulting or advisory work with smaller organizations that lack access to enterprise-level thinking and processes."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Attorney Network Learning Experience",
+      "content": "At the Limited, Dan gained 'exposure of working with various attorneys in thirty different states' and learning from them during dinners and social interactions. He notes 'you just learn a lot, not about law and taxes, but in everything' and that 'most attorneys are huge history buffs' who know their local history extensively.",
+      "source": "Interview Transcript",
+      "timestamp": "01:20:09"
+    },
+    {
+      "name": "Big Company Perspective Advantage",
+      "content": "Dan's career progression from large CPA firm specialist to Limited corporate role to local CPA firm allows him to 'bring them a big company and big CPA firm perspective that they otherwise don't get' when working with small businesses.",
+      "source": "Interview Transcript",
+      "timestamp": "01:20:51"
+    }
+  ]
+}

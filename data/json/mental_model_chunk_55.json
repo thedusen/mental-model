@@ -1,0 +1,71 @@
+{
+  "principles": [
+    {
+      "name": "Two or Three Priorities Mental Framework",
+      "description": "'I don't have it mapped out, but I do have two or three priorities in my head at all times.' Operating with a small, manageable set of concurrent focus areas rather than detailed plans.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Financial Analysis as Starting Point Standard",
+      "description": "'I'm almost always in what is on the front of their mind at the beginning, it's my financial background. So I want to deliver for a couple of reasons. One, it's what I do. And two, it is their weakness.' Leveraging core strength to address client weakness consistently.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Gross Margin Concentration Insight",
+      "description": "'The first victory was explaining to the owner that 50% of his gross margin dollars come from only a third of his inventory.' Revealing hidden profit concentration patterns that owners don't see.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Cash Understanding as Primary Purpose",
+      "description": "'I always use it for the primary purpose, and that is to understand their cash. The ins and outs of cash because I have to be comfortable with it, and they have to be comfortable with it because some people may be running out of cash and not even know.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Net Income vs. Cash Mistake Recognition",
+      "description": "'Net income is the same as cash. That's the number one mistake nonfinancial people make, without a doubt.' Understanding the fundamental confusion between profit reporting and cash flow reality.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Financial Confidence Building Process",
+      "description": "Start with financial analysis to establish credibility while immediately addressing owner financial knowledge gaps without making them feel inadequate.",
+      "context": "Early consulting relationships where establishing expertise and trust while managing client ego around financial literacy is crucial."
+    },
+    {
+      "name": "Data Quality Assessment Before Analysis",
+      "description": "Look for trends and wide variations in financial accounts first 'to figure out whether I even have confidence in what I'm looking at' before drawing conclusions.",
+      "context": "Financial analysis where data reliability must be established before insights can be trusted or acted upon."
+    },
+    {
+      "name": "Hidden Profit Pattern Revelation",
+      "description": "Use financial analysis to reveal profit concentration patterns that owners don't recognize, like gross margin concentration in inventory segments.",
+      "context": "Business optimization where owners lack visibility into which aspects of their business actually drive profitability."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Two or Three Priorities Framework",
+      "content": "Dan operates with 'two or three priorities in my head at all times' rather than detailed maps. For a business targeting '$5 million of enterprise value,' his priorities are: optimize warehouse operations, better inventory control, and financial reporting improvement 'because there is none right now.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:12:24"
+    },
+    {
+      "name": "Gross Margin Concentration Discovery",
+      "content": "Dan's first victory was 'explaining to the owner that 50% of his gross margin dollars come from only a third of his inventory,' leading to the question 'Why are we carrying so much stuff that barely moves?' This represents his standard approach of starting with financial analysis.",
+      "source": "Interview Transcript",
+      "timestamp": "01:15:16"
+    },
+    {
+      "name": "Financial Ego Management",
+      "content": "Dan's key soft skill in financial analysis is 'not making them feel like an idiot.' He starts with 'It's okay that you don't understand this. That's why I'm here' because 'early on in almost every relationship, the owner is apologetic to me about their lack of financial knowledge, and I just have to put them at ease.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:22:08"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Authority Avoidance for Genuine Buy-In",
+      "description": "'I get through a little bit because of the authority conferred upon me, but that's not how I wanted it to happen.' Preferring genuine understanding over compliance through positional power.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Reframing from Obligation to Opportunity",
+      "description": "'Continuing to reframe it from this, \"This isn't what you have to do. This is what's right for the business.\" If you can save some time doing this, we can do this. This versus this is what you got to do because it's stupid.' Shifting from obligation/judgment to business value and opportunity.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Fear-Aware Solution Design",
+      "Description": "Understanding that the warehouse manager 'is actually a little afraid of' computer technology, requiring solutions that account for emotional comfort as well as efficiency.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Incremental Progress Over Perfection",
+      "description": "Moving from complex automation to 'more cut and paste' solutions that are 'simpler for him' rather than insisting on optimal technical solutions.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Continuous Reframing Until Acceptance",
+      "description": "Persistently reframe the same issue using different perspectives (business value, time savings, opportunity) until finding one that resonates with the person's motivations and comfort level.",
+      "context": "Change management situations where initial resistance requires finding alternative frames that align with the person's values and concerns."
+    },
+    {
+      "name": "Technology Fear Accommodation",
+      "Description": "Design solutions that work within a person's comfort zone with technology rather than pushing them toward optimal but intimidating solutions.",
+      "context": "Process improvement with employees who have limited technical skills or technology anxiety."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Warehouse Manager Order Process Reframing",
+      "content": "Dan worked with a warehouse manager who spends 'two hours every day' manually retyping customer information into FedEx because he's 'actually a little afraid of' computer technology. Instead of using authority or calling the process 'stupid,' Dan continuously reframed: 'This isn't what you have to do. This is what's right for the business. If you can save some time doing this, we can do this.' He adapted the solution to 'more cut and paste' to make it 'simpler for him.'",
+      "source": "Interview Transcript",
+      "timestamp": "09:04"
+    }
+  ]
+}

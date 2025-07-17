@@ -1,0 +1,42 @@
+{
+  "principles": [
+    {
+      "name": "Room Reading and Depth Calibration",
+      "description": "'First, it's reading the room, and if I sense tension, then I don't go deep as quickly. I tend to stay on the surface and ask really easy questions.' This requires having advance knowledge of where tensions exist.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "flow-state"
+    },
+    {
+      "name": "Stereotype Acknowledgment for Unity",
+      "description": "Address how different departments are 'stereotypically perceived' openly 'in front of everyone' to 'put everyone on the same level, that we are literally all in this together.' This involves speaking to how 'everyone else in the company is saying to them, even though I don't work there.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Sacred First-Time Moments",
+      "description": "Recognizing when groups are coming together 'for the first time they've ever done anything like that' or 'the first time they had really come together to talk about the future of the business' and treating these moments with appropriate significance.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Tension-Aware Pacing",
+      "description": "Adjust the depth and pace of discussion based on sensed tension - stay surface-level with easy questions when tension is high, go deeper when the group is ready.",
+      "context": "Group planning sessions or team meetings where interpersonal or interdepartmental tensions may exist."
+    },
+    {
+      "name": "Proactive Stereotype Surfacing",
+      "description": "Deliberately surface and acknowledge how different groups perceive each other stereotypically, addressing these perceptions openly to create equality and shared understanding.",
+      "context": "Cross-functional team sessions, particularly between traditionally conflicted departments like sales and operations."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Manufacturing Company Planning Session Flow",
+      "content": "Dan achieves flow state leading planning sessions for companies, often their first time coming together beyond holiday parties to discuss business future. He starts with strengths/weaknesses, reads the room for tension, and proactively addresses sales/operations stereotypes by acknowledging how each group is typically perceived, creating a foundation of 'we are literally all in this together.'",
+      "source": "Interview Transcript",
+      "timestamp": "34:46"
+    }
+  ]
+}

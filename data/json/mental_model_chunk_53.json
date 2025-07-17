@@ -1,0 +1,60 @@
+{
+  "principles": [
+    {
+      "name": "Strategic Planning as Hurdle Identification",
+      "description": "'The strategic planning session was not strategic planning. It was the identification of hurdles that are preventing us from moving forward. It was basically weaknesses.' Reframing strategic planning from visionary to problem-focused.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Implementation Failure Despite Enthusiasm",
+      "description": "'Most of those companies did not even take that day, even as they left feeling really pumped up. They still didn't do much with that information. They didn't fix what needed to be fixed.' Emotional engagement doesn't translate to sustained action.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    },
+    {
+      "name": "Tiny Steps with No Backward Movement",
+      "description": "'Any change at a small business is tiny steps. You just what you've got to do is just make sure none of those steps are backward. Sometimes it happens, but a small step forward is huge.' The focus is preventing regression while making minimal progress.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Shiny Object Syndrome as Implementation Killer",
+      "description": "'The mistake all the business owners make is they still go after the shiny red object because of everything it promises. That big marketing plan or that new marketing plan never gets fully implemented... that's why.' Large initiatives fail due to poor execution management.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    },
+    {
+      "name": "Reality vs. Marketing Sexiness",
+      "description": "'Anything can only be done in very small, incremental steps, the reason you don't read about that is from a marketing standpoint, that's not really very sexy, but it is reality. It is absolute reality.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Incremental Change Methodology",
+      "description": "Focus exclusively on tiny, manageable steps while preventing backward movement, building momentum gradually over years rather than pursuing dramatic changes.",
+      "context": "Small business change management where capacity for change is limited and execution challenges kill large initiatives."
+    },
+    {
+      "name": "Post-Planning Implementation Reality Check",
+      "description": "Recognize that planning sessions create enthusiasm but don't guarantee implementation, requiring systematic follow-through and process management.",
+      "context": "Strategic planning situations where the gap between planning excitement and execution reality needs to be managed proactively."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Nonprofit Consulting Failure Lessons",
+      "content": "Dan's work with nonprofits doing strategic planning and advisory boards taught him that 'most of those companies did not even take that day, even as they left feeling really pumped up. They still didn't do much with that information.' Even a year later, 'they'd still be talking about the same damn things.' This cemented his belief that 'any change at a small business is tiny steps' focused on preventing backward movement.",
+      "source": "Interview Transcript",
+      "timestamp": "01:04:37"
+    },
+    {
+      "name": "Shiny Object vs. Incremental Reality",
+      "content": "Dan learned that business owners 'go after the shiny red object because of everything it promises. That big marketing plan... never gets fully implemented' due to poor execution. His conclusion: 'anything can only be done in very small, incremental steps' which 'from a marketing standpoint, that's not really very sexy, but it is reality. It is absolute reality.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:04:37"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Unconscious Approachability as Core Identity",
+      "description": "Being described as 'very approachable' was a revelation - 'I had never thought about that before... I don't know that I had ever been actually described as very approachable. I don't know, that's always stuck with me.' This represents an unconscious core trait.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Innate Insight and Dot-Connection",
+      "description": "'I've always been insightful, and people just rely on that. They just rely on me to connect the dots for them.' This is presented as a fundamental, unchanging aspect of identity.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Loyalty Creation Under Adversity",
+      "description": "Ability to 'create an incredibly loyal group of people' even in hostile environments where 'all the parents invent reasons to hate you' demonstrates leadership under pressure.",
+      "category": "ENERGY PATTERNS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Unconscious Core Trait Recognition",
+      "description": "Sometimes core identity traits operate unconsciously until external feedback reveals them, becoming defining characteristics once recognized.",
+      "context": "Self-awareness development where others' perspectives reveal fundamental aspects of personality that weren't previously conscious."
+    },
+    {
+      "name": "Hostile Environment Loyalty Building",
+      "description": "Create loyalty and strong relationships even in adversarial contexts where structural opposition exists.",
+      "context": "Leadership roles with built-in antagonism (like PTA president) where success requires overcoming systemic resistance."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Elementary School PTA President Revelation",
+      "content": "Ten to fifteen years ago as elementary school PTA president, Dan created 'an incredibly loyal group of people' despite the role meaning 'all the parents invent reasons to hate you.' A parent described him as 'very approachable,' which was a revelation: 'I had never thought about that before... that's always stuck with me.'",
+      "source": "Interview Transcript",
+      "timestamp": "48:43"
+    },
+    {
+      "name": "Core Identity - Insight and Dot-Connection",
+      "content": "When asked about intrinsic identity traits, Dan identifies being 'insightful' as fundamental: 'I've always been insightful, and people just rely on that. They just rely on me to connect the dots for them.'",
+      "source": "Interview Transcript",
+      "timestamp": "50:25"
+    }
+  ]
+}

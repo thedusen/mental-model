@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Critical Thinking as Information Reception Plus Processing",
+      "description": "'Critical thinking... is the ability to accept information and connect the dots for decision-making. So, what is really interesting about critical thinking is how you receive information is just as important as how you process it.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Filter-Driven Reality Distortion",
+      "description": "'His filter was so pronounced that we could sit next to each other and hear someone speak, and we would hear things completely differently... his filter caused him to hear things that are always negatively and things that could always go wrong.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    },
+    {
+      "name": "80/20 Objective-Subjective Reception Ratio",
+      "description": "Optimal information reception is 'probably 80% objective and 20% subjective' - mostly accepting information as provided while maintaining some personal filter.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Emotional Intelligence as Reception Foundation",
+      "description": "Good information receivers have 'a very strong emotional intelligence. So they're not reacting right away. They're willing to accept and process or hear it and process it before they accept it rather than just react.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Information Reception Assessment",
+      "description": "Evaluate how people receive information before assessing their processing abilities, looking for filters that distort input before analysis begins.",
+      "context": "Hiring or team evaluation where decision-making quality depends on the ability to receive information accurately before processing it."
+    },
+    {
+      "name": "Process-Before-React Protocol",
+      "description": "Practice receiving information, processing it internally, then responding rather than immediate reaction, requiring strong emotional intelligence to manage initial impulses.",
+      "context": "High-stakes decision-making environments where immediate reactions can lead to poor choices based on filtered or emotionally distorted information."
+    }
+  ],
+  "examples": [
+    {
+      "name": "President with Negative Filter Example",
+      "content": "Dan worked with a company president whose 'filter is so pronounced that there's a filter embedded with this trepidation over anything new.' This caused them to 'hear things completely differently' when sitting together - the president's filter 'caused him to hear things that are always negatively and things that could always go wrong.' Result: 'in two years, he was president, he never made a good decision. He couldn't because he couldn't hear it.'",
+      "source": "Interview Transcript",
+      "timestamp": "19:33"
+    },
+    {
+      "name": "Critical Thinking Definition and Reception Importance",
+      "content": "Dan defines critical thinking as 'the ability to accept information and connect the dots for decision-making' but emphasizes that 'how you receive information is just as important as how you process it.' Optimal reception is '80% objective and 20% subjective' with 'very strong emotional intelligence' to avoid immediate reactions.",
+      "source": "Interview Transcript",
+      "timestamp": "18:53"
+    }
+  ]
+}

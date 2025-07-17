@@ -1,0 +1,42 @@
+{
+  "principles": [
+    {
+      "name": "Champion of the Overlooked",
+      "description": "Immediate focus on 'the number twos and number threes at the company because they are overlooked. They are seriously overlooked. That's where I go right away.' These people need external validation: 'Sometimes, they just need someone on the outside to say, \"This is what you need.\" She needs more.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "energizing"
+    },
+    {
+      "name": "Teacher vs Collaborator Role Differentiation",
+      "description": "With number twos and threes, 'I can play a little bit more of the role of the teacher, whereas with the owner, I have to be more of that collaborator than a... Than a teacher.' Both represent 'different applications of knowledge.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "flow-state"
+    },
+    {
+      "name": "Incomplete Ideas as Valuable Perspective",
+      "description": "Number twos and threes 'often have some pretty interesting ideas. Not fully formed ideas because they may not see the whole picture, but what they have to contribute is an important perspective that the owner may not have.'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Overlooked Talent Development",
+      "description": "Immediately seek out and build up the second and third-tier people in organizations who are undervalued, providing external validation and development they need.",
+      "context": "Organizational consulting where key contributors below the ownership level lack recognition and development opportunities."
+    },
+    {
+      "name": "Owner-Proxy Teaching Role",
+      "description": "Step into 'the role of the owner in that conversation and help them see what makes sense and what doesn't make sense' when working with lower-level employees, serving as a bridge for perspective and development.",
+      "context": "Situations where direct reports need guidance and perspective-building that owners may not have time or inclination to provide."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Building Up the Number Twos and Threes",
+      "content": "Dan identifies working with overlooked number twos and threes as something he would miss. He describes going 'right away' to these overlooked people, building them up because 'even though often the owner says they rely on them and they do, but not to the extent that they should.' These interactions involve 'give and take' where he steps into 'the role of the owner' to help them develop perspective.",
+      "source": "Interview Transcript",
+      "timestamp": "44:46"
+    }
+  ]
+}

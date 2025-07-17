@@ -1,0 +1,54 @@
+{
+  "principles": [
+    {
+      "name": "Being Right Isn't Always the Goal",
+      "description": "'Heads and shoulders above all is... Being right isn't always the goal.' This represents a fundamental shift from rightness-based decision making to outcome-based flexibility.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Rigidity as Professional Liability",
+      "description": "Past approach was to 'base decisions and actions on what is right' which caused internal fury and detachment when things seemed wrong. This rigidity 'would just set me up to fail' and 'end up pissing her off because I wasn't doing it her way, even though it was wrong.'",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    },
+    {
+      "name": "Client Method Acceptance",
+      "description": "'I literally don't worry about it with clients anymore. They're go to do' what they want to do. This acceptance prevents the internal conflict that previously caused detachment and relationship damage.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Job Security Through Flexibility",
+      "description": "Learning flexibility 'in part, for job security' represents a practical adaptation where survival required abandoning rigid righteousness in favor of relationship preservation.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Rigidity-to-Flexibility Evolution",
+      "description": "Evolve from basing decisions on 'what is right' to accepting client preferences, even when they seem wrong, to preserve relationships and effectiveness.",
+      "context": "Professional services where client relationships and outcomes matter more than being technically correct or morally superior."
+    },
+    {
+      "name": "Internal Detachment Prevention",
+      "description": "Avoid the cycle of internal fury and detachment that comes from focusing on rightness when working with less sophisticated decision-makers.",
+      "context": "Working with business owners or leaders who lack technical expertise but have final decision authority."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Sawmill Owner Jo Relationship Learning",
+      "content": "At the sawmill, owner Jo 'wasn't very sophisticated or understanding of business or finance' and 'would just want what she wanted.' Dan's insistence on doing what was 'right' would 'just set me up to fail' and 'end up pissing her off because I wasn't doing it her way, even though it was wrong.' This taught him flexibility over rigidity.",
+      "source": "Interview Transcript",
+      "timestamp": "01:24:20"
+    },
+    {
+      "name": "The Limited Internal Fury Pattern",
+      "content": "At The Limited, when Dan thought something was wrong, he 'would be furious internally, and it would cause me to lose interest for a period of time. I would almost become detached because I didn't want to have anything to do with it.' This pattern of rigidity became professionally limiting.",
+      "source": "Interview Transcript",
+      "timestamp": "01:24:20"
+    }
+  ]
+}

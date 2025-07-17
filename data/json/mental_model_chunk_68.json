@@ -1,0 +1,71 @@
+{
+  "principles": [
+    {
+      "name": "Evolving Expectations Acceptance",
+      "description": "'Understanding from the owner's perspective what they think is going well and what is not going well. What do they want to happen short term and long term? Those answers change over the first couple of months, and that's okay.' Expectations naturally evolve and this is part of the process.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Trends Over Reports",
+      "description": "'I'm not looking for a particular report or anything like that, but what I am looking for is an understanding of the trend. So, where things are going in a lot of different categories.' Focus on directional movement rather than static snapshots.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Bitching as Information Signal",
+      "description": "'That's often the time when I start to hear a little bit more about the \"bitching.\"' Owner complaints about employees provide valuable diagnostic information about organizational dynamics.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Employee Self-Explanation Over Complaint Relay",
+      "description": "'The goal is not to relay the complaints. The goal is to hear them explain how they see their role and how they hold themselves accountable.' Understanding employee perspective rather than prosecuting owner concerns.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Third-Party Credibility for Role Clarity",
+      "description": "'Coming from me, it's easier for them to take it from the owner.' External source provides neutrality that enables acceptance of role clarification documents.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Roles and Responsibilities vs. Job Descriptions",
+      "description": "'It's not a job description. It's roles and responsibilities, and it has some measurable outcomes. In many businesses, it's the first time they've ever seen it.' Focus on accountability and outcomes rather than task lists.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Sequential Understanding Building Process",
+      "description": "Move from owner perspective to financial trends to pointed questions to employee conversations to synthesized role documents, with each step informing the next.",
+      "context": "Business improvement engagements where understanding must be built systematically before solutions can be developed or implemented."
+    },
+    {
+      "name": "Neutral Role Clarification",
+      "description": "Create roles and responsibilities documents that synthesize owner desires with employee self-understanding, using third-party credibility to enable acceptance.",
+      "context": "Organizational development where direct owner-employee communication about expectations may be compromised by history or relationship dynamics."
+    },
+    {
+      "name": "Financial Trends as Question Generator",
+      "description": "Use financial trend analysis to generate specific questions for owners rather than delivering conclusions, creating opportunities for deeper business understanding.",
+      "context": "Business analysis where financial data serves as a diagnostic tool for organizational conversations rather than the end goal."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Step-by-Step Business Improvement Process",
+      "content": "Dan's systematic approach: 1) Understand owner perspective on what's working/not working and short/long-term desires (which 'change over the first couple of months, and that's okay'), 2) Analyze financial trends to generate 'pointed questions about the business,' 3) Listen to owner 'bitching' about employees, 4) Meet employees one-on-one to hear their self-understanding, 5) Create roles and responsibilities documents.",
+      "source": "Interview Transcript",
+      "timestamp": "26:52"
+    },
+    {
+      "name": "Employee Conversation Goals",
+      "content": "When meeting with employees one-on-one: 'The goal is not to relay the complaints. The goal is to hear them explain how they see their role and how they hold themselves accountable.' Dan brings up owner concerns 'in the form of a question' and often employees 'are not surprised by it.' This sets up subsequent role clarification work.",
+      "source": "Interview Transcript",
+      "timestamp": "26:52"
+    }
+  ]
+}

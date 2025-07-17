@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Firing as Favor to Overwhelmed Employees",
+      "description": "'That person is simply not qualified, and I am doing them a favor because they're totally stressed out. The business, the owner is completely stressed out, and they're barely getting through the day.' Termination serves multiple stressed parties.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "New Guy Truth-Telling Role",
+      "description": "'I'm the new guy, and all I'm doing is saying what no one else wanted to say.' External perspective enables difficult decisions that internal stakeholders avoid.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Dual Fault Assignment",
+      "description": "'I find fault with both the individual and the owner' - termination situations typically involve failures at multiple levels, not just employee performance.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Dignified Exit Process",
+      "description": "'First of all, it takes a long time because I document it and then have that difficult conversation with them and give them 30 to 60 days to think through based on my expectations. They will inevitably fail... we set a date in the future where we say, \"I want you to start looking for a job while you still have all this work yet.\"'",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Structured Termination with Dignity",
+      "description": "Document performance issues, have direct conversations with clear expectations, provide 30-60 days for improvement, then offer job search time while still employed rather than immediate termination.",
+      "context": "Employee terminations where preserving dignity and providing transition time benefits both the individual and the organization's reputation."
+    },
+    {
+      "name": "External Truth-Teller Function",
+      "description": "Use outsider status to address obvious problems that internal stakeholders are too invested or conflicted to handle.",
+      "context": "Consulting or new leadership roles where organizational dysfunction requires someone without internal political constraints to make difficult decisions."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Firing Pattern Analysis",
+      "content": "Dan identifies a pattern in firings: 'I'm the new guy, and all I'm doing is saying what no one else wanted to say. That person is simply not qualified, and I am doing them a favor because they're totally stressed out.' He finds fault with 'both the individual and the owner' and creates a dignified exit process with documentation, clear conversations, 30-60 days to improve, then scheduled departure with job search time.",
+      "source": "Interview Transcript",
+      "timestamp": "43:49"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "principles": [
+    {
+      "name": "No Full Map Transparency",
+      "description": "'No' - clients don't have access to the full strategic map because 'I just keep jumping around and don't really want to lay it out for...' The path is intentionally not revealed in its entirety.",
+      "category": "DECISION ARCHITECTURE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Non-Linear Path Reality",
+      "description": "The path to profitability is not linear, and next steps are determined dynamically: 'Very much' figuring out the next step while in the current step, informed by deeper business understanding.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Discovery Session Skepticism",
+      "description": "'Marketers love to have these discovery sessions, which are 90 minutes of bullshit because all you're hearing is the owner's perspective of the business. That's not how things get done.' Formal discovery processes provide limited real insight.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "frustration"
+    },
+    {
+      "name": "Deeper Business Understanding Than Owners",
+      "description": "'I end up learning more about how things really get done than the owner in many times, so it's hard for me to know what the next step is until I understand the business better.' Operational reality differs from owner perception.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Experience-Informed Intuitive Navigation",
+      "description": "'I don't know, experience' combined with understanding 'how things really get done' guides next step selection without predetermined roadmaps.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Intentionally Opaque Strategic Navigation",
+      "description": "Keep the full strategic path hidden while providing clear rationale for individual steps, allowing for dynamic adaptation based on emerging understanding.",
+      "context": "Complex organizational change where revealing the full scope might create resistance or where the path genuinely needs to adapt based on discovered realities."
+    },
+    {
+      "name": "Reality-Based vs. Owner-Perspective Discovery",
+      "description": "Learn how the business actually operates through direct observation and employee interaction rather than relying on owner descriptions during formal discovery sessions.",
+      "context": "Business consulting where owner perceptions often differ significantly from operational reality, requiring independent investigation."
+    }
+  ],
+  "examples": [
+    {
+      "name": "No Full Map Strategy",
+      "content": "When asked if clients see the full strategic map, Dan says 'No' because 'I just keep jumping around and don't really want to lay it out.' Instead, he explains each step as 'This is step one that will help us achieve your goal, but it is only one step. There might be 20 steps in between, there might be ten' without revealing the complete path.",
+      "source": "Interview Transcript",
+      "timestamp": "01:09:30"
+    },
+    {
+      "name": "Experience-Based Dynamic Navigation",
+      "content": "Dan determines next steps through 'experience' informed by 'understanding the business better.' He criticizes 'discovery sessions, which are 90 minutes of bullshit because all you're hearing is the owner's perspective' and notes 'I end up learning more about how things really get done than the owner in many times.'",
+      "source": "Interview Transcript",
+      "timestamp": "01:10:38"
+    }
+  ]
+}

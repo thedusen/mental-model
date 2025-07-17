@@ -1,0 +1,48 @@
+{
+  "principles": [
+    {
+      "name": "Evolution Over Events",
+      "description": "'It's not an event... It was a series of small steps that added up to create a big impact.' Profit improvement happens through accumulated incremental changes rather than breakthrough moments.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "How Businesses Really Work Understanding",
+      "description": "'Because they don't know how businesses really work.' Deep operational understanding as the foundation for effective consulting, distinguishing from theoretical knowledge.",
+      "category": "VALUE FRAMEWORK",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Big Ideas Get Killed",
+      "description": "'Because they want to get paid for their big idea. And everyone who's inside an organization knows big ideas don't get implemented, they get killed.' Organizational reality that dramatic changes face resistance and failure.",
+      "category": "COGNITIVE TENSIONS",
+      "energy_tag": "conviction"
+    },
+    {
+      "name": "Natural Evolution as Methodology",
+      "description": "The unique approach 'was natural. It evolved' - suggesting an organic, adaptive methodology rather than predetermined consulting frameworks.",
+      "category": "ADAPTIVE CORE",
+      "energy_tag": "conviction"
+    }
+  ],
+  "patterns": [
+    {
+      "name": "Incremental Change Accumulation",
+      "description": "Design and implement series of small, manageable changes that accumulate into significant business impact rather than pursuing dramatic transformations.",
+      "context": "Organizational change where resistance to big ideas requires a stealth approach through incremental improvements that don't trigger defensive reactions."
+    },
+    {
+      "name": "Reality-Based vs. Idea-Based Consulting",
+      "description": "Focus on how businesses actually operate rather than theoretical best practices, avoiding the consultant trap of selling dramatic ideas that won't be implemented.",
+      "context": "Business consulting where understanding operational reality and change capacity is more valuable than brilliant but impractical recommendations."
+    }
+  ],
+  "examples": [
+    {
+      "name": "Natural Evolution as Unique Approach",
+      "content": "When asked about his unique process, Dan describes it as 'natural. It evolved... a series of small steps that added up to create a big impact... It's not an event.' This incremental approach differs from other consultants because 'they don't know how businesses really work' and 'they want to get paid for their big idea. And everyone who's inside an organization knows big ideas don't get implemented, they get killed.'",
+      "source": "Interview Transcript",
+      "timestamp": "56:28"
+    }
+  ]
+}
