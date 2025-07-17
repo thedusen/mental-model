@@ -1,0 +1,785 @@
+[
+  {
+    "principles": [
+      {
+        "name": "Culture Gap as Core Uncertainty Anchor",
+        "description": "'What is always in my mind and what is behind almost all the questions is the culture the owner describes is not the culture they have.' The gap between stated and actual culture serves as the primary diagnostic framework.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      },
+      {
+        "name": "Employee Perspective Analysis",
+        "description": "'I'm trying to get a feel for the owner and how they communicate and put myself in the shoes of employees about how I'm hearing it.' Actively translating owner communication through employee perception filters.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      },
+      {
+        "name": "People Issues Disguised as Financial Issues",
+        "description": "'The real issue is likely a people issue. It's not a financial issue. I just don't know what it is. They rarely are willing to offer that up early in the relationship. They'll describe it as a financial issue.' Understanding the pattern of misattributed problem sources.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Culture Gap Investigation",
+        "description": "When facing uncertainty, consistently examine the gap between the culture owners claim to have and the culture that actually exists, using this as a diagnostic anchor.",
+        "context": "Organizational consulting where surface problems often mask deeper cultural or communication issues that owners are reluctant to acknowledge.",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      },
+      {
+        "name": "Employee Perspective Translation",
+        "description": "Systematically translate owner communications and descriptions through the lens of how employees likely receive and interpret them, identifying disconnects.",
+        "context": "Organizational diagnosis where owner self-perception often differs significantly from employee experience of leadership and culture.",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      },
+      {
+        "name": "Financial-to-People Problem Reframing",
+        "description": "When problems are presented as financial issues, investigate underlying people and communication problems that are often the actual root causes.",
+        "context": "Business consulting where financial symptoms are easier for owners to discuss than interpersonal or leadership challenges.",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Culture Gap as Uncertainty Anchor",
+        "content": "When navigating uncertainty in business situations, Dan's core anchor is: 'What is always in my mind and what is behind almost all the questions is the culture the owner describes is not the culture they have.' He tries to 'get a feel for the owner and how they communicate and put myself in the shoes of employees about how I'm hearing it.'",
+        "source": "Interview Transcript",
+        "timestamp": "16:04",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      },
+      {
+        "name": "People Issues Disguised as Financial Problems",
+        "content": "Dan's pattern recognition: 'The real issue is likely a people issue. It's not a financial issue. I just don't know what it is. They rarely are willing to offer that up early in the relationship. They'll describe it as a financial issue.' This represents his default assumption when facing unclear business problems.",
+        "source": "Interview Transcript",
+        "timestamp": "16:24",
+        "theme": "Culture Gap Diagnosis and Problem Reframing",
+        "source_chunk": "mental_model_chunk_64.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_64.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Financial Verification as Trust Baseline",
+        "description": "'What the owner is saying isn't backed up by the financial results that I'm seeing. So, there's a gap... at the beginning of any relationship, I don't accept very much of what they say until I can verify it on my own.' Independent verification as foundation for trust and understanding.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      },
+      {
+        "name": "Uncertainty Tolerance with Trauma Boundary",
+        "description": "'I guess I'm okay with the uncertainty as long as it's not creating some major business trauma.' Comfortable operating in ambiguous situations unless they threaten business stability.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      },
+      {
+        "name": "Internalization and Conversation Weaving",
+        "description": "'I think I just internalize that uncertainty and weave it into conversations with everyone, often the owner, just to get their take on things.' Using ongoing dialogue to gradually resolve uncertainty rather than forcing immediate clarity.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      },
+      {
+        "name": "Multi-Perspective Verification Process",
+        "description": "'Whenever I get something verified, it's only after having had different conversations with different people.' Truth emerges through triangulation across multiple sources rather than single verification.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Uncertainty Internalization and Gradual Resolution",
+        "description": "Accept and internalize uncertainty when it doesn't threaten business stability, using ongoing conversations with multiple people to gradually build understanding.",
+        "context": "Complex organizational situations where immediate clarity isn't available and forcing quick resolution could be counterproductive.",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      },
+      {
+        "name": "Multi-Source Triangulation for Truth",
+        "description": "Verify information and resolve uncertainty through conversations with different people rather than relying on single sources or formal verification methods.",
+        "context": "Business consulting where understanding requires combining perspectives from owners, employees, and stakeholders who may have different views of reality.",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      },
+      {
+        "name": "Trauma-Threshold Uncertainty Management",
+        "description": "Operate comfortably with uncertainty unless it creates 'major business trauma,' using this threshold to determine when uncertainty needs immediate resolution.",
+        "context": "Advisory roles where some ambiguity is normal but certain types of uncertainty could threaten business operations or relationships.",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Financial Gap Uncertainty",
+        "content": "Dan describes uncertainty when 'what the owner is saying isn't backed up by the financial results that I'm seeing. So, there's a gap.' He doesn't 'accept very much of what they say until I can verify it on my own' at the beginning of relationships.",
+        "source": "Interview Transcript",
+        "timestamp": "17:26",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      },
+      {
+        "name": "Uncertainty Tolerance and Resolution Process",
+        "content": "For non-verifiable uncertainty, Dan is 'okay with the uncertainty as long as it's not creating some major business trauma.' His approach: 'I think I just internalize that uncertainty and weave it into conversations with everyone... whenever I get something verified, it's only after having had different conversations with different people.'",
+        "source": "Interview Transcript",
+        "timestamp": "18:40",
+        "theme": "Verification-Based Uncertainty Management",
+        "source_chunk": "mental_model_chunk_65.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_65.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Months-Long Process Acceptance",
+        "description": "'I don't think I do it any differently than any other issue because I'm not looking for the quick fix anyway. If most of the issues are people-related, none of that gets fixed quickly anyway. It's months.' Inherent expectation that meaningful change takes extended time.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      },
+      {
+        "name": "Chipping Away Over Solution Delivery",
+        "description": "'The process is much more about chipping away than just bringing a solution and saying, \"Here you go. This will solve all of your problems.\"' Incremental progress methodology rather than comprehensive solutions.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      },
+      {
+        "name": "Employee Trust Through One-on-One Engagement",
+        "description": "'That involves establishing trust with the employees, which means dealing with them one on one without the owner present, and in doing so, acknowledging some of the inconsistencies that I see in the business.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      },
+      {
+        "name": "Balanced Acknowledgment and Defense",
+        "description": "'When they just start bitching, I do come back and I jump back and forth between acknowledging some of the inconsistencies and defending the owner... Reminding them that the owner is the one who has risk.' Maintaining neutrality while educating about different perspectives.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      },
+      {
+        "name": "Owner Description Accuracy Skepticism",
+        "description": "'Pulling in the description I heard from the owner, which is rarely accurate, but I'll ask questions to try to verify that.' Default assumption that owner descriptions need verification through employee perspectives.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Long-Term Uncertainty Navigation Through Trust Building",
+        "description": "Accept that complex people problems require months to resolve and focus on building trust with employees through one-on-one conversations that acknowledge inconsistencies while defending owner perspectives.",
+        "context": "Organizational change where results won't be visible for months and understanding must be built gradually through relationship development.",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      },
+      {
+        "name": "Balanced Perspective Facilitation",
+        "description": "Acknowledge employee complaints about inconsistencies while defending owner decisions by explaining risk and responsibility differences, maintaining neutrality while educating both sides.",
+        "context": "Employee relations where complaints about leadership need to be heard and validated while also helping employees understand owner perspectives.",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      },
+      {
+        "name": "Incremental Information Gathering",
+        "description": "Gradually learn about jobs and people through ongoing conversations that verify or contradict owner descriptions, building understanding through accumulated interactions rather than formal assessment.",
+        "context": "Organizational diagnosis where formal processes may not reveal actual dynamics and informal relationship-building provides better insight.",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Long-Term Uncertainty Process",
+        "content": "For problems with no clear path to certainty and months before results, Dan doesn't approach it differently: 'I'm not looking for the quick fix anyway. If most of the issues are people-related, none of that gets fixed quickly anyway. It's months... The process is much more about chipping away than just bringing a solution.'",
+        "source": "Interview Transcript",
+        "timestamp": "20:40",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      },
+      {
+        "name": "Employee Trust and Balanced Perspective Process",
+        "content": "Dan builds understanding through 'establishing trust with the employees... dealing with them one on one without the owner present, and in doing so, acknowledging some of the inconsistencies.' When employees complain, he 'jump back and forth between acknowledging some of the inconsistencies and defending the owner... Reminding them that the owner is the one who has risk.'",
+        "source": "Interview Transcript",
+        "timestamp": "20:40",
+        "theme": "Long-Term Trust Building and Incremental Change",
+        "source_chunk": "mental_model_chunk_66.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_66.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Person Decisions as Core Business Issue",
+        "description": "'Most often, the decision is what do I do about this person? That's the pain point... that becomes a core issue from the person I'm working with.' People decisions represent the fundamental challenge in most business situations.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Collaboration as Decision Architecture Foundation",
+        "description": "'I know it's a tired word, but it still comes back to collaboration.' Despite overuse, collaboration remains the core approach to major decision-making processes.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Owner Recognition Over Planning as Offsite Purpose",
+        "description": "'I do that so that the owner either remembers or recognizes that the people on their team have some really good ideas and you need to listen to them instead of just running around in a frenzy.' Team meetings designed for owner education rather than planning output.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Tactics vs. Team Health Hierarchy",
+        "description": "'The pricing stuff and profit, those are tactics... the only way the company becomes healthier, and it doesn't matter what its problem is, it's only going to help become healthier if those key people in the owner become much more of a team.' Team cohesion as foundation for all other improvements.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Team Exhaustion Recognition",
+        "description": "'There is no doubt that she's wearing them down as well.' Understanding that owner dysfunction affects entire team energy and effectiveness.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Team Building as Decision Foundation",
+        "description": "Address major business decisions by first creating conditions where owners recognize and listen to team member ideas rather than making isolated decisions.",
+        "context": "Business situations where owner-driven decision-making bypasses valuable team input and creates implementation challenges.",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Owner Education Through Team Interaction",
+        "description": "Use team meetings and offsites to educate owners about their team's capabilities rather than to create plans or strategies.",
+        "context": "Leadership development where owners need to discover their team's value rather than being told about it directly.",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Health-First Business Philosophy",
+        "description": "Treat team cohesion as the prerequisite for all other business improvements, viewing tactics like pricing and profit optimization as secondary.",
+        "context": "Organizational consulting where structural relationship issues prevent successful implementation of technical business strategies.",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Person Decisions as Core Business Pain",
+        "content": "When asked about important business decisions, Dan immediately identifies: 'Most often, the decision is what do I do about this person? That's the pain point... that becomes a core issue from the person I'm working with.' This represents the fundamental challenge in most business consulting situations.",
+        "source": "Interview Transcript",
+        "timestamp": "23:35",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Offsite for Owner Recognition, Not Planning",
+        "content": "Dan planned to suggest a 'half-day offsite with all of her key people' for the shiny-object-chasing owner, 'not to create some great plan. I do that so that the owner either remembers or recognizes that the people on their team have some really good ideas and you need to listen to them instead of just running around in a frenzy.'",
+        "source": "Interview Transcript",
+        "timestamp": "24:35",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      },
+      {
+        "name": "Team Health Over Tactical Solutions",
+        "content": "Dan's decision architecture: 'The pricing stuff and profit, those are tactics... the only way the company becomes healthier, and it doesn't matter what its problem is, it's only going to help become healthier if those key people in the owner become much more of a team because they're not right now.'",
+        "source": "Interview Transcript",
+        "timestamp": "24:35",
+        "theme": "People-Centered Collaborative Decision Making",
+        "source_chunk": "mental_model_chunk_67.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_67.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Evolving Expectations Acceptance",
+        "description": "'Understanding from the owner's perspective what they think is going well and what is not going well. What do they want to happen short term and long term? Those answers change over the first couple of months, and that's okay.' Expectations naturally evolve and this is part of the process.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Trends Over Reports",
+        "description": "'I'm not looking for a particular report or anything like that, but what I am looking for is an understanding of the trend. So, where things are going in a lot of different categories.' Focus on directional movement rather than static snapshots.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Bitching as Information Signal",
+        "description": "'That's often the time when I start to hear a little bit more about the \"bitching.\"' Owner complaints about employees provide valuable diagnostic information about organizational dynamics.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Employee Self-Explanation Over Complaint Relay",
+        "description": "'The goal is not to relay the complaints. The goal is to hear them explain how they see their role and how they hold themselves accountable.' Understanding employee perspective rather than prosecuting owner concerns.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Third-Party Credibility for Role Clarity",
+        "description": "'Coming from me, it's easier for them to take it from the owner.' External source provides neutrality that enables acceptance of role clarification documents.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Roles and Responsibilities vs. Job Descriptions",
+        "description": "'It's not a job description. It's roles and responsibilities, and it has some measurable outcomes. In many businesses, it's the first time they've ever seen it.' Focus on accountability and outcomes rather than task lists.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Sequential Understanding Building Process",
+        "description": "Move from owner perspective to financial trends to pointed questions to employee conversations to synthesized role documents, with each step informing the next.",
+        "context": "Business improvement engagements where understanding must be built systematically before solutions can be developed or implemented.",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Neutral Role Clarification",
+        "description": "Create roles and responsibilities documents that synthesize owner desires with employee self-understanding, using third-party credibility to enable acceptance.",
+        "context": "Organizational development where direct owner-employee communication about expectations may be compromised by history or relationship dynamics.",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Financial Trends as Question Generator",
+        "description": "Use financial trend analysis to generate specific questions for owners rather than delivering conclusions, creating opportunities for deeper business understanding.",
+        "context": "Business analysis where financial data serves as a diagnostic tool for organizational conversations rather than the end goal.",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Step-by-Step Business Improvement Process",
+        "content": "Dan's systematic approach: 1) Understand owner perspective on what's working/not working and short/long-term desires (which 'change over the first couple of months, and that's okay'), 2) Analyze financial trends to generate 'pointed questions about the business,' 3) Listen to owner 'bitching' about employees, 4) Meet employees one-on-one to hear their self-understanding, 5) Create roles and responsibilities documents.",
+        "source": "Interview Transcript",
+        "timestamp": "26:52",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      },
+      {
+        "name": "Employee Conversation Goals",
+        "content": "When meeting with employees one-on-one: 'The goal is not to relay the complaints. The goal is to hear them explain how they see their role and how they hold themselves accountable.' Dan brings up owner concerns 'in the form of a question' and often employees 'are not surprised by it.' This sets up subsequent role clarification work.",
+        "source": "Interview Transcript",
+        "timestamp": "26:52",
+        "theme": "Systematic Business Understanding and Role Clarification",
+        "source_chunk": "mental_model_chunk_68.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_68.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "All Paths Through Owner Authority",
+        "description": "'I don't understand. All paths go through the owner.' Fundamental operating principle that owner authority is the central organizing principle for all business change efforts.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Reining In Over Redirecting",
+        "description": "'I tend not to challenge much where they want to go unless they're trying to do too many different things. Then it's more about just reining it in.' Management of scope rather than direction changes.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Employee Alignment Focus",
+        "description": "'95% of my one-on-one conversations with the individuals are to align them with where that owner wants to go.' Employee development serves owner vision rather than independent assessment of best practices.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Trust Outcome, Question Diagnosis",
+        "description": "'I don't always trust their diagnosis, but I'm comfortable with where the outcome is because it's where they want to go.' Separating destination acceptance from path validation.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Better Operations Over Innovation",
+        "description": "'Most of the time, it's more about just better operations, not necessarily anything new, but just better.' Focus on execution improvement rather than strategic innovation.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Owner-Centric Change Architecture",
+        "description": "Structure all business improvement efforts around owner vision and direction, using employee alignment rather than independent assessment of optimal business strategies.",
+        "context": "Business consulting where sustainable change requires owner buy-in and leadership, making owner-driven direction more important than theoretically optimal solutions.",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Diagnosis Skepticism with Outcome Acceptance",
+        "description": "Question how owners analyze their problems while accepting their desired outcomes as legitimate goals, focusing efforts on better execution of owner vision.",
+        "context": "Advisory relationships where owners may misdiagnose causes but understand their business needs and have legitimate authority to set direction.",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Scope Management Over Direction Change",
+        "description": "When owners have problematic approaches, focus on reducing the number of initiatives rather than changing the fundamental direction or goals.",
+        "context": "Working with unfocused leaders where the primary issue is too many simultaneous efforts rather than wrong strategic direction.",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "All Paths Through Owner Philosophy",
+        "content": "When asked about parallel paths versus owner-centered approach, Dan is clear: 'I don't understand. All paths go through the owner.' He explains that '95% of my one-on-one conversations with the individuals are to align them with where that owner wants to go' and focuses on 'just better operations, not necessarily anything new, but just better.'",
+        "source": "Interview Transcript",
+        "timestamp": "31:06",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Trust Outcome, Question Diagnosis",
+        "content": "Dan's approach to owner reliability: 'I don't always trust their diagnosis, but I'm comfortable with where the outcome is because it's where they want to go.' This represents accepting owner authority over direction while maintaining skepticism about their problem analysis.",
+        "source": "Interview Transcript",
+        "timestamp": "32:56",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      },
+      {
+        "name": "Reining In Over Challenging Direction",
+        "content": "Dan's intervention approach: 'I tend not to challenge much where they want to go unless they're trying to do too many different things. Then it's more about just reining it in.' This focuses on scope management rather than strategic redirection.",
+        "source": "Interview Transcript",
+        "timestamp": "31:55",
+        "theme": "Owner-Centric Authority and Change Management",
+        "source_chunk": "mental_model_chunk_69.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_69.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Knowledge Seeking Time Distortion",
+        "description": "'I will tend to lose track of time when I'm seeking knowledge, maybe a little bit too much time on that podcast or reading an article or a book or something like that. I don't balance that time very well.'",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Knowledge-Driven Gap Detection and Learning",
+        "source_chunk": "mental_model_chunk_7.json"
+      },
+      {
+        "name": "Gap-Listening for Conversation Extension",
+        "description": "The most energizing work is 'learning about anybody's business. Anybody's business. Because all I'm listening for are gaps. Not to. Not to sell something. But I'm listening for gap to further the conversation.'",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "flow-state",
+        "theme": "Knowledge-Driven Gap Detection and Learning",
+        "source_chunk": "mental_model_chunk_7.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Business Gap Detection",
+        "description": "Actively listen for gaps in any business while learning about it, with the specific intent to 'further the conversation' rather than to sell or exploit the gaps.",
+        "context": "Business conversations, consultations, or learning scenarios where understanding business operations and identifying improvement opportunities drives engagement.",
+        "theme": "Knowledge-Driven Gap Detection and Learning",
+        "source_chunk": "mental_model_chunk_7.json"
+      },
+      {
+        "name": "Knowledge Consumption Immersion",
+        "description": "Lose track of time when consuming knowledge through podcasts, articles, or books, often to the point of poor time balance.",
+        "context": "Personal learning time where curiosity-driven exploration takes precedence over structured time management.",
+        "theme": "Knowledge-Driven Gap Detection and Learning",
+        "source_chunk": "mental_model_chunk_7.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Universal Business Learning Energy",
+        "content": "When asked about what most energizes him in work, Dan identifies 'learning about anybody's business. Anybody's business' as the source of flow state. His focus is on 'listening for gaps' with the intent to 'further the conversation' rather than to sell something, indicating genuine curiosity about business operations and improvement opportunities.",
+        "source": "Interview Transcript",
+        "timestamp": "40:17",
+        "theme": "Knowledge-Driven Gap Detection and Learning",
+        "source_chunk": "mental_model_chunk_7.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_7.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "SWOT as Weakness-Focused Exercise",
+        "description": "'It's all about weaknesses.' The entire SWOT analysis is designed to identify and address organizational weaknesses rather than building on strengths or pursuing opportunities.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Sandbox Ownership Model",
+        "description": "'You own the sandbox... no one else is allowed in your sandbox' including the owner. Clear responsibility boundaries that prevent interference once roles are defined.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Strategy as Luxury for Well-Functioning Organizations",
+        "description": "'Most companies couldn't be strategic. If their life depended on it, they would fail. They're not doing that well now because of the stuff that's in their way.' Strategy requires operational excellence first.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Root Cause Drilling in Weaknesses",
+        "description": "'I try to get them to drill down to the root cause pretty hard... it's not about an answer, it's about having the open discussion with everyone on your team.' Process over solution focus.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Collective Responsibility for All Priorities",
+        "description": "'Everyone who attended the meeting is now responsible for all of these... If someone asks you to help, you have to help. It's not optional.' Shared accountability beyond individual assignments.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "On Track vs. Off Track Binary Assessment",
+        "description": "'The entire focus is it's on track or it's off track. That's all we need to know.' Eliminating debate and complexity in status reporting.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Weakness-First Business Development",
+        "description": "Structure organizational development around identifying and removing obstacles rather than building on strengths or pursuing new opportunities.",
+        "context": "Small business improvement where operational dysfunction prevents successful strategy execution.",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Low-Stakes Consensus Building",
+        "description": "Practice consensus-building on external topics (like global trends) before applying the same process to internal business priorities.",
+        "context": "Team development where groups need to learn collaborative decision-making skills before tackling high-stakes business issues.",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Binary Status Reporting System",
+        "description": "Use simple on-track/off-track status updates to eliminate debate and maintain meeting focus on problem-solving rather than explanation.",
+        "context": "Team meetings where detailed status explanations can consume time and energy better spent on addressing actual problems.",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "SWOT as Weakness Discovery Tool",
+        "content": "Dan's SWOT process is 'all about weaknesses' - using strengths and opportunities as setup to focus on obstacles. The key question: 'Are the weaknesses so pronounced that unless you get those corrected, the business cannot legitimately pursue the opportunities?' Most priorities address weaknesses because teams realize 'we can't get out of our own way.'",
+        "source": "Interview Transcript",
+        "timestamp": "55:43",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Sandbox Ownership and Collective Responsibility",
+        "content": "Dan creates 'sandbox' ownership where 'no one else is allowed in your sandbox' including the owner, but also establishes that 'everyone who attended the meeting is now responsible for all of these... If someone asks you to help, you have to help. It's not optional.' This combines individual authority with collective support.",
+        "source": "Interview Transcript",
+        "timestamp": "38:28",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      },
+      {
+        "name": "Binary Meeting Structure",
+        "content": "Dan's recurring meetings use EOS-flavored structure with fixed format: good news, metrics review, individual tasks, then open discussion. For all updates, 'the entire focus is it's on track or it's off track. That's all we need to know' to maintain pace and focus.",
+        "source": "Interview Transcript",
+        "timestamp": "59:07",
+        "theme": "Weakness-Focused Operational Excellence",
+        "source_chunk": "mental_model_chunk_70.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_70.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Universal Strength Claims Pattern",
+        "description": "'Everyone says they're responsive. Everyone says they're adaptable. Everyone says that they value teamwork and or collaborators, or they engage in consultative selling... then you get into dedication and throw away stuff like that.' Common self-descriptions across companies.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Consensus Building Over Accuracy Verification",
+        "source_chunk": "mental_model_chunk_71.json"
+      },
+      {
+        "name": "Responsiveness Skepticism",
+        "description": "'I think they're full of shit about responsiveness... It's hard for me to know. I don't know the company that well.' Default skepticism about the most commonly claimed strength.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Consensus Building Over Accuracy Verification",
+        "source_chunk": "mental_model_chunk_71.json"
+      },
+      {
+        "name": "Truth Secondary to Consensus",
+        "description": "'I want team consensus... Even if this has happened, even if I don't believe it, not my plan.' Team agreement matters more than factual accuracy in the SWOT process.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Consensus Building Over Accuracy Verification",
+        "source_chunk": "mental_model_chunk_71.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Generic Strength Recognition and Bypass",
+        "description": "Recognize that most companies claim identical strengths (responsiveness, adaptability, teamwork, consultative selling) but focus on building consensus rather than validating accuracy.",
+        "context": "SWOT analysis where the goal is team alignment rather than objective assessment of capabilities.",
+        "theme": "Consensus Building Over Accuracy Verification",
+        "source_chunk": "mental_model_chunk_71.json"
+      },
+      {
+        "name": "Consensus Over Accuracy Priority",
+        "description": "Prioritize team consensus on strengths and weaknesses over determining objective truth, especially when external validation would be difficult or counterproductive.",
+        "context": "Team building exercises where shared understanding and buy-in are more valuable than precise capability assessment.",
+        "theme": "Consensus Building Over Accuracy Verification",
+        "source_chunk": "mental_model_chunk_71.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Universal Strength Claims Pattern",
+        "content": "Dan observes that in SWOT analysis, 'Everyone says they're responsive. Everyone says they're adaptable. Everyone says that they value teamwork and or collaborators, or they engage in consultative selling.' He's particularly skeptical of responsiveness claims: 'I think they're full of shit about responsiveness.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:02:16",
+        "theme": "Consensus Building Over Accuracy Verification",
+        "source_chunk": "mental_model_chunk_71.json"
+      },
+      {
+        "name": "Consensus Priority Over Truth",
+        "content": "When asked how important it is to verify claimed strengths, Dan emphasizes: 'I want team consensus... Even if this has happened, even if I don't believe it, not my plan.' Team agreement takes precedence over factual accuracy in the SWOT process.",
+        "source": "Interview Transcript",
+        "timestamp": "01:03:04",
+        "theme": "Consensus Building Over Accuracy Verification",
+        "source_chunk": "mental_model_chunk_71.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_71.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Empathetic Experience Recognition",
+        "description": "'I know that there are things that they wish were better in some way, and I've... Chances are, I've experienced some of what they're feeling.' This creates the foundation for meaningful help.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Empathetic Solution Delivery and Validation Seeking",
+        "source_chunk": "mental_model_chunk_8.json"
+      },
+      {
+        "name": "Solution-Oriented vs Answer-Oriented Help",
+        "description": "'What energizes me is not to give them an answer, but to give them a possible solution.' This distinction between definitive answers and exploratory possibilities drives engagement.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Empathetic Solution Delivery and Validation Seeking",
+        "source_chunk": "mental_model_chunk_8.json"
+      },
+      {
+        "name": "Reliance as Validation",
+        "description": "'What I really want... But I want them to rely on me.' This desire for reliance serves as validation that 'my previous work has helped them. Chances are, they want more. It's not about whether they want more to pay more. They want more.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Empathetic Solution Delivery and Validation Seeking",
+        "source_chunk": "mental_model_chunk_8.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Shared Experience Bridge-Building",
+        "description": "Use personal experience of similar challenges to create empathetic connection and credibility when offering solutions to others' business problems.",
+        "context": "Consulting or advisory situations where trust-building through shared experience enhances solution acceptance.",
+        "theme": "Empathetic Solution Delivery and Validation Seeking",
+        "source_chunk": "mental_model_chunk_8.json"
+      },
+      {
+        "name": "Validation Through Dependency",
+        "description": "Seek validation of value through others' desire to rely on your help, measuring success by their continued need for your contributions rather than just payment.",
+        "context": "Professional relationships where ongoing reliance indicates genuine value creation and successful problem-solving.",
+        "theme": "Empathetic Solution Delivery and Validation Seeking",
+        "source_chunk": "mental_model_chunk_8.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "The Drive for Client Reliance",
+        "content": "When pressed about what emotionally drives his excitement in helping businesses, Dan reveals 'what I really want... But I want them to rely on me.' This reliance validates that 'my previous work has helped them' and indicates 'they want more' - not necessarily to pay more, but because they genuinely value the ongoing help.",
+        "source": "Interview Transcript",
+        "timestamp": "41:25",
+        "theme": "Empathetic Solution Delivery and Validation Seeking",
+        "source_chunk": "mental_model_chunk_8.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_8.json"
+  }
+]

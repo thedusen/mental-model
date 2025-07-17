@@ -1,0 +1,656 @@
+[
+  {
+    "principles": [
+      {
+        "name": "Self-Employment Influence as Foundation",
+        "description": "'My dad being self-employed was a factor. I think seeing a couple of brothers who own businesses was a factor.' These early exposures to entrepreneurship shaped fundamental perspectives on work and autonomy.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      },
+      {
+        "name": "Intentional Problem Creation for Stimulation",
+        "description": "'I can get... I did get bored easily to the point where if I had the opportunity to break something, I would. That way, I had something else to do or to push just to go do something new.' Boredom drives destructive behavior to create new challenges.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "draining",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      },
+      {
+        "name": "Corporate Cycle Monotony Recognition",
+        "description": "'I view company life as pretty much a 12-month cycle, and not that much new happens year to year... You're doing the same shit every 12 months. You're just maybe doing it with more people, fewer people, bigger budget, smaller budget. You're still doing the same shit.'",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "draining",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      },
+      {
+        "name": "Need for External Stimulation",
+        "description": "'I need that phone to ring because it's nothing to do.' The requirement for external, unpredictable inputs to maintain engagement and energy.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Boredom-Driven Disruption",
+        "description": "When organizational work becomes predictable, intentionally create problems or disruptions to generate new challenges and maintain engagement.",
+        "context": "Corporate or structured environments where routine work cycles create understimulation for high-need-for-variety personalities.",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      },
+      {
+        "name": "External Variety Dependency",
+        "description": "Require external, unpredictable inputs (like phone calls or new problems) to maintain energy and interest in work.",
+        "context": "Professional situations where internal motivation is insufficient and external stimulation is needed for sustained performance.",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Early Business Exposure Foundation",
+        "content": "Dan identifies formative influences as 'my dad being self-employed' and 'seeing a couple of brothers who own businesses' as factors that shaped his approach to work and business.",
+        "source": "Interview Transcript",
+        "timestamp": "01:13:21",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      },
+      {
+        "name": "Corporate Boredom and Disruption Pattern",
+        "content": "Dan describes getting 'bored easily to the point where if I had the opportunity to break something, I would. That way, I had something else to do or to push just to go do something new.' He views 'company life as pretty much a 12-month cycle' where 'not that much new happens year to year.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:13:21",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      },
+      {
+        "name": "Realization About External Stimulation Need",
+        "content": "When leaving Macy's for public accounting, a friend said 'I get why you left, but you are where you need to be.' This led to the realization 'I need that phone to ring because it's nothing to do' - recognizing the need for external stimulation and variety.",
+        "source": "Interview Transcript",
+        "timestamp": "01:14:46",
+        "theme": "Stimulation-Seeking and Entrepreneurial Drive",
+        "source_chunk": "mental_model_chunk_19.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_19.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Crisis Perspective Management",
+        "description": "When crisis hits, 'communicate through words or behavior that we're not looking at something that is the end of the world. It is important and it needs to be dealt with, but we're going to take a beat to make sure that we understand it and then move forward.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Collaborative Crisis Management",
+        "source_chunk": "mental_model_chunk_2.json"
+      },
+      {
+        "name": "Collaborative Crisis Response",
+        "description": "Crisis flow state involves 'go into collaborator mode' where 'I'm not really head down trying to do it myself, but I'm trying to take in as much information as I can on the crisis.' For crises, 'it tends not to be directive.'",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "flow-state",
+        "theme": "Collaborative Crisis Management",
+        "source_chunk": "mental_model_chunk_2.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Crisis Information Gathering",
+        "description": "Immediately shift into 'collaborator mode' and rapidly solicit opinions from people and sources, prioritizing information intake over individual problem-solving.",
+        "context": "Acute crisis situations requiring immediate response, where collaborative intelligence gathering is more effective than individual analysis.",
+        "theme": "Collaborative Crisis Management",
+        "source_chunk": "mental_model_chunk_2.json"
+      },
+      {
+        "name": "Calm-Then-Collaborate Sequence",
+        "description": "First establish perspective that the crisis is manageable, then 'take a beat to make sure that we understand it' before moving into collaborative information gathering mode.",
+        "context": "High-pressure situations where team emotional regulation is crucial for effective crisis response.",
+        "theme": "Collaborative Crisis Management",
+        "source_chunk": "mental_model_chunk_2.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Tuesday Crisis Response Pattern",
+        "content": "When a crisis happens on a Tuesday requiring immediate response, Dan's innate response is to first communicate that 'we're not looking at something that is the end of the world' while acknowledging its importance, then shift into collaborative mode to rapidly gather information rather than working alone.",
+        "source": "Interview Transcript",
+        "timestamp": "28:00",
+        "theme": "Collaborative Crisis Management",
+        "source_chunk": "mental_model_chunk_2.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_2.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Daily Financial Foundation Reliance",
+        "description": "'I go back to the financial foundation almost every day, whether I want to or not.' The accounting/CPA background provides constant practical value regardless of conscious intent to use it.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Professional Foundation and Credibility",
+        "source_chunk": "mental_model_chunk_20.json"
+      },
+      {
+        "name": "Small Business Owner Knowledge Gap Recognition",
+        "description": "The accounting foundation is valuable 'because it's knowledge that most small business owners don't have.' This creates a consistent competitive advantage and value proposition.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Professional Foundation and Credibility",
+        "source_chunk": "mental_model_chunk_20.json"
+      },
+      {
+        "name": "Elevated Status Through Association",
+        "description": "Working at Arthur Anderson provided 'elevated status' in Cincinnati because 'if you worked there, you had an elevated status.' This early credibility foundation influences ongoing professional positioning.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Professional Foundation and Credibility",
+        "source_chunk": "mental_model_chunk_20.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Financial Foundation as Constant Resource",
+        "description": "Leverage financial and accounting knowledge as a daily, automatic resource that provides value even when not consciously deployed.",
+        "context": "Business consulting or advisory work where financial literacy provides consistent analytical advantage over business owners who lack this background.",
+        "theme": "Professional Foundation and Credibility",
+        "source_chunk": "mental_model_chunk_20.json"
+      },
+      {
+        "name": "Credibility Through Prestigious Association",
+        "description": "Use early association with prestigious organizations (like major accounting firms) to establish ongoing credibility and elevated status in professional relationships.",
+        "context": "Professional services where client confidence is influenced by past institutional affiliations and credentials.",
+        "theme": "Professional Foundation and Credibility",
+        "source_chunk": "mental_model_chunk_20.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Accounting Foundation as Daily Tool",
+        "content": "Dan identifies his 'master's in accounting, CPA, and working at a large public accounting CPA firm' as the foundation he returns to 'almost every day, whether I want to or not.' This knowledge is valuable 'because it's knowledge that most small business owners don't have.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:16:15",
+        "theme": "Professional Foundation and Credibility",
+        "source_chunk": "mental_model_chunk_20.json"
+      },
+      {
+        "name": "Arthur Anderson Elevated Status",
+        "content": "Working at Arthur Anderson, 'one of the largest firms in the world,' provided elevated status in Cincinnati where 'if you worked there, you had an elevated status,' establishing early credibility that influences ongoing professional positioning.",
+        "source": "Interview Transcript",
+        "timestamp": "01:16:57",
+        "theme": "Professional Foundation and Credibility",
+        "source_chunk": "mental_model_chunk_20.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_20.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Professional Circle Exposure as Learning Catalyst",
+        "description": "'The exposure of working with various attorneys in thirty different states... you just get to know them, and you go out to dinner and things like that. You just learn a lot, not about law and taxes, but in everything. You learn from them.' This broad professional exposure creates knowledge beyond core competencies.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      },
+      {
+        "name": "Judgment Over Technical Skills Application",
+        "description": "At the Limited, 'being a CPA wasn't that important... It was more about just taking that. I was making a lot of their judgments on appeals and litigation and everything. So it was more about judgment than anything versus advising a client.'",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      },
+      {
+        "name": "Big Company Perspective as Small Business Advantage",
+        "description": "'I can bring them a big company and big CPA firm perspective that they otherwise don't get.' The combination of large organization experience applied to small business contexts creates unique value.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      },
+      {
+        "name": "Responsibility Progression Through Specialization",
+        "description": "Career progression from 'super specialist' at big CPA firm where 'I was a step removed from helping them' to Limited where 'I'm still a specialist, but I have greater responsibility.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Cross-Professional Learning Integration",
+        "description": "Actively absorb knowledge from diverse professional contacts beyond core technical areas, using social interactions to build broader perspective.",
+        "context": "Professional roles involving extensive interaction with experts from other fields, where relationship-building creates learning opportunities.",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      },
+      {
+        "name": "Large Organization Experience Translation",
+        "description": "Apply big company systems, perspectives, and judgment frameworks to small business contexts where such sophistication is typically unavailable.",
+        "context": "Consulting or advisory work with smaller organizations that lack access to enterprise-level thinking and processes.",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Attorney Network Learning Experience",
+        "content": "At the Limited, Dan gained 'exposure of working with various attorneys in thirty different states' and learning from them during dinners and social interactions. He notes 'you just learn a lot, not about law and taxes, but in everything' and that 'most attorneys are huge history buffs' who know their local history extensively.",
+        "source": "Interview Transcript",
+        "timestamp": "01:20:09",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      },
+      {
+        "name": "Big Company Perspective Advantage",
+        "content": "Dan's career progression from large CPA firm specialist to Limited corporate role to local CPA firm allows him to 'bring them a big company and big CPA firm perspective that they otherwise don't get' when working with small businesses.",
+        "source": "Interview Transcript",
+        "timestamp": "01:20:51",
+        "theme": "Cross-Domain Learning and Perspective Translation",
+        "source_chunk": "mental_model_chunk_21.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_21.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Professionalism as Dedication, Not Rigidity",
+        "description": "'The importance of moving your company toward professionalism and not just... I don't mean rigidity either, but I mean professionalism in the sense of a dedication that it's worth it, but it's really freaking heart. That's why they are where they are.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Scaling Enterprise Discipline to Small Business",
+        "source_chunk": "mental_model_chunk_22.json"
+      },
+      {
+        "name": "Scalable Discipline Principles",
+        "description": "Large organizations succeed through 'discipline that was non-negotiable for them.' Small businesses can adopt this discipline even without the same resources: 'we can't do it. We don't have the resources that they do. But they knew their numbers and they knew this and they knew that.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Scaling Enterprise Discipline to Small Business",
+        "source_chunk": "mental_model_chunk_22.json"
+      },
+      {
+        "name": "Decentralized Success Model Translation",
+        "description": "At The Limited, 'individual divisions just running their own business' provides a model for small businesses: 'I know how this $500 million business ran. They ran their own.' This shows scalable principles regardless of size.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Scaling Enterprise Discipline to Small Business",
+        "source_chunk": "mental_model_chunk_22.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Professional Discipline Translation",
+        "description": "Extract the discipline and knowledge management practices from large organizations and adapt them for small business contexts, focusing on core principles rather than resource-dependent systems.",
+        "context": "Small business consulting where introducing enterprise-level discipline around metrics, processes, and accountability can drive significant improvement.",
+        "theme": "Scaling Enterprise Discipline to Small Business",
+        "source_chunk": "mental_model_chunk_22.json"
+      },
+      {
+        "name": "Division-Level Business Model Application",
+        "description": "Use examples of how large company divisions operate independently to show small businesses that sophisticated business practices are achievable at their scale.",
+        "context": "Situations where small business owners believe professional management practices are only for large companies.",
+        "theme": "Scaling Enterprise Discipline to Small Business",
+        "source_chunk": "mental_model_chunk_22.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Limited Division Model for Small Business",
+        "content": "Dan uses his experience at The Limited, where 'individual divisions just running their own business' in a decentralized structure, to help small businesses. He tells them 'I know how this $500 million business ran. They ran their own. Yeah, we can't do it. We don't have the resources that they do. But they knew their numbers and they knew this and they knew that.' The key is adopting 'discipline that was non-negotiable for them.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:22:10",
+        "theme": "Scaling Enterprise Discipline to Small Business",
+        "source_chunk": "mental_model_chunk_22.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_22.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Being Right Isn't Always the Goal",
+        "description": "'Heads and shoulders above all is... Being right isn't always the goal.' This represents a fundamental shift from rightness-based decision making to outcome-based flexibility.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      },
+      {
+        "name": "Rigidity as Professional Liability",
+        "description": "Past approach was to 'base decisions and actions on what is right' which caused internal fury and detachment when things seemed wrong. This rigidity 'would just set me up to fail' and 'end up pissing her off because I wasn't doing it her way, even though it was wrong.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "frustration",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      },
+      {
+        "name": "Client Method Acceptance",
+        "description": "'I literally don't worry about it with clients anymore. They're go to do' what they want to do. This acceptance prevents the internal conflict that previously caused detachment and relationship damage.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      },
+      {
+        "name": "Job Security Through Flexibility",
+        "description": "Learning flexibility 'in part, for job security' represents a practical adaptation where survival required abandoning rigid righteousness in favor of relationship preservation.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Rigidity-to-Flexibility Evolution",
+        "description": "Evolve from basing decisions on 'what is right' to accepting client preferences, even when they seem wrong, to preserve relationships and effectiveness.",
+        "context": "Professional services where client relationships and outcomes matter more than being technically correct or morally superior.",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      },
+      {
+        "name": "Internal Detachment Prevention",
+        "description": "Avoid the cycle of internal fury and detachment that comes from focusing on rightness when working with less sophisticated decision-makers.",
+        "context": "Working with business owners or leaders who lack technical expertise but have final decision authority.",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Sawmill Owner Jo Relationship Learning",
+        "content": "At the sawmill, owner Jo 'wasn't very sophisticated or understanding of business or finance' and 'would just want what she wanted.' Dan's insistence on doing what was 'right' would 'just set me up to fail' and 'end up pissing her off because I wasn't doing it her way, even though it was wrong.' This taught him flexibility over rigidity.",
+        "source": "Interview Transcript",
+        "timestamp": "01:24:20",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      },
+      {
+        "name": "The Limited Internal Fury Pattern",
+        "content": "At The Limited, when Dan thought something was wrong, he 'would be furious internally, and it would cause me to lose interest for a period of time. I would almost become detached because I didn't want to have anything to do with it.' This pattern of rigidity became professionally limiting.",
+        "source": "Interview Transcript",
+        "timestamp": "01:24:20",
+        "theme": "Evolution from Rigidity to Adaptive Flexibility",
+        "source_chunk": "mental_model_chunk_23.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_23.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Context-Dependent Empathy Development",
+        "description": "Empathy wasn't needed at The Limited because 'everyone in our department, we were all the same, and they were very much black and white, but a big company. There's not a lot of gray.' But at the family sawmill 'they're gray all over the place' requiring empathy to manage effectively.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      },
+      {
+        "name": "Holistic People Assessment",
+        "description": "At the sawmill, managing people requires understanding they're 'in rural Indiana. They're not very well educated. They work hard as hell, but some of these guys are learnedly farmers. They've already been up five hours. So you have to put all that together when you're thinking about people's performance.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      },
+      {
+        "name": "People-Centered Problem Solving",
+        "description": "'When you're working with any small business owner, one of the problems eventually becomes people. If your solution to everything is firearms or something like that, then you're not really helping them solve the problem.' Solutions must account for human complexity.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      },
+      {
+        "name": "People-Centered Identity",
+        "description": "When asked to articulate his holistic approach as a soft skill, Dan states simply 'I am people-centered.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Environmental Context Integration",
+        "description": "Assess employee performance by integrating their full life context - education level, work ethic, background, and daily circumstances before work begins.",
+        "context": "Managing diverse workforces, particularly in rural or blue-collar environments where workers' backgrounds significantly impact their work performance and needs.",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      },
+      {
+        "name": "People-First Solution Design",
+        "description": "Ensure business solutions account for human complexity rather than defaulting to simple disciplinary or systematic fixes.",
+        "context": "Small business consulting where people issues are inevitable and solutions must work with human nature rather than against it.",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Rural Indiana Sawmill Empathy Learning",
+        "content": "At the family sawmill, Dan had to develop empathy because workers were 'in rural Indiana. They're not very well educated. They work hard as hell, but some of these guys are learnedly farmers. They've already been up five hours.' This required putting 'all that together when you're thinking about people's performance' - a stark contrast to The Limited where everyone was 'black and white.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:27:56",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      },
+      {
+        "name": "People-Centered Problem Solving Philosophy",
+        "content": "Dan explains that in small business consulting, 'one of the problems eventually becomes people. If your solution to everything is firearms or something like that, then you're not really helping them solve the problem.' When asked to name this soft skill, he identifies as 'people-centered.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:27:56",
+        "theme": "People-Centered Contextual Leadership",
+        "source_chunk": "mental_model_chunk_24.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_24.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Family as Perspective Transformer",
+        "description": "'Being a parent of three with now six grandchildren, it gives you a completely different perspective on things.' This family experience fundamentally alters how one approaches work and problems.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Family-Based Energy Management and Perspective",
+        "source_chunk": "mental_model_chunk_25.json"
+      },
+      {
+        "name": "Grandchildren as Mental Recharge Vehicle",
+        "description": "'What the grandkids serve as in effect is they're like the recharge vehicle, mental. I can take on other people's problems all day long and help as much as I can and produce data or whatever they want. But then, at the end of the day, if you stop by and see some of the kids, you're forced to comment on how pretty the dresses that they're wearing today is an exact copy from some Disney movie.'",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Family-Based Energy Management and Perspective",
+        "source_chunk": "mental_model_chunk_25.json"
+      },
+      {
+        "name": "Forced Attention Shift for Grounding",
+        "description": "'By moving all of your attention over there, even if it's for a short period of time, probably healthy, maybe keeps you more grounded.' The complete attention shift from business problems to simple, present-moment interactions with children provides psychological balance.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Family-Based Energy Management and Perspective",
+        "source_chunk": "mental_model_chunk_25.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Total Attention Shifting",
+        "description": "Use interactions with grandchildren to completely shift attention from complex business problems to simple, present-moment experiences like commenting on Disney dresses.",
+        "context": "High-stress professional work that requires periodic mental breaks and grounding through completely different types of human interaction.",
+        "theme": "Family-Based Energy Management and Perspective",
+        "source_chunk": "mental_model_chunk_25.json"
+      },
+      {
+        "name": "Family-Based Mental Recharging",
+        "description": "Leverage family relationships, particularly with grandchildren, as a systematic way to restore mental energy after taking on others' problems professionally.",
+        "context": "Consulting or advisory work where emotional and mental energy is constantly given to solve others' problems, requiring intentional restoration methods.",
+        "theme": "Family-Based Energy Management and Perspective",
+        "source_chunk": "mental_model_chunk_25.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Grandchildren as Mental Recharge",
+        "content": "Dan describes his six grandchildren as 'the recharge vehicle, mental' where after taking on 'other people's problems all day long,' stopping by to see the kids forces him to focus on simple things like 'how pretty the dresses that they're wearing today is an exact copy from some Disney movie.' This complete attention shift 'probably healthy, maybe keeps you more grounded.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:31:12",
+        "theme": "Family-Based Energy Management and Perspective",
+        "source_chunk": "mental_model_chunk_25.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_25.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Early Leadership Reality - Not Everyone Wants to be Led",
+        "description": "Class president experience taught 'at an early age... that you can't lead all people? Some people don't want to be led.' This fundamental leadership reality was learned through direct experience in high school.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      },
+      {
+        "name": "Team Success Over Personal Gain",
+        "description": "As soccer coach, 'you're trying to figure out how to orchestrate this mess for the greater good. It wasn't for my greater good. It was really for the team's success.' Leadership focused on collective outcomes rather than personal benefit.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      },
+      {
+        "name": "Collaboration-Authority Balance",
+        "description": "'If you're a coach and you're not a collaborator, I suspect that you're not very successful.' However, 'sometimes, you had to put your foot down and all that. So, that's that. That balance.' Leadership requires both collaborative and authoritative approaches.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      },
+      {
+        "name": "Authority Despite Age/Experience Disadvantage",
+        "description": "As 'a freshman coach to 22 women, most of whom were older than me, it was quite telling' - learning to lead people with more experience and maturity created early lessons in authority without traditional credentials.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Early Leadership Responsibility Seeking",
+        "description": "Consistently take on leadership roles from high school through college, creating situations where 'people relying on me' becomes a pattern.",
+        "context": "Personal development where leadership skills are built through volunteering for responsibility rather than waiting for appointment.",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      },
+      {
+        "name": "Leading Up and Across Experience Gaps",
+        "description": "Learn to lead people who are older, more experienced, or in peer relationships where formal authority is limited.",
+        "context": "Situations where leadership must be earned through competence and collaboration rather than granted through hierarchical position.",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "High School Class President Leadership Lessons",
+        "content": "Dan was class president for 'three or four years' in high school, missing only junior year because he 'didn't run' due to other commitments. This experience taught him early 'that you can't lead all people? Some people don't want to be led.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:33:17",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      },
+      {
+        "name": "College Soccer Coach Collaboration Challenge",
+        "content": "As women's soccer coach in college, Dan had to 'orchestrate this mess for the greater good' focused on 'the team's success' rather than personal gain. As 'a freshman coach to 22 women, most of whom were older than me,' he learned that successful coaching requires being 'a collaborator' while also knowing when to 'put your foot down.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:34:10",
+        "theme": "Early Leadership Development and Balance",
+        "source_chunk": "mental_model_chunk_26.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_26.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Family Over Career Priority Decision",
+        "description": "'I was clearly putting the family ahead of my career. What I should just say is what I thought was best for the family.' This represents a fundamental values-based decision that shaped future operating principles.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      },
+      {
+        "name": "Big Company Breathlessness Recognition",
+        "description": "'I'd been there nine years, and I was breathless. So, I turned down other opportunities because my whole family was here' - recognizing when career progression conflicts with personal well-being and family priorities.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "draining",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      },
+      {
+        "name": "Long-term Thinking Over Short-term Gain",
+        "description": "'I thought in the long run, the kids would thrive back here or do better' - prioritizing long-term family outcomes over immediate career advancement opportunities.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      },
+      {
+        "name": "Finality and Root-Setting",
+        "description": "'Moving back felt final, meaning I never put down roots in Columbus. So, that's a very local feeling.' The decision represented commitment to place and community rather than career mobility.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Values-Based Career Decision Making",
+        "description": "Make major career decisions based on family and personal values rather than purely professional advancement opportunities.",
+        "context": "Career transition points where professional opportunities conflict with personal or family priorities.",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      },
+      {
+        "name": "Community Root-Setting",
+        "description": "Choose to establish deep community roots rather than remaining mobile for career advancement, accepting the finality of geographic commitment.",
+        "context": "Mid-career decisions where establishing stability and community connection becomes more important than career flexibility.",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Cincinnati Return Decision",
+        "content": "Dan left The Limited after nine years, feeling 'breathless' at the 'big, dumb company.' He was 'clearly putting the family ahead of my career' by moving back to Cincinnati where 'my whole family was here.' He believed 'in the long run, the kids would thrive back here or do better' and it 'turned out to be just absolutely the right decision.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:36:00",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      },
+      {
+        "name": "Finality of Root-Setting",
+        "content": "The move back to Cincinnati 'felt final, meaning I never put down roots in Columbus.' This represents a commitment to place and community over career mobility, which Dan describes as 'a very local feeling' but 'kind of important.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:38:05",
+        "theme": "Values-Based Life Decisions and Community Commitment",
+        "source_chunk": "mental_model_chunk_27.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_27.json"
+  }
+]

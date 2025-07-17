@@ -1,0 +1,844 @@
+[
+  {
+    "principles": [
+      {
+        "name": "Two or Three Priorities Mental Framework",
+        "description": "'I don't have it mapped out, but I do have two or three priorities in my head at all times.' Operating with a small, manageable set of concurrent focus areas rather than detailed plans.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Financial Analysis as Starting Point Standard",
+        "description": "'I'm almost always in what is on the front of their mind at the beginning, it's my financial background. So I want to deliver for a couple of reasons. One, it's what I do. And two, it is their weakness.' Leveraging core strength to address client weakness consistently.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Gross Margin Concentration Insight",
+        "description": "'The first victory was explaining to the owner that 50% of his gross margin dollars come from only a third of his inventory.' Revealing hidden profit concentration patterns that owners don't see.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Cash Understanding as Primary Purpose",
+        "description": "'I always use it for the primary purpose, and that is to understand their cash. The ins and outs of cash because I have to be comfortable with it, and they have to be comfortable with it because some people may be running out of cash and not even know.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Net Income vs. Cash Mistake Recognition",
+        "description": "'Net income is the same as cash. That's the number one mistake nonfinancial people make, without a doubt.' Understanding the fundamental confusion between profit reporting and cash flow reality.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Financial Confidence Building Process",
+        "description": "Start with financial analysis to establish credibility while immediately addressing owner financial knowledge gaps without making them feel inadequate.",
+        "context": "Early consulting relationships where establishing expertise and trust while managing client ego around financial literacy is crucial.",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Data Quality Assessment Before Analysis",
+        "description": "Look for trends and wide variations in financial accounts first 'to figure out whether I even have confidence in what I'm looking at' before drawing conclusions.",
+        "context": "Financial analysis where data reliability must be established before insights can be trusted or acted upon.",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Hidden Profit Pattern Revelation",
+        "description": "Use financial analysis to reveal profit concentration patterns that owners don't recognize, like gross margin concentration in inventory segments.",
+        "context": "Business optimization where owners lack visibility into which aspects of their business actually drive profitability.",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Two or Three Priorities Framework",
+        "content": "Dan operates with 'two or three priorities in my head at all times' rather than detailed maps. For a business targeting '$5 million of enterprise value,' his priorities are: optimize warehouse operations, better inventory control, and financial reporting improvement 'because there is none right now.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:12:24",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Gross Margin Concentration Discovery",
+        "content": "Dan's first victory was 'explaining to the owner that 50% of his gross margin dollars come from only a third of his inventory,' leading to the question 'Why are we carrying so much stuff that barely moves?' This represents his standard approach of starting with financial analysis.",
+        "source": "Interview Transcript",
+        "timestamp": "01:15:16",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      },
+      {
+        "name": "Financial Ego Management",
+        "content": "Dan's key soft skill in financial analysis is 'not making them feel like an idiot.' He starts with 'It's okay that you don't understand this. That's why I'm here' because 'early on in almost every relationship, the owner is apologetic to me about their lack of financial knowledge, and I just have to put them at ease.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:22:08",
+        "theme": "Financial Foundation and Client Confidence Building",
+        "source_chunk": "mental_model_chunk_55.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_55.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Verify Claims Through Independent Analysis",
+        "description": "'Until I prove it, I'm not going to say that you're wrong. I'm not going to say that you're right. I just have to know for myself that it's true.' Independent verification of claimed performance metrics, even from reputable sources.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Advisor Role in Growth Moderation",
+        "description": "When owner gets excited about scaling ('why don't we just increase it 20% every month'), respond with 'Well, let's just slow down a little bit. Let's just be a little bit more deliberate with that and make sure we understand what we're doing.'",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Framing Role as Company Enablement",
+        "description": "To warehouse manager: 'Dan really thinks he's got the formula figured out and he really wants to grow. I said my job is to make sure the rest of the company can keep up with his plans.' Positioning as supporting growth rather than controlling it.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Urgent vs. Important Priority Correction",
+        "description": "'We have a priority problem here... We're not working on what's important. We're working on what's urgent. All day long.' Distinguishing between crisis management and strategic focus.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Badgering for Delegation Acceptance",
+        "description": "'The way I'm getting there is I am badger her with texts and requests for meetings... Just give it to me.' Persistent pressure to force owners to delegate tasks they shouldn't be doing.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Claims Verification Process",
+        "description": "Independently verify performance claims from external vendors or internal reports, even when sources are reputable, to establish baseline truth.",
+        "context": "Business optimization where claimed performance metrics may be inflated or measured incorrectly, requiring independent analysis.",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Growth Enthusiasm Moderation",
+        "description": "Counterbalance owner excitement about scaling with measured, deliberate planning to ensure sustainable growth rather than reckless expansion.",
+        "context": "Successful businesses where initial wins create overconfidence about scaling capabilities and speed.",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Persistent Delegation Enforcement",
+        "description": "Use persistent pressure and communication to force owners to delegate operational tasks so they can focus on strategic activities like sales.",
+        "context": "Owner-operated businesses where founders resist delegating even routine tasks that prevent them from higher-value activities.",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Google Ads Verification and Growth Moderation",
+        "content": "Dan found Google Ads represented 'the single biggest expense in overhead' with claimed 10x ROI. He said 'Until I prove it, I'm not going to say that you're wrong... I just have to know for myself that it's true.' The actual ROI was 7.6x. When the owner wanted to 'increase it 20% every month,' Dan advised 'let's just slow down a little bit. Let's just be a little bit more deliberate.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:23:34",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Urgent vs. Important Priority Problem",
+        "content": "With a business owner 45 days behind in billing with no cash, Dan identified the core issue: 'We have a priority problem here... We're not working on what's important. We're working on what's urgent. All day long.' He forces delegation by 'badger her with texts and requests' until she agrees to hand over operational tasks.",
+        "source": "Interview Transcript",
+        "timestamp": "01:28:56",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      },
+      {
+        "name": "Company Enablement Framing",
+        "content": "When meeting the warehouse manager, Dan framed his role: 'Dan really thinks he's got the formula figured out and he really wants to grow. I said my job is to make sure the rest of the company can keep up with his plans.' This positions him as supporting the owner's vision rather than imposing external control.",
+        "source": "Interview Transcript",
+        "timestamp": "01:25:00",
+        "theme": "Verification and Growth Management",
+        "source_chunk": "mental_model_chunk_56.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_56.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Creative Owners Focus",
+        "description": "'I help creative owners get back to doing what they were doing that made the business great.' Core mission focused on enabling founders to return to their strengths.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Switzerland Neutrality Model",
+        "description": "'I am Switzerland if the employee... I freely admit I am being paid by the owner, but I work for the company, and I'm going to do the... I'm going to work in the best interest of the company, not the owner.' Neutral position between owner and employees.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Leadership Term Rejection",
+        "description": "'I won't say leadership because I don't think that word means anything anymore. It's just squishy, and people just run around saying that they're practicing leadership.' Preferring concrete terms like accountability and responsibility.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Accountability and Responsibility Over Leadership",
+        "description": "'I help people become more accountable, and I help them take on more responsibility... I work to figure out who owns what in the organization and who is capable of taking on more and helping them get it.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Early Passion for Influence and Events",
+        "description": "'The passion was to be involved in influence events in effect. I don't know if it was to lead or not... I had a passion for being class president.' Early drive to shape outcomes and be central to important activities.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Partner Role Model Disillusionment",
+        "description": "'Very few of the partners served as very good role models for me... they were rich, but I don't know that they were leading lives that really interested me.' Success without lifestyle appeal led to career redirection.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Multi-Role Capability Deployment",
+        "description": "Function as CFO, warehouse manager, treasurer, accountant, advisor, board member, integrator, strategist, or CEO depending on business needs.",
+        "context": "Small business consulting where role flexibility allows filling multiple organizational gaps as needed.",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Company-First Allegiance Declaration",
+        "description": "Explicitly state loyalty to company interests rather than owner preferences, creating trust with employees while maintaining owner relationship.",
+        "context": "Organizational consulting where employee buy-in is crucial but owner funding creates potential conflict of interest.",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Comprehensive Expertise Inventory",
+        "content": "Dan's mini-expertise areas include: 'Financial analysis, accounting, bookkeeping, sales tax planning, relationship building, pricing, margin analysis, inventory analysis, vendor negotiation... delegation model... clarifying roles and responsibilities. Being a sounding board and being willing to tell the owner what they want to hear, whether they want to hear it or not.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:31:25",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Switzerland Neutrality Metaphor",
+        "content": "Dan describes his role as 'Switzerland' to employees: 'I freely admit I am being paid by the owner, but I work for the company, and I'm going to work in the best interest of the company, not the owner, understanding that if I do something that is not in the best interest of the owner, I'll get fired.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:33:54",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Early Passion for Influence",
+        "content": "Dan traces his motivation back to high school: 'The passion was to be involved in influence events in effect. I don't know if it was to lead or not... I had a passion for being class president.' Early career passion was 'money and the prestige' with 'the goal was partner.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:40:38",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      },
+      {
+        "name": "Partner Role Model Disillusionment",
+        "content": "After having children, Dan realized 'very few of the partners served as very good role models for me... they were rich, but I don't know that they were leading lives that really interested me.' This led him to leave the partnership track.",
+        "source": "Interview Transcript",
+        "timestamp": "01:43:39",
+        "theme": "Neutral Advisory and Creative Owner Enablement",
+        "source_chunk": "mental_model_chunk_57.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_57.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Six Core Business Benefits",
+        "description": "Primary value delivered: 'Financial clarity, sounding board for the owner, the person who ensures the execution of the owner's wishes, improved profitability, improved accountability' plus 'a happier team.' These represent the complete value proposition.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Happier Team as Afterthought Recognition",
+        "description": "'Yeah, a happier team' added after initial five benefits, suggesting this outcome is valued but not always consciously positioned as primary benefit.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Trusted Advisor Continuity",
+        "description": "'In some ways, I think it's no different than coming right out of college into a public accounting firm. I was still working with business owners in a much more specialized capacity, but I was still advising, and I was acting as a trusted advisor.' Career consistency in advisory role.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Unconscious Career Choice",
+        "description": "'I don't even know that it was conscious' about choosing accounting, suggesting career evolution happened organically rather than through strategic planning.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Logic and Symmetry Appeal",
+        "description": "'Probably the symmetry of dividends equalling credits and the logic of it. So, I got it.' Attraction to systematic, logical frameworks that have clear rules and balance.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Practical Field Selection",
+        "description": "'Probably at the time, I knew it was a very solid field to go into.' Career choice influenced by stability and security considerations alongside intellectual appeal.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Six-Benefit Value Proposition",
+        "description": "Deliver financial clarity, owner advisory support, execution management, profitability improvement, accountability enhancement, and team happiness as comprehensive business value.",
+        "context": "Business consulting where multiple stakeholder benefits need to be articulated clearly for different audiences (owners, employees, prospects).",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Organic Career Evolution",
+        "description": "Allow career development to happen through natural attraction to logical systems and advisory relationships rather than forcing strategic career planning.",
+        "context": "Professional development where authentic interests and natural abilities guide career direction more effectively than forced planning.",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Six Core Business Benefits",
+        "content": "Dan's value proposition includes five primary benefits: 'Financial clarity, sounding board for the owner, the person who ensures the execution of the owner's wishes, improved profitability, improved accountability.' He adds a sixth: 'a happier team' when prompted, noting 'That a big one.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:37:43",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Unconscious Accounting Attraction",
+        "content": "When asked what attracted him to accounting, Dan responds 'God I ask myself that every day... I don't even know that it was conscious.' He traces it to high school bookkeeping: 'Probably the symmetry of dividends equalling credits and the logic of it. So, I got it' plus knowing 'it was a very solid field to go into.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:39:36",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      },
+      {
+        "name": "Trusted Advisor Continuity",
+        "content": "Dan sees his current work as continuous with his early career: 'in some ways, I think it's no different than coming right out of college into a public accounting firm. I was still working with business owners in a much more specialized capacity, but I was still advising, and I was acting as a trusted advisor.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:39:05",
+        "theme": "Comprehensive Value Delivery and Career Evolution",
+        "source_chunk": "mental_model_chunk_58.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_58.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Early Passion for Influence and Events",
+        "description": "'The passion was to be involved in influence events in effect. I don't know if it was to lead or not... I had a passion for playing soccer. I didn't have a passion for school. I had a passion for being class president.' Early drive focused on impact and involvement rather than pure leadership.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "Promotion-Focused vs. Work-Focused Passion",
+        "description": "'I had a passion to be successful at the CPA firm... I was working to be promoted, but that was the passion. It wasn't about the work itself.' Motivation driven by advancement rather than intrinsic work satisfaction.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "conviction",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "Money and Prestige as Early Drivers",
+        "description": "'That would have been the money and the prestige... because the goal was partner.' Clear acknowledgment of external validation and financial success as primary motivators.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "Role Model Disillusionment",
+        "description": "'Very few of the partners served as very good role models for me... they were rich, but I don't know that they were leading lives that really interested me.' Success without lifestyle appeal led to career redirection.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "Uncertainty and Unpredictability Craving",
+        "description": "'I missed the uncertainty of a client problem or a client picking up the phone and calling... Same shit, different day is a little bit extreme, but it was far more predictable than unpredictable.' Need for variety and surprise over stability.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "Family as Career Catalyst",
+        "description": "'When the kids came along... I began to realize... The cost in hours required was not going to be worth it.' Children created values clarification that changed career trajectory.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Values Evolution Through Life Stages",
+        "description": "Allow major life changes (like having children) to prompt reevaluation of career priorities and role model quality rather than maintaining fixed goals.",
+        "context": "Career development where external success markers may conflict with evolving personal values and lifestyle preferences.",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "Unpredictability as Energy Source",
+        "description": "Seek work environments that provide uncertainty and client-driven variety rather than predictable corporate routines, even when the predictable work is enjoyable.",
+        "context": "Professional choices where stimulation and variety matter more than security and routine for maintaining engagement and energy.",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "High School Passion Foundation",
+        "content": "Dan's earliest passion was 'to be involved in influence events in effect. I don't know if it was to lead or not' including 'passion for playing soccer... passion for being class president' but notably 'I didn't have a passion for school.' This established a pattern of wanting to influence outcomes and be central to important activities.",
+        "source": "Interview Transcript",
+        "timestamp": "01:40:38",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "CPA Firm Passion vs. Work Content",
+        "content": "Early business passion was 'to be successful at the CPA firm... I was working to be promoted, but that was the passion. It wasn't about the work itself.' The motivation was 'money and the prestige... because the goal was partner' rather than intrinsic work satisfaction.",
+        "source": "Interview Transcript",
+        "timestamp": "01:42:10",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      },
+      {
+        "name": "Role Model Disillusionment and Career Shift",
+        "content": "Having children prompted realization that CPA firm partners 'were rich, but I don't know that they were leading lives that really interested me.' This led to leaving accounting, but corporate life was too predictable: 'I missed the uncertainty of a client problem or a client picking up the phone and calling.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:43:39",
+        "theme": "Career Evolution Through Life Stage Values",
+        "source_chunk": "mental_model_chunk_59.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_59.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "External Reliance Activation",
+        "description": "'I have to know someone is relying on me. I can't just do it. Not that I can't do it for myself, but for me to reach a level of intensity of not only quality but just thought process, I need to know that the output will be used by someone else.'",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Stakeholder-Dependent Performance Optimization",
+        "source_chunk": "mental_model_chunk_6.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Stakeholder-Dependent Performance",
+        "description": "Peak performance and flow states require knowing that others are depending on the output, which elevates both quality and thought process intensity beyond what self-directed work can achieve.",
+        "context": "Personal projects or self-directed work where external accountability and impact are needed to reach optimal performance levels.",
+        "theme": "Stakeholder-Dependent Performance Optimization",
+        "source_chunk": "mental_model_chunk_6.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "External vs Internal Project Performance Difference",
+        "content": "When asked about achieving flow state on his own projects versus external consulting work, Dan reveals that he needs to 'know someone is relying on me' to reach peak 'intensity of not only quality but just thought process.' While he can work for himself, optimal performance requires knowing 'the output will be used by someone else.'",
+        "source": "Interview Transcript",
+        "timestamp": "37:38",
+        "theme": "Stakeholder-Dependent Performance Optimization",
+        "source_chunk": "mental_model_chunk_6.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_6.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Passion for Problem-Based Helping",
+        "description": "'I just help someone has a problem... When we're finished talking about it or I go off and do something and come back to them, they feel better for it. It's not about giving an answer.' Passion centered on providing relief and improvement rather than solution delivery.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "energizing",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      },
+      {
+        "name": "Teaching as Career Analog",
+        "description": "'The closest thing that comes to mind is teaching... you're not helping with a current problem but you're taking all of your experience and helping them to understand the problem and maybe avoid them down the road.' Similar helping function with prevention focus.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      },
+      {
+        "name": "Limited Current Interests",
+        "description": "'Being a right-wing reactionary is really important to me on a daily basis... My interest, even in sports, is waning a little bit. Outside of family, I read and stuff... Don't have any other interests.' Narrow range of current passions beyond work and family.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "draining",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      },
+      {
+        "name": "Evolution from Giving Answers to Leading to Solutions",
+        "description": "'Earlier... I thought help meant giving answers. Help really means leading people to a better solution.' Fundamental shift in helping philosophy from directive to facilitative approach.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Problem Relief Over Solution Provision",
+        "description": "Focus on helping people feel better about their problems rather than necessarily providing definitive answers or solutions.",
+        "context": "Consulting or advisory work where emotional relief and clarity may be more valuable than specific technical solutions.",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      },
+      {
+        "name": "Preventive Teaching Approach",
+        "description": "Use experience to help people understand and potentially avoid future problems rather than just solving current issues.",
+        "context": "Mentoring or educational roles where long-term development is more important than immediate problem-solving.",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      },
+      {
+        "name": "Helping Philosophy Evolution",
+        "description": "Transition from directive advice-giving to facilitative guidance that leads people to discover their own better solutions.",
+        "context": "Professional development where effectiveness requires moving from expert-driven to client-driven problem-solving approaches.",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Current Passion Definition",
+        "content": "When asked about passion for his current work, Dan explains: 'I just help someone has a problem... When we're finished talking about it or I go off and do something and come back to them, they feel better for it. It's not about giving an answer.' The satisfaction comes from providing relief rather than solutions.",
+        "source": "Interview Transcript",
+        "timestamp": "01:45:32",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      },
+      {
+        "name": "Teaching as Career Analog",
+        "content": "When asked about applying his skills to another career, Dan identifies teaching: 'you're not helping with a current problem but you're taking all of your experience and helping them to understand the problem and maybe avoid them down the road.' This represents the same helping function with a prevention focus.",
+        "source": "Interview Transcript",
+        "timestamp": "01:46:33",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      },
+      {
+        "name": "Help Philosophy Evolution",
+        "content": "Dan describes a fundamental shift in his understanding: 'Earlier... I thought help meant giving answers. Help really means leading people to a better solution.' This represents evolution from directive to facilitative helping approach.",
+        "source": "Interview Transcript",
+        "timestamp": "01:48:43",
+        "theme": "Facilitative Helping Over Solution Provision",
+        "source_chunk": "mental_model_chunk_60.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_60.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Root Cause Over Surface Solutions",
+        "description": "'Root cause... You'll never get to the root cause in the first conversation, obviously. But even two or three conversations in, you still haven't drilled down into the core issue.' Emphasis on deep causal understanding rather than quick fixes.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      },
+      {
+        "name": "Tool-Throwing as False Victory",
+        "description": "'What a lot of people in my position do is just throw ideas and tools out to try to solve those surface-level issues and then declare victory. But it hasn't necessarily built a stronger company.' Critique of superficial consulting approaches.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      },
+      {
+        "name": "Multi-Conversation Root Cause Discovery",
+        "description": "Root cause analysis requires patience across 'two or three conversations' or more, rejecting the pressure for immediate problem identification and solution.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      },
+      {
+        "name": "Fractional Advisor Identity",
+        "description": "'It's that fractional advisor. You know, COO CFO.' Current role conception as hybrid operational and financial leadership rather than pure consulting.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Deep Causal Investigation Process",
+        "description": "Resist pressure for quick solutions by systematically drilling down through multiple conversations to identify root causes rather than addressing symptoms.",
+        "context": "Business consulting where surface problems are often symptoms of deeper organizational or systemic issues that require patience to uncover.",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      },
+      {
+        "name": "Sustainable Strength Building Over Quick Wins",
+        "description": "Focus on building stronger companies through root cause resolution rather than achieving quick victories through surface-level tool application.",
+        "context": "Organizational development where long-term health requires addressing fundamental issues rather than implementing popular solutions.",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Root Cause vs. Tool-Throwing Approach",
+        "content": "Dan's decision architecture centers on 'Root cause' analysis, requiring patience: 'You'll never get to the root cause in the first conversation... even two or three conversations in, you still haven't drilled down into the core issue.' He contrasts this with others who 'just throw ideas and tools out to try to solve those surface-level issues and then declare victory. But it hasn't necessarily built a stronger company.'",
+        "source": "Interview Transcript",
+        "timestamp": "06:00",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      },
+      {
+        "name": "Current Role Frame",
+        "content": "When asked about his current role perspective, Dan identifies as 'that fractional advisor. You know, COO CFO' - positioning himself as operational and financial leadership rather than pure consulting.",
+        "source": "Interview Transcript",
+        "timestamp": "07:15",
+        "theme": "Deep Causal Analysis Over Quick Fixes",
+        "source_chunk": "mental_model_chunk_61.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_61.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Owner as Own Roadblock Recognition",
+        "description": "'She remains the roadblock two months later, even giving stuff to me that I should be doing. So she just puts it off, puts it off, puts it off.' Understanding that owners often prevent their own progress despite hiring help.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      },
+      {
+        "name": "Urgent vs. Important Distinction",
+        "description": "'Some of which might be urgent, most are not. They just happen to be weighing on her mind and probably represent some future path to revenue, some extremely undefined path to future revenue.' Mental burden doesn't equal actual priority.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      },
+      {
+        "name": "True Priorities vs. Revenue Impact",
+        "description": "'I'm just listening for what the true priorities are, not necessarily based on revenue impact but based on what it's going to take to get her working on the right things to get her out of the mud.' Priority assessment based on operational effectiveness rather than revenue potential.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      },
+      {
+        "name": "Self-Discovery Through Questioning",
+        "description": "'I just start asking questions about each of those so-called priorities. I try to let her talk it through so that she realizes that some of them aren't priorities.' Facilitation over direction for genuine understanding.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      },
+      {
+        "name": "Time Freedom as Priority Test",
+        "description": "'What if this week we did nothing more than number two and number three? What impact would that have?' Using time liberation as a metric for identifying true priorities that enable higher-value work.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Owner Roadblock Diagnosis and Resolution",
+        "description": "Identify when owners themselves are preventing progress through inability to delegate or prioritize, then use questioning to help them recognize this pattern.",
+        "context": "Business consulting where owners hire help but continue to bottleneck progress through their own behaviors and decision-making patterns.",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      },
+      {
+        "name": "Priority Clarification Through Impact Testing",
+        "description": "Test claimed priorities by exploring their impact on time freedom and ability to focus on high-value activities rather than just revenue potential.",
+        "context": "Strategic planning situations where multiple competing priorities need to be evaluated based on their systemic impact rather than just financial metrics.",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      },
+      {
+        "name": "Socratic Priority Discovery",
+        "description": "Use questioning to guide owners through their own priority list, letting them discover which items aren't actually priorities through their own analysis.",
+        "context": "Coaching situations where self-discovery creates stronger buy-in than imposed priorities or external analysis.",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Shiny Object Owner Roadblock Example",
+        "content": "Dan worked with an owner who 'loves to chase shiny red objects' and 'remains the roadblock two months later' despite hiring help. When she presented a laundry list of 'fires that have to be put out,' he listened for 'what the true priorities are, not necessarily based on revenue impact but based on what it's going to take to get her working on the right things to get her out of the mud.'",
+        "source": "Interview Transcript",
+        "timestamp": "07:57",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      },
+      {
+        "name": "Time Freedom Priority Test",
+        "content": "Dan used a specific test: 'what if this week we did nothing more than number two and number three? What impact would that have?' When she said it 'would free up a lot of time long-term,' he reframed: 'is that really our priority to get you to do what you're best at versus all the stuff that you're doing right now? She got it.'",
+        "source": "Interview Transcript",
+        "timestamp": "07:57",
+        "theme": "Owner Behavior Pattern Recognition and Correction",
+        "source_chunk": "mental_model_chunk_62.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_62.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Family Harmony Over Financial Maximization",
+        "description": "'My goal is family harmony... We have to focus on family harmony first and the amount that you get paid second. I did not call me in for that.' Prioritizing relationship preservation over pure financial optimization in family business transitions.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      },
+      {
+        "name": "Range Over Fixed Number Strategy",
+        "description": "'We can't go into this stuck on a number. We come up with a range. What feels good to you?' Using ranges to maintain negotiation flexibility and avoid positional bargaining.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      },
+      {
+        "name": "Middle Ground for Mutual Concession",
+        "description": "'Family harmony becomes that middle ground where people ought to be willing to give a little bit. Both sides ought to be willing to give a little bit.' Creating shared values as foundation for compromise.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      },
+      {
+        "name": "Family Business Relationship Fragility Recognition",
+        "description": "'I've seen too many family businesses where family members don't even talk to each other anymore.' Understanding long-term relationship costs of financial disputes in family contexts.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      },
+      {
+        "name": "Financial Quarterback Role",
+        "description": "Positioned as 'sort of that financial quarterback to just be behind the scenes... pulling together the information that is needed and help craft the strategy' - operational support rather than legal advocacy.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Relationship-First Financial Strategy",
+        "description": "In family business transitions, prioritize maintaining family relationships over maximizing financial outcomes, using this as the framework for negotiation strategy.",
+        "context": "Family business succession where financial disputes can permanently damage relationships and create long-term costs beyond monetary considerations.",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      },
+      {
+        "name": "Range-Based Negotiation Framework",
+        "description": "Use valuation ranges rather than fixed numbers to prevent positional bargaining and maintain flexibility for relationship-preserving compromises.",
+        "context": "Business valuation disputes where rigid positions can escalate conflict and prevent mutually acceptable solutions.",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      },
+      {
+        "name": "Values-Based Middle Ground Creation",
+        "description": "Establish shared values (like family harmony) as the negotiation foundation that encourages both parties to make concessions for a larger shared goal.",
+        "context": "Family or partnership disputes where purely financial negotiations fail to account for relationship preservation needs.",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Family Business Valuation Strategy Surprise",
+        "content": "In a family business valuation dispute between mother and son, Dan surprised the attorney by prioritizing 'family harmony based upon all of the family businesses that I've worked with.' He told the mother: 'We can't go into this stuck on a number. We come up with a range... we have to focus on family harmony first and the amount that you get paid second. I did not call me in for that.'",
+        "source": "Interview Transcript",
+        "timestamp": "11:49",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      },
+      {
+        "name": "Family Harmony as Negotiation Foundation",
+        "content": "Dan's thinking: 'Once we start talking about a specific dollar amount, it's easy for either side to just dig in their heels, and family harmony becomes that middle ground where people ought to be willing to give a little bit. Both sides ought to be willing to give a little bit.' His experience: 'I've seen too many family businesses where family members don't even talk to each other anymore.'",
+        "source": "Interview Transcript",
+        "timestamp": "13:45",
+        "theme": "Relationship-First Family Business Strategy",
+        "source_chunk": "mental_model_chunk_63.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_63.json"
+  }
+]

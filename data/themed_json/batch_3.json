@@ -1,0 +1,672 @@
+[
+  {
+    "principles": [
+      {
+        "name": "Accumulation Over Linear Path",
+        "description": "'I don't see it as a path. I see it as an accumulation of experiences that has landed here, that represents more experience than most.' Career development is viewed as experiential accumulation rather than strategic progression.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      },
+      {
+        "name": "Corporate as Means, Consulting as End",
+        "description": "'The corporate stuff isn't is helpful, but it was more of a means to the end, whereas the coaching CPA stuff is the vehicle to help.' Different types of work serve different purposes in the larger mission.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      },
+      {
+        "name": "Help as Core Motivation",
+        "description": "In consulting and CPA work, 'it was just all about helping people. That's all I really that because that's all I really wanted to do.' This represents the fundamental driving force behind career choices.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      },
+      {
+        "name": "Corporate for Knowledge and People Skills",
+        "description": "Corporate experience was valuable because 'it was more about knowledge and. And working with people' - serving as skill-building foundation for later helping-focused work.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Experience Accumulation Strategy",
+        "description": "Approach career development as accumulating diverse experiences rather than following a linear path, viewing each role as adding to overall capability.",
+        "context": "Professional development where varied experiences create more value than specialized expertise in a single area.",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      },
+      {
+        "name": "Means-End Career Segmentation",
+        "description": "Distinguish between roles that serve as means (corporate knowledge-building) and roles that serve as ends (helping others), with different evaluation criteria for each.",
+        "context": "Career planning where some roles are stepping stones to build capabilities while others represent the ultimate purpose.",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Non-Linear Career Philosophy",
+        "content": "When asked about defining career decisions, Dan explains 'I don't see it as a path. I see it as an accumulation of experiences that has landed here, that represents more experience than most.' This view emphasizes experiential breadth over strategic career progression.",
+        "source": "Interview Transcript",
+        "timestamp": "01:39:36",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      },
+      {
+        "name": "Corporate vs Consulting Purpose Distinction",
+        "content": "Dan differentiates between corporate and consulting work: corporate was 'more about knowledge and working with people' while consulting/CPA work 'was just all about helping people. That's all I really wanted to do.' The corporate work was 'more of a means to the end, whereas the coaching CPA stuff is the vehicle to help.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:40:12",
+        "theme": "Experiential Career Accumulation for Purpose-Driven Work",
+        "source_chunk": "mental_model_chunk_28.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_28.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Father's Work Ethic and Duty Foundation",
+        "description": "Father provided foundational influence through 'work ethic, sense of duty' - establishing core values around commitment and responsibility.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      },
+      {
+        "name": "Mother's Stoicism and Introvert Leadership Model",
+        "description": "Mother demonstrated 'stoicism and logic to some extent, and how you don't have to be an extrovert, and yet, people are still attracted to you.' This provided a model for non-extroverted leadership and influence.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      },
+      {
+        "name": "Boss's Work-Family Balance Excellence",
+        "description": "Limited boss 'did a great job of balancing work and family. Even while he traveled internationally, he worked really hard at it' - demonstrating that high-level professional success can coexist with family commitment.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      },
+      {
+        "name": "Aspirational Organization Standards",
+        "description": "Limited boss 'remains the most organized person I've ever met at a level that I am comfortable with now that I will not achieve' - providing an aspirational but realistic benchmark for organizational excellence.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Parent-Derived Core Values Integration",
+        "description": "Integrate different but complementary parental influences - father's work ethic/duty with mother's stoic logic and introvert leadership model.",
+        "context": "Personal development where foundational family influences provide complementary strengths for professional effectiveness.",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      },
+      {
+        "name": "Professional Role Model Observation",
+        "description": "Learn from professional role models who demonstrate excellence in areas you value, accepting their standards as aspirational even when knowing you may not achieve their level.",
+        "context": "Professional development where observing excellence in others provides both inspiration and realistic self-assessment.",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Parental Influence Combination",
+        "content": "Dan's father provided 'work ethic, sense of duty' while his mother demonstrated 'stoicism and logic to some extent, and how you don't have to be an extrovert, and yet, people are still attracted to you.' These combined influences shaped both his work approach and leadership style.",
+        "source": "Interview Transcript",
+        "timestamp": "01:41:44",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      },
+      {
+        "name": "Limited Boss as Work-Life Balance Model",
+        "content": "Dan's boss at The Limited 'did a great job of balancing work and family. Even while he traveled internationally, he worked really hard at it.' This boss also 'remains the most organized person I've ever met at a level that I am comfortable with now that I will not achieve' - providing both an aspirational model and realistic self-assessment.",
+        "source": "Interview Transcript",
+        "timestamp": "01:42:25",
+        "theme": "Foundational Role Model Integration",
+        "source_chunk": "mental_model_chunk_29.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_29.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Personalized Collaboration Orchestration",
+        "description": "Effective collaboration requires evaluating 'that person's arguments based on how well you understand their thinking style.' Some people 'go off very quickly' requiring processing adjustments, while others 'literally need to go away and then come back.' This personalized approach is 'part of the orchestration.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Personalized Collaborative Intelligence",
+        "source_chunk": "mental_model_chunk_3.json"
+      },
+      {
+        "name": "Emotional Intelligence Through Information Exchange",
+        "description": "Emotional intelligence manifests 'through the give and take of the collaborative process' where the focus is on 'knowing that they're free to say whatever is on their mind as we try to figure out a solution to the crisis.'",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "flow-state",
+        "theme": "Personalized Collaborative Intelligence",
+        "source_chunk": "mental_model_chunk_3.json"
+      },
+      {
+        "name": "Answer-Timing Wisdom",
+        "description": "Recognizing when 'an answer is not necessarily what's needed right now because we don't have enough information,' even when 'they may be coming for an answer.'",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Personalized Collaborative Intelligence",
+        "source_chunk": "mental_model_chunk_3.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Thinking Style Adaptation",
+        "description": "Adjust collaboration approach based on individual thinking styles - account for those who 'go off very quickly' by processing their input differently, and allow space for those who need time to process.",
+        "context": "Team collaboration where you know individual team members' cognitive patterns and can adapt your interaction style accordingly.",
+        "theme": "Personalized Collaborative Intelligence",
+        "source_chunk": "mental_model_chunk_3.json"
+      },
+      {
+        "name": "Information-Before-Answers Framework",
+        "description": "Resist the pressure to provide immediate answers when insufficient information exists, instead creating space for comprehensive information gathering through collaborative exchange.",
+        "context": "Crisis situations where team members expect immediate answers but the situation requires more data collection first.",
+        "theme": "Personalized Collaborative Intelligence",
+        "source_chunk": "mental_model_chunk_3.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Collaboration Components Breakdown",
+        "content": "Dan identifies collaboration as having three components: ideas, information, and personalized evaluation based on understanding each person's thinking style. This includes accommodating those who 'go off very quickly' and allowing others who 'literally need to go away and then come back' to process.",
+        "source": "Interview Transcript",
+        "timestamp": "29:40",
+        "theme": "Personalized Collaborative Intelligence",
+        "source_chunk": "mental_model_chunk_3.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_3.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Human Element Integration",
+        "description": "Drucker 'never let go of the human element of anything that he did, and he still doesn't seem to get very much credit for that' - emphasizing the importance of maintaining human considerations in business analysis.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      },
+      {
+        "name": "Focus on the Real",
+        "description": "'He focused on the real because what I learned from him was what's the real?' This represents looking beyond surface appearances to understand underlying drivers and actual customer needs.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      },
+      {
+        "name": "Predictive Analysis Through Real Understanding",
+        "description": "Drucker's 'ability to look into the future' demonstrated through writing 'an article about department stores in the seventies, telling us why they're not going to survive' by understanding real underlying changes rather than surface trends.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      },
+      {
+        "name": "Real Issue Recognition Over Surface Focus",
+        "description": "Department stores 'kept focusing on fashion' while 'everything became about time' due to changing demographics. 'Target and Costco came because they addressed the real issue of time' rather than the perceived issue of fashion.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Real vs. Apparent Issue Analysis",
+        "description": "Look beyond what organizations think their value proposition is to understand what customers actually need, particularly when underlying conditions change.",
+        "context": "Business analysis where organizations may be focused on historical strengths that no longer address current customer realities.",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      },
+      {
+        "name": "Demographic Change Impact Assessment",
+        "description": "Understand how fundamental demographic shifts (like women entering workforce) create new 'real' customer needs that may conflict with traditional business models.",
+        "context": "Strategic planning where long-term societal changes require businesses to adapt their core value propositions.",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Drucker's Department Store Prediction",
+        "content": "Dan admires Drucker's predictive ability, citing how he wrote 'an article about department stores in the seventies, telling us why they're not going to survive.' Drucker understood that department stores originally offered 'a different experience for each class' but failed to adapt when 'everything became about time' due to more women entering the workforce. While department stores 'kept focusing on fashion,' Target and Costco succeeded because 'they addressed the real issue of time.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:44:04",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      },
+      {
+        "name": "Drucker's Human Element Focus",
+        "content": "Dan values Drucker not primarily for knowledge worker concepts but because Drucker 'never let go of the human element of anything that he did, and he still doesn't seem to get very much credit for that.' From Drucker, Dan learned to focus on 'what's the real' - understanding underlying human needs rather than surface business assumptions.",
+        "source": "Interview Transcript",
+        "timestamp": "01:43:15",
+        "theme": "Real vs. Apparent Issue Analysis",
+        "source_chunk": "mental_model_chunk_30.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_30.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Lincoln's Complex Leadership Admiration",
+        "description": "'I still admire Lincoln. I just can't figure it out. I just love reading or hearing stories about even the \"Team of Rivals\" and the skill required to manage that cabinet and the Civil War and everything is just phenomenal.' Lincoln represents complex leadership under extreme pressure.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      },
+      {
+        "name": "Rejection of Management Fads",
+        "description": "'I don't believe in any management tool or fed. Whereas maybe ten years ago I would have like this like we got to do the balanced scorecard or you know what, whatever.' Evolution away from standardized management approaches.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      },
+      {
+        "name": "Owner-Centric Custom Solutions",
+        "description": "'The best plan is the plan that starts with a recognition of the owner's strengths and weaknesses and then you just borrow. You just borrow and put something together that fits because it has to feel like theirs.'",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      },
+      {
+        "name": "Ownership vs. Imposition for Sustainability",
+        "description": "'If it always feels like someone else's, they do it for a year and then they quit all the time.' Solutions must feel authentic to the person implementing them for long-term success.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Management Fad Rejection Evolution",
+        "description": "Move away from believing in standardized management tools and approaches in favor of customized solutions based on individual leader characteristics.",
+        "context": "Consulting evolution where experience shows that one-size-fits-all management approaches fail when they don't align with leader personality and strengths.",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      },
+      {
+        "name": "Authentic Solution Design",
+        "description": "Create solutions that 'feel like theirs' to the owner by starting with their strengths and weaknesses, then borrowing elements that fit their style.",
+        "context": "Business consulting where sustainability requires solutions that align with the owner's natural operating style rather than imposed best practices.",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Lincoln Leadership Fascination",
+        "content": "Dan maintains deep admiration for Lincoln, particularly 'the skill required to manage that cabinet and the Civil War and everything is just phenomenal.' He references 'Team of Rivals' and finds Lincoln's complex leadership under extreme pressure continuously fascinating, though he admits 'I just can't figure it out.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:45:00",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      },
+      {
+        "name": "Evolution Away from Management Tools",
+        "content": "Dan describes moving away from management fads: 'I don't believe in any management tool or fed. Whereas maybe ten years ago I would have like this like we got to do the balanced scorecard.' He now believes 'the best plan is the plan that starts with a recognition of the owner's strengths and weaknesses' because if solutions 'always feels like someone else's, they do it for a year and then they quit.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:49:04",
+        "theme": "Customized Solutions Over Management Fads",
+        "source_chunk": "mental_model_chunk_31.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_31.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Internalization Over Recall",
+        "description": "'I just don't think I read. I don't even try to recall as much as if it was a good experience. Well, then I've somehow internalized it and it'll come out' - knowledge integration through internalization rather than conscious memorization.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Internalized Learning Over Impressive Recall",
+        "source_chunk": "mental_model_chunk_32.json"
+      },
+      {
+        "name": "Photographic Memory Skepticism",
+        "description": "'Everyone was just so impressed by it, and I thought, I don't know, I don't care. It's not a skill... To me, that's not useful knowledge' when referring to a partner with photographic memory who could recall exact document locations.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Internalized Learning Over Impressive Recall",
+        "source_chunk": "mental_model_chunk_32.json"
+      },
+      {
+        "name": "Useful vs. Impressive Knowledge Distinction",
+        "description": "Distinguishes between impressive recall abilities ('where a piece of paper was in a file from three years ago') and actually useful knowledge for problem-solving and decision-making.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Internalized Learning Over Impressive Recall",
+        "source_chunk": "mental_model_chunk_32.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Amalgamation Learning Style",
+        "description": "Learn through internalization where good experiences become part of operating knowledge without conscious effort to recall specific sources or details.",
+        "context": "Knowledge work where synthesis and integration matter more than precise recall of sources and specific facts.",
+        "theme": "Internalized Learning Over Impressive Recall",
+        "source_chunk": "mental_model_chunk_32.json"
+      },
+      {
+        "name": "Utility-Based Knowledge Valuation",
+        "description": "Value knowledge based on its practical utility for problem-solving rather than its impressiveness or precision of recall.",
+        "context": "Professional environments where being able to recall specific details is less important than having internalized principles for decision-making.",
+        "theme": "Internalized Learning Over Impressive Recall",
+        "source_chunk": "mental_model_chunk_32.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Photographic Memory Partner Experience",
+        "content": "Dan worked with a partner who had 'at least at the time, we called it a photographic memory' and could recall exactly 'where a piece of paper was in a file from three years ago.' While 'everyone was just so impressed by it,' Dan thought 'I don't know, I don't care. It's not a skill... To me, that's not useful knowledge.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:51:46",
+        "theme": "Internalized Learning Over Impressive Recall",
+        "source_chunk": "mental_model_chunk_32.json"
+      },
+      {
+        "name": "Internalization Learning Approach",
+        "content": "When asked about leveraging specific content from reading, Dan identifies as closer to the 'amalgamation' approach: 'I just don't think I read. I don't even try to recall as much as if it was a good experience. Well, then I've somehow internalized it and it'll come out' naturally in relevant situations.",
+        "source": "Interview Transcript",
+        "timestamp": "01:51:18",
+        "theme": "Internalized Learning Over Impressive Recall",
+        "source_chunk": "mental_model_chunk_32.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_32.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Free-Flowing Authentic Response",
+        "description": "'I can't just keep trying to answer based on what I think my mental model is. I just have to answer it. If I go on a personal tangent, well, then I go on a personal tangent.' Authenticity requires abandoning preconceived self-narratives.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Authentic Response and Unconscious Reframing",
+        "source_chunk": "mental_model_chunk_33.json"
+      },
+      {
+        "name": "Don't Try to Connect the Dots",
+        "description": "'Don't try to connect the dots' - allowing natural responses rather than forcing coherent narratives during self-examination or conversation.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Authentic Response and Unconscious Reframing",
+        "source_chunk": "mental_model_chunk_33.json"
+      },
+      {
+        "name": "Unconscious Reframing Mastery",
+        "description": "'I think I reframe much more than I realize, but I don't think of it as reframing. When I think about collaborating, I try to encourage someone to do something different, and I end up reframing issues a lot until I find the one that resonates with them. I didn't realize I did that.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "energizing",
+        "theme": "Authentic Response and Unconscious Reframing",
+        "source_chunk": "mental_model_chunk_33.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Iterative Reframing Until Resonance",
+        "description": "Continuously reframe issues during collaboration until finding the perspective that resonates with the other person, often without conscious awareness of doing so.",
+        "context": "Collaborative problem-solving where different people need different frames to understand and engage with the same underlying issue.",
+        "theme": "Authentic Response and Unconscious Reframing",
+        "source_chunk": "mental_model_chunk_33.json"
+      },
+      {
+        "name": "Natural Response Over Constructed Narrative",
+        "description": "Allow natural, authentic responses rather than trying to maintain consistency with preconceived self-understanding or desired image.",
+        "context": "Self-examination or coaching situations where discovery requires abandoning constructed narratives about oneself.",
+        "theme": "Authentic Response and Unconscious Reframing",
+        "source_chunk": "mental_model_chunk_33.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Unconscious Reframing Discovery",
+        "content": "Reflecting on the previous session, Dan realized 'I think I reframe much more than I realize, but I don't think of it as reframing. When I think about collaborating, I try to encourage someone to do something different, and I end up reframing issues a lot until I find the one that resonates with them. I didn't realize I did that.'",
+        "source": "Interview Transcript",
+        "timestamp": "07:31",
+        "theme": "Authentic Response and Unconscious Reframing",
+        "source_chunk": "mental_model_chunk_33.json"
+      },
+      {
+        "name": "Free-Flowing Response Philosophy",
+        "content": "Dan emphasizes the importance of authentic response in interviews: 'I can't just keep trying to answer based on what I think my mental model is. I just have to answer it. If I go on a personal tangent, well, then I go on a personal tangent.' He advocates for not trying to 'connect the dots' but letting responses emerge naturally.",
+        "source": "Interview Transcript",
+        "timestamp": "07:31",
+        "theme": "Authentic Response and Unconscious Reframing",
+        "source_chunk": "mental_model_chunk_33.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_33.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Authority Avoidance for Genuine Buy-In",
+        "description": "'I get through a little bit because of the authority conferred upon me, but that's not how I wanted it to happen.' Preferring genuine understanding over compliance through positional power.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Genuine Buy-In Through Reframing",
+        "source_chunk": "mental_model_chunk_34.json"
+      },
+      {
+        "name": "Reframing from Obligation to Opportunity",
+        "description": "'Continuing to reframe it from this, \"This isn't what you have to do. This is what's right for the business.\" If you can save some time doing this, we can do this. This versus this is what you got to do because it's stupid.' Shifting from obligation/judgment to business value and opportunity.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Genuine Buy-In Through Reframing",
+        "source_chunk": "mental_model_chunk_34.json"
+      },
+      {
+        "name": "Fear-Aware Solution Design",
+        "description": "Understanding that the warehouse manager 'is actually a little afraid of' computer technology, requiring solutions that account for emotional comfort as well as efficiency.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Genuine Buy-In Through Reframing",
+        "source_chunk": "mental_model_chunk_34.json"
+      },
+      {
+        "name": "Incremental Progress Over Perfection",
+        "description": "Moving from complex automation to 'more cut and paste' solutions that are 'simpler for him' rather than insisting on optimal technical solutions.",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Genuine Buy-In Through Reframing",
+        "source_chunk": "mental_model_chunk_34.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Continuous Reframing Until Acceptance",
+        "description": "Persistently reframe the same issue using different perspectives (business value, time savings, opportunity) until finding one that resonates with the person's motivations and comfort level.",
+        "context": "Change management situations where initial resistance requires finding alternative frames that align with the person's values and concerns.",
+        "theme": "Genuine Buy-In Through Reframing",
+        "source_chunk": "mental_model_chunk_34.json"
+      },
+      {
+        "name": "Technology Fear Accommodation",
+        "description": "Design solutions that work within a person's comfort zone with technology rather than pushing them toward optimal but intimidating solutions.",
+        "context": "Process improvement with employees who have limited technical skills or technology anxiety.",
+        "theme": "Genuine Buy-In Through Reframing",
+        "source_chunk": "mental_model_chunk_34.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Warehouse Manager Order Process Reframing",
+        "content": "Dan worked with a warehouse manager who spends 'two hours every day' manually retyping customer information into FedEx because he's 'actually a little afraid of' computer technology. Instead of using authority or calling the process 'stupid,' Dan continuously reframed: 'This isn't what you have to do. This is what's right for the business. If you can save some time doing this, we can do this.' He adapted the solution to 'more cut and paste' to make it 'simpler for him.'",
+        "source": "Interview Transcript",
+        "timestamp": "09:04",
+        "theme": "Genuine Buy-In Through Reframing",
+        "source_chunk": "mental_model_chunk_34.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_34.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Business-First Decision Framework",
+        "description": "'Acting in the best interest of the business is the best way to act.' This represents a core mental model for decision-making that prioritizes business sustainability over other considerations.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Business-First Balance and Recognition",
+        "source_chunk": "mental_model_chunk_35.json"
+      },
+      {
+        "name": "Financial-Customer Balance Recognition",
+        "description": "'He tends to put the customer first, regardless of the financial implications... it's a balance. It's not always about the financial decision. It's not always about the customer. There's a balance that needs to be struck between it.' Business decisions require balancing competing priorities.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Business-First Balance and Recognition",
+        "source_chunk": "mental_model_chunk_35.json"
+      },
+      {
+        "name": "Recognition vs. Learning Distinction",
+        "description": "'I probably should say recognize, because he's not a... He's a bright guy.' The issue isn't intelligence or capability but awareness of principles already within reach.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Business-First Balance and Recognition",
+        "source_chunk": "mental_model_chunk_35.json"
+      },
+      {
+        "name": "Higher Standards Challenge",
+        "description": "'He doesn't ask more of himself or the team. I don't know. I don't know where I'd go with that. That's tougher.' Identifying the need for higher performance standards while acknowledging the difficulty of instilling this mindset.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "frustration",
+        "theme": "Business-First Balance and Recognition",
+        "source_chunk": "mental_model_chunk_35.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Mental Model Transplantation",
+        "description": "Systematically work to help others 'recognize' (rather than learn) core business principles like business-first thinking and financial-customer balance.",
+        "context": "Leadership development where the goal is helping capable people adopt more sophisticated decision-making frameworks.",
+        "theme": "Business-First Balance and Recognition",
+        "source_chunk": "mental_model_chunk_35.json"
+      },
+      {
+        "name": "Balance Perspective Instillation",
+        "description": "Help people move from single-variable optimization (customer satisfaction) to multi-variable balancing (customer needs vs. financial reality).",
+        "context": "Business operations where employees naturally optimize for one factor but need to consider multiple competing priorities.",
+        "theme": "Business-First Balance and Recognition",
+        "source_chunk": "mental_model_chunk_35.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Brian's Business-First Mental Model Development",
+        "content": "Dan wants warehouse manager Brian to 'recognize' that 'acting in the best interest of the business is the best way to act.' Brian 'tends to put the customer first, regardless of the financial implications,' so Dan teaches balance: 'It's not always about the financial decision. It's not always about the customer. There's a balance that needs to be struck.' Dan also notes Brian 'doesn't ask more of himself or the team' but finds this harder to address.",
+        "source": "Interview Transcript",
+        "timestamp": "12:46",
+        "theme": "Business-First Balance and Recognition",
+        "source_chunk": "mental_model_chunk_35.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_35.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Good People Over Perfect Fit",
+        "description": "'Everyone likes to run around saying, right people on the bus in the right seats. What has changed? A lot for me is you just need good people and give them direction. You don't need to spend as much time as you do trying to make sure there's an exact fit.'",
+        "category": "ADAPTIVE CORE",
+        "energy_tag": "conviction",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      },
+      {
+        "name": "Environment-Driven Self-Management",
+        "description": "'The right person in the right environment becomes self-managing over time if you allow it' - good people naturally adapt and become autonomous when given proper conditions.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      },
+      {
+        "name": "Value-Based vs. Task-Based Recruitment",
+        "description": "'Every single time, I would throw out the tasks and I would write about the importance or the value because that's what will attract people.' Focus on meaning rather than specific duties in job descriptions.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      },
+      {
+        "name": "Critical Thinking as Universal Currency",
+        "description": "'Critical thinking is everything. Business acumen is really important. If you get those right, you can put that person in almost any role and they'll do well.' These core capabilities matter more than specific skills.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      },
+      {
+        "name": "Skills Tests Skepticism",
+        "description": "'When I come across someone who relies on a bunch of skills tests to decide whether they want to hire the right person, I don't think that they've changed their odds of success at all.' Technical assessments don't predict success.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Core Capability Hiring",
+        "description": "Hire for critical thinking and business acumen rather than exact role fit, trusting that good people will adapt and contribute quickly across various roles.",
+        "context": "Hiring decisions where flexibility and growth potential matter more than immediate technical skill match.",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      },
+      {
+        "name": "First Conversation Critical Thinking Assessment",
+        "description": "Evaluate critical thinking capability during initial conversations rather than relying on formal testing or skills assessments.",
+        "context": "Hiring processes where identifying thinking quality is more important than measuring specific competencies.",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Job Description Philosophy Evolution",
+        "content": "Dan's approach to hiring evolved from trying to find 'right people on the bus in the right seats' to believing 'you just need good people and give them direction.' When reviewing job descriptions 15-20 years ago, he would 'throw out the tasks and I would write about the importance or the value because that's what will attract people.'",
+        "source": "Interview Transcript",
+        "timestamp": "15:37",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      },
+      {
+        "name": "Critical Thinking Discovery and Application",
+        "content": "Dan discovered the importance of critical thinking '10 or 15 years ago' and now believes 'critical thinking is everything. Business acumen is really important. If you get those right, you can put that person in almost any role and they'll do well.' He evaluates 'critical thinking in our first conversation' rather than using skills tests.",
+        "source": "Interview Transcript",
+        "timestamp": "16:59",
+        "theme": "Core Capability Hiring Philosophy",
+        "source_chunk": "mental_model_chunk_36.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_36.json"
+  }
+]

@@ -1,0 +1,561 @@
+[
+  {
+    "principles": [
+      {
+        "name": "Flow Through Environmental Preparation",
+        "description": "Flow states emerge when 'prior actions have basically minimized disruption, and everyone around me knows what they need to do.' The expert creates conditions where they can operate in a supporting role while maintaining decision authority.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "flow-state",
+        "theme": "Proactive Environmental Control for Peak Performance",
+        "source_chunk": "mental_model_chunk_1.json"
+      },
+      {
+        "name": "Anticipatory Leadership",
+        "description": "Effective leadership involves 'thinking ahead on what procurement needs were' and positioning team members (like hiring a sales assistant a year before) to step into roles when needed.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Proactive Environmental Control for Peak Performance",
+        "source_chunk": "mental_model_chunk_1.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Disruption Minimization Setup",
+        "description": "Create environmental conditions where potential disruptions are anticipated and mitigated through advance preparation, allowing focus to shift to core execution.",
+        "context": "Leadership situations requiring sustained performance, particularly in manufacturing or operational environments where multiple variables need coordination.",
+        "theme": "Proactive Environmental Control for Peak Performance",
+        "source_chunk": "mental_model_chunk_1.json"
+      },
+      {
+        "name": "Supporting Leader Role",
+        "description": "Position yourself as both the decision-maker and supporter of your team, where 'my job ought to be a supporting role while still needing to be the person to call the shots.'",
+        "context": "When teams are properly prepared and know their roles, allowing the leader to focus on strategic decisions rather than tactical management.",
+        "theme": "Proactive Environmental Control for Peak Performance",
+        "source_chunk": "mental_model_chunk_1.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Manufacturing Facility Summer 2012 Flow State",
+        "content": "In summer 2012, after losing top sales for eight years, Dan achieved a flow state when multiple preparation elements aligned: a sales assistant hired the previous year stepped in, procurement needs were anticipated, and family relationships were stable. This created conditions where disruption was minimized and everyone knew their roles.",
+        "source": "Interview Transcript",
+        "timestamp": "25:11",
+        "theme": "Proactive Environmental Control for Peak Performance",
+        "source_chunk": "mental_model_chunk_1.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_1.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Champion of the Overlooked",
+        "description": "Immediate focus on 'the number twos and number threes at the company because they are overlooked. They are seriously overlooked. That's where I go right away.' These people need external validation: 'Sometimes, they just need someone on the outside to say, \"This is what you need.\" She needs more.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "energizing",
+        "theme": "Developing Undervalued Contributors",
+        "source_chunk": "mental_model_chunk_10.json"
+      },
+      {
+        "name": "Teacher vs Collaborator Role Differentiation",
+        "description": "With number twos and threes, 'I can play a little bit more of the role of the teacher, whereas with the owner, I have to be more of that collaborator than a... Than a teacher.' Both represent 'different applications of knowledge.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "flow-state",
+        "theme": "Developing Undervalued Contributors",
+        "source_chunk": "mental_model_chunk_10.json"
+      },
+      {
+        "name": "Incomplete Ideas as Valuable Perspective",
+        "description": "Number twos and threes 'often have some pretty interesting ideas. Not fully formed ideas because they may not see the whole picture, but what they have to contribute is an important perspective that the owner may not have.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Developing Undervalued Contributors",
+        "source_chunk": "mental_model_chunk_10.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Overlooked Talent Development",
+        "description": "Immediately seek out and build up the second and third-tier people in organizations who are undervalued, providing external validation and development they need.",
+        "context": "Organizational consulting where key contributors below the ownership level lack recognition and development opportunities.",
+        "theme": "Developing Undervalued Contributors",
+        "source_chunk": "mental_model_chunk_10.json"
+      },
+      {
+        "name": "Owner-Proxy Teaching Role",
+        "description": "Step into 'the role of the owner in that conversation and help them see what makes sense and what doesn't make sense' when working with lower-level employees, serving as a bridge for perspective and development.",
+        "context": "Situations where direct reports need guidance and perspective-building that owners may not have time or inclination to provide.",
+        "theme": "Developing Undervalued Contributors",
+        "source_chunk": "mental_model_chunk_10.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Building Up the Number Twos and Threes",
+        "content": "Dan identifies working with overlooked number twos and threes as something he would miss. He describes going 'right away' to these overlooked people, building them up because 'even though often the owner says they rely on them and they do, but not to the extent that they should.' These interactions involve 'give and take' where he steps into 'the role of the owner' to help them develop perspective.",
+        "source": "Interview Transcript",
+        "timestamp": "44:46",
+        "theme": "Developing Undervalued Contributors",
+        "source_chunk": "mental_model_chunk_10.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_10.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Unconscious Approachability as Core Identity",
+        "description": "Being described as 'very approachable' was a revelation - 'I had never thought about that before... I don't know that I had ever been actually described as very approachable. I don't know, that's always stuck with me.' This represents an unconscious core trait.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Natural Leadership Identity Discovery",
+        "source_chunk": "mental_model_chunk_11.json"
+      },
+      {
+        "name": "Innate Insight and Dot-Connection",
+        "description": "'I've always been insightful, and people just rely on that. They just rely on me to connect the dots for them.' This is presented as a fundamental, unchanging aspect of identity.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Natural Leadership Identity Discovery",
+        "source_chunk": "mental_model_chunk_11.json"
+      },
+      {
+        "name": "Loyalty Creation Under Adversity",
+        "description": "Ability to 'create an incredibly loyal group of people' even in hostile environments where 'all the parents invent reasons to hate you' demonstrates leadership under pressure.",
+        "category": "ENERGY PATTERNS",
+        "energy_tag": "conviction",
+        "theme": "Natural Leadership Identity Discovery",
+        "source_chunk": "mental_model_chunk_11.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Unconscious Core Trait Recognition",
+        "description": "Sometimes core identity traits operate unconsciously until external feedback reveals them, becoming defining characteristics once recognized.",
+        "context": "Self-awareness development where others' perspectives reveal fundamental aspects of personality that weren't previously conscious.",
+        "theme": "Natural Leadership Identity Discovery",
+        "source_chunk": "mental_model_chunk_11.json"
+      },
+      {
+        "name": "Hostile Environment Loyalty Building",
+        "description": "Create loyalty and strong relationships even in adversarial contexts where structural opposition exists.",
+        "context": "Leadership roles with built-in antagonism (like PTA president) where success requires overcoming systemic resistance.",
+        "theme": "Natural Leadership Identity Discovery",
+        "source_chunk": "mental_model_chunk_11.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Elementary School PTA President Revelation",
+        "content": "Ten to fifteen years ago as elementary school PTA president, Dan created 'an incredibly loyal group of people' despite the role meaning 'all the parents invent reasons to hate you.' A parent described him as 'very approachable,' which was a revelation: 'I had never thought about that before... that's always stuck with me.'",
+        "source": "Interview Transcript",
+        "timestamp": "48:43",
+        "theme": "Natural Leadership Identity Discovery",
+        "source_chunk": "mental_model_chunk_11.json"
+      },
+      {
+        "name": "Core Identity - Insight and Dot-Connection",
+        "content": "When asked about intrinsic identity traits, Dan identifies being 'insightful' as fundamental: 'I've always been insightful, and people just rely on that. They just rely on me to connect the dots for them.'",
+        "source": "Interview Transcript",
+        "timestamp": "50:25",
+        "theme": "Natural Leadership Identity Discovery",
+        "source_chunk": "mental_model_chunk_11.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_11.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Beneficial Dictatorship Leadership Model",
+        "description": "'My collaboration probably works best when I'm managing the rules because I have a very deep sense of fairness in it, and people respond to that.' This involves setting rules and managing participation to ensure equity.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "flow-state",
+        "theme": "Fairness-Based Authority Leadership",
+        "source_chunk": "mental_model_chunk_12.json"
+      },
+      {
+        "name": "Deep Fairness as Authority Foundation",
+        "description": "Leadership authority derives from 'a very deep sense of fairness' where 'everyone has an equal contribution this day, even though we have different places in the business.' This fairness is actively managed through 'who I call on and who I pull stuff from.'",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Fairness-Based Authority Leadership",
+        "source_chunk": "mental_model_chunk_12.json"
+      },
+      {
+        "name": "Neutral Facilitation Across Conflicts",
+        "description": "'I'm not taking the side of sales or ops. I'm going to, we're going to be fair. We're going to be fair. You two have to work together' - maintaining neutrality while enforcing collaboration.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Fairness-Based Authority Leadership",
+        "source_chunk": "mental_model_chunk_12.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Rule-Based Collaborative Leadership",
+        "description": "Lead collaborative sessions by establishing and managing rules that ensure fairness and equal contribution, using authority to orchestrate rather than dominate discussions.",
+        "context": "Group planning sessions, team meetings, or consulting engagements where multiple stakeholders with different power levels need to collaborate effectively.",
+        "theme": "Fairness-Based Authority Leadership",
+        "source_chunk": "mental_model_chunk_12.json"
+      },
+      {
+        "name": "Equity Through Orchestration",
+        "description": "Manage who speaks when and how much through 'who I call on and who I pull stuff from' to ensure equal contribution despite different organizational positions.",
+        "context": "Situations where natural hierarchy or conflict would prevent equal participation without active facilitation.",
+        "theme": "Fairness-Based Authority Leadership",
+        "source_chunk": "mental_model_chunk_12.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Director of Consulting Team Peak Performance",
+        "content": "As Director of consulting with three more experienced consultants who had 'grown and sold a business for a bunch of money,' Dan achieved peak performance through collaboration where 'each of them, without any prompting, would just talk about how well our get-togethers went and how much work we got done together.'",
+        "source": "Interview Transcript",
+        "timestamp": "51:38",
+        "theme": "Fairness-Based Authority Leadership",
+        "source_chunk": "mental_model_chunk_12.json"
+      },
+      {
+        "name": "Beneficial Dictatorship Definition",
+        "content": "Dan defines his peak collaborative performance as 'beneficial dictatorship' - managing planning sessions or consultant meetings by setting and managing rules based on 'a very deep sense of fairness.' This involves not taking sides between departments like sales and ops, ensuring 'everyone has an equal contribution this day' through orchestrating participation.",
+        "source": "Interview Transcript",
+        "timestamp": "53:29",
+        "theme": "Fairness-Based Authority Leadership",
+        "source_chunk": "mental_model_chunk_12.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_12.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Fairness as Signal Management",
+        "description": "Challenge both sales and manufacturing equally to signal 'to everyone else right away that, well, sales is going to get their way today' would be wrong. When manufacturing claims low margins because 'we give it away,' respond firmly because 'we're all on the same team.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Equal Challenge Methodology",
+        "source_chunk": "mental_model_chunk_13.json"
+      },
+      {
+        "name": "Business-First Governor Over Fairness",
+        "description": "'The governor over sense of fairness is what do we have to do to make the business better? That's not necessarily what the owner says.' The ultimate arbiter is business improvement, not owner preference or departmental fairness.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Equal Challenge Methodology",
+        "source_chunk": "mental_model_chunk_13.json"
+      },
+      {
+        "name": "Implicit Assumption Challenge",
+        "description": "Sales saying customers 'buy on price' implicitly treats the product as 'a commodity.' Manufacturing saying they have 'low margins because we give it away' implies 'we work really hard to get this done, but they're giving it away.' Both assumptions need direct challenge.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Equal Challenge Methodology",
+        "source_chunk": "mental_model_chunk_13.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Equal Challenge Methodology",
+        "description": "Challenge both conflicting departments equally and immediately to establish that neither will 'get their way' unfairly, using direct but gentle confrontation of their implicit assumptions.",
+        "context": "Planning sessions or meetings where traditional departmental conflicts (sales vs manufacturing) need to be neutralized early to establish collaborative foundation.",
+        "theme": "Equal Challenge Methodology",
+        "source_chunk": "mental_model_chunk_13.json"
+      },
+      {
+        "name": "Business-Optimal vs Owner-Optimal Decision Making",
+        "description": "Use 'what do we have to do to make the business better' as the ultimate decision criterion, which may override both departmental preferences and owner preferences.",
+        "context": "Strategic planning or operational decisions where the optimal business outcome may conflict with political considerations or owner bias.",
+        "theme": "Equal Challenge Methodology",
+        "source_chunk": "mental_model_chunk_13.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Sales vs Manufacturing Challenge Example",
+        "content": "In planning sessions, when sales claims customers 'buy on price,' Dan goes 'right at him not hard... but gently but firmly' to signal that sales won't get their way. When manufacturing claims 'low margins because we give it away,' he challenges them equally because 'we're all on the same team.' Sales is implicitly saying the product is 'a commodity' while manufacturing implies they work hard but 'they're giving it away.'",
+        "source": "Interview Transcript",
+        "timestamp": "55:02",
+        "theme": "Equal Challenge Methodology",
+        "source_chunk": "mental_model_chunk_13.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_13.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Fairness as Depth-Forcing Tool",
+        "description": "'Fairness is how I get there' because 'you have to enforce fairness in that group' to force them to 'go deeper and not give me their surface-level BS complaints.' This requires them to 'think like an owner.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Perspective Expansion Through Fairness",
+        "source_chunk": "mental_model_chunk_14.json"
+      },
+      {
+        "name": "Owner-Perspective Requirement",
+        "description": "Fairness enforcement compels people to 'think like an owner' rather than from their narrow departmental perspective, leading to 'recognition of the bigger picture.'",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Perspective Expansion Through Fairness",
+        "source_chunk": "mental_model_chunk_14.json"
+      },
+      {
+        "name": "Self-Generated Silo Breaking",
+        "description": "'If the leaders of the business have a wider lens to look at the business with rather than their own department, then there will absolutely be better decision-making because now we're knocking down some silos without saying that we're knocking down some silos because it has to come from them. Not me.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Perspective Expansion Through Fairness",
+        "source_chunk": "mental_model_chunk_14.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Fairness-Driven Perspective Expansion",
+        "description": "Use fairness enforcement as a mechanism to force departmental leaders to adopt owner-level thinking and abandon narrow departmental perspectives.",
+        "context": "Strategic planning or cross-functional meetings where departmental silos need to be broken down through internal realization rather than external mandate.",
+        "theme": "Perspective Expansion Through Fairness",
+        "source_chunk": "mental_model_chunk_14.json"
+      },
+      {
+        "name": "Self-Discovered Silo Elimination",
+        "description": "Enable leaders to naturally break down silos by developing wider business perspectives, ensuring the change 'has to come from them. Not me.'",
+        "context": "Organizational development where sustainable change requires internal buy-in rather than imposed structural changes.",
+        "theme": "Perspective Expansion Through Fairness",
+        "source_chunk": "mental_model_chunk_14.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Fairness as Anti-BS Enforcement",
+        "content": "When asked why fairness is necessary, Dan explains it 'forces them to go deeper and not give me their surface-level BS complaints.' This works because fairness requires people to 'think like an owner' rather than from their departmental perspective, leading to 'recognition of the bigger picture.'",
+        "source": "Interview Transcript",
+        "timestamp": "58:18",
+        "theme": "Perspective Expansion Through Fairness",
+        "source_chunk": "mental_model_chunk_14.json"
+      },
+      {
+        "name": "Self-Generated Silo Breaking Philosophy",
+        "content": "Dan explains that when leaders develop 'a wider lens to look at the business with rather than their own department, then there will absolutely be better decision-making because now we're knocking down some silos without saying that we're knocking down some silos because it has to come from them. Not me.'",
+        "source": "Interview Transcript",
+        "timestamp": "59:52",
+        "theme": "Perspective Expansion Through Fairness",
+        "source_chunk": "mental_model_chunk_14.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_14.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Benevolent Dictatorship with Collaborative Tools",
+        "description": "'I get the best results when I am the benevolent dictator and using my collaborative skills to pull the team together.' This represents the integration of authority with collaborative methodology.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "flow-state",
+        "theme": "Authority-Enabled Collaboration",
+        "source_chunk": "mental_model_chunk_15.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Authority-Enabled Collaboration",
+        "description": "Combine benevolent dictatorial authority with collaborative skills to achieve optimal team results, using authority to create the framework within which collaboration can flourish.",
+        "context": "Leadership situations where both structure and participation are needed to achieve the best outcomes from diverse team members.",
+        "theme": "Authority-Enabled Collaboration",
+        "source_chunk": "mental_model_chunk_15.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Benevolent Dictatorship Definition",
+        "content": "When asked to clarify the relationship between collaboration and dictatorship, Dan explains 'I get the best results when I am the benevolent dictator and using my collaborative skills to pull the team together,' showing how authority and collaboration work together rather than in opposition.",
+        "source": "Interview Transcript",
+        "timestamp": "01:01:05",
+        "theme": "Authority-Enabled Collaboration",
+        "source_chunk": "mental_model_chunk_15.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_15.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Paint the Future, Let Them Choose",
+        "description": "When difficult personnel decisions are needed, 'I just painted the picture that there is a future, and she's not part of it. I allowed her to think about it and come back.' This preserves dignity while achieving necessary outcomes.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Compassionate Authority in Difficult Decisions",
+        "source_chunk": "mental_model_chunk_16.json"
+      },
+      {
+        "name": "Public Ownership of Difficult Decisions",
+        "description": "Ensure difficult decisions appear to be the person's choice publicly - 'It was all publicly... It was all her decision. I was the only one who could make that happen. It was entirely my decision.' The benevolent dictator takes responsibility while preserving dignity.",
+        "category": "VALUE FRAMEWORK",
+        "energy_tag": "conviction",
+        "theme": "Compassionate Authority in Difficult Decisions",
+        "source_chunk": "mental_model_chunk_16.json"
+      },
+      {
+        "name": "Negotiator Role Between Competing Interests",
+        "description": "When operations and HR conflict over discipline, act 'almost like a negotiator going back and forth between ops and HR. Both of them knew I could just make a decision to be done with it, but that's not how I wanted to do it. I just wanted to reach the best decision for the business.'",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "flow-state",
+        "theme": "Compassionate Authority in Difficult Decisions",
+        "source_chunk": "mental_model_chunk_16.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Dignified Exit Facilitation",
+        "description": "Handle necessary personnel removals by painting the future reality, allowing time for processing, and crafting solutions that preserve dignity while achieving business needs.",
+        "context": "Situations where valued but problematic employees need to be removed, particularly when they have personal circumstances requiring consideration.",
+        "theme": "Compassionate Authority in Difficult Decisions",
+        "source_chunk": "mental_model_chunk_16.json"
+      },
+      {
+        "name": "Authority-Backed Negotiation",
+        "description": "Use clear decision-making authority as background leverage while actively facilitating negotiation between conflicting parties to reach optimal business decisions.",
+        "context": "Interdepartmental conflicts where quick executive decisions are possible but collaborative solutions are preferable for long-term team dynamics.",
+        "theme": "Compassionate Authority in Difficult Decisions",
+        "source_chunk": "mental_model_chunk_16.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Leadership Team Member Retirement Facilitation",
+        "content": "At the manufacturing company, a leadership team member 'had to go for a million reasons' but no one would make the decision. Dan 'painted the picture that there is a future, and she's not part of it' and allowed her to process. She ultimately chose announced retirement with continued health insurance for upcoming surgery. 'It was all her decision' publicly, though 'I was the only one who could make that happen.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:02:11",
+        "theme": "Compassionate Authority in Difficult Decisions",
+        "source_chunk": "mental_model_chunk_16.json"
+      },
+      {
+        "name": "Operations vs HR Discipline Mediation",
+        "content": "When operations and HR conflicted over disciplining a valuable but problematic sawmill worker in rural Indiana, Dan acted 'almost like a negotiator going back and forth' between them. Though 'both of them knew I could just make a decision to be done with it,' he facilitated a compromise solution (suspension while keeping employment) that served 'the best decision for the business.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:02:11",
+        "theme": "Compassionate Authority in Difficult Decisions",
+        "source_chunk": "mental_model_chunk_16.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_16.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Resistance Detection and Classification",
+        "description": "'I'm listening for resistance to whatever I'm saying' and determining 'whether that resistance is passing any logical test or whether it's pure emotion.' This applies equally to agreement: 'are you just agreeing with me on a logical side or on an emotional side?'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Logic vs Emotion Assessment",
+        "source_chunk": "mental_model_chunk_17.json"
+      },
+      {
+        "name": "Logic-Side Landing Requirement",
+        "description": "'I need to know that you're landing on the logic side. If I will probably dismiss what you have to say from the emotional side.' This represents a clear hierarchy of reasoning validity.",
+        "category": "DECISION ARCHITECTURE",
+        "energy_tag": "conviction",
+        "theme": "Logic vs Emotion Assessment",
+        "source_chunk": "mental_model_chunk_17.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Emotion vs Logic Filtering",
+        "description": "Actively assess whether responses (both resistance and agreement) are emotionally or logically driven, prioritizing logical reasoning while dismissing purely emotional responses.",
+        "context": "Business discussions where emotional reactions might cloud judgment or prevent optimal decision-making.",
+        "theme": "Logic vs Emotion Assessment",
+        "source_chunk": "mental_model_chunk_17.json"
+      },
+      {
+        "name": "Resistance Quality Assessment",
+        "description": "Distinguish between resistance that 'is passing any logical test' versus 'pure emotion' to determine which objections deserve consideration and response.",
+        "context": "Change management or decision-making processes where pushback needs to be evaluated for its rational merit rather than dismissed automatically.",
+        "theme": "Logic vs Emotion Assessment",
+        "source_chunk": "mental_model_chunk_17.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "Reading People - Logic vs Emotion Assessment",
+        "content": "When reading people as individuals beyond their roles, Dan focuses on 'listening for resistance to whatever I'm saying' and determining 'whether that resistance is passing any logical test or whether it's pure emotion.' The same applies to agreement - he needs to know people are 'landing on the logic side' because he will 'probably dismiss what you have to say from the emotional side.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:07:58",
+        "theme": "Logic vs Emotion Assessment",
+        "source_chunk": "mental_model_chunk_17.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_17.json"
+  },
+  {
+    "principles": [
+      {
+        "name": "Time as Emotional Processing Tool",
+        "description": "'I try to just put time on my side. I try not to... If I cannot deal with it at that time, I don't... Because I think that's really hard to move someone from one side to the other.' Avoids direct confrontation of emotion in the moment.",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      },
+      {
+        "name": "Non-Confrontational Emotional Management",
+        "description": "'I don't know that I ever confront the emotion directly.' Instead, uses phrases like 'Okay, let's just stop. I'm not going to make a decision right now. I hear what you're saying. Let me go back and see if we can get it resolved that way.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      },
+      {
+        "name": "Emotional Balloon Deflation Strategy",
+        "description": "With chronically emotional people, 'I gotta let that air out of the balloon because... Until he just obloviates whatever it is that he's doing... until he is finished bloviating, even though I'm not listening until he does that, he's not hearing me.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "frustration",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      },
+      {
+        "name": "Extreme Detail as Emotional Counterbalance",
+        "description": "After letting emotional people vent, 'I sort of go over back to the extreme on the other side and get really detailed on what I need and when I need it. It's almost like the counterbalance to that.'",
+        "category": "COGNITIVE TENSIONS",
+        "energy_tag": "conviction",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      }
+    ],
+    "patterns": [
+      {
+        "name": "Pause-and-Postpone Emotional De-escalation",
+        "description": "When emotion arises, immediately pause the conversation, acknowledge what was heard, and postpone decision-making to allow emotional processing time.",
+        "context": "High-stakes business discussions where emotional responses threaten logical decision-making and immediate resolution isn't critical.",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      },
+      {
+        "name": "Bloviation Tolerance followed by Extreme Precision",
+        "description": "Allow chronically emotional people to fully express themselves without listening engagement, then counterbalance with extremely detailed, specific requirements and timelines.",
+        "context": "Working with team members who have persistent emotional communication styles that disrupt logical discourse.",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      }
+    ],
+    "examples": [
+      {
+        "name": "HR Manager Emotional Response Management",
+        "content": "When an typically logical HR person became emotional during a discipline discussion, Dan said 'Okay, let's just stop. I'm not going to make a decision right now. I hear what you're saying. Let me go back and see if we can get it resolved that way.' He notes 'I don't know that I ever confront the emotion directly.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:09:15",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      },
+      {
+        "name": "Marketing Guy Bloviation Strategy",
+        "content": "With a marketing team member who was chronically emotional, Dan realized 'I gotta let that air out of the balloon because... Until he just obloviates whatever it is that he's doing... until he is finished bloviating, even though I'm not listening until he does that, he's not hearing me.' His response was to 'go over back to the extreme on the other side and get really detailed on what I need and when I need it.'",
+        "source": "Interview Transcript",
+        "timestamp": "01:10:54",
+        "theme": "Time-Based Emotional De-escalation",
+        "source_chunk": "mental_model_chunk_18.json"
+      }
+    ],
+    "source_chunk_filename": "mental_model_chunk_18.json"
+  }
+]
