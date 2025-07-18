@@ -315,13 +315,13 @@ function GraphViewD3({ onNodeSelect }) {
   };
 
   const legendItems = [
-    { color: '#DC2626', label: 'Theme', count: '70' },
-    { color: '#059669', label: 'Value Framework', count: '168' },
-    { color: '#2563EB', label: 'Cognitive Tensions', count: '132' },
-    { color: '#7C3AED', label: 'Decision Architecture', count: '105' },
-    { color: '#EA580C', label: 'Adaptive Core', count: '88' },
-    { color: '#DB2777', label: 'Energy Patterns', count: '36' },
-    { color: '#64748B', label: 'Uncategorized', count: '14' }
+    { color: '#F4B8A2', label: 'Theme', count: '70' },              // Light Salmon - matches graph gradient base
+    { color: '#A3D9D2', label: 'Value Framework', count: '168' },   // Teal - matches graph gradient base
+    { color: '#A9C7E8', label: 'Cognitive Tensions', count: '132' }, // Soft Blue - matches graph gradient base
+    { color: '#C3B4E5', label: 'Decision Architecture', count: '105' }, // Lavender - matches graph gradient base
+    { color: '#F9D6B3', label: 'Adaptive Core', count: '88' },      // Apricot - matches graph gradient base
+    { color: '#E9C3E1', label: 'Energy Patterns', count: '36' },    // Light Magenta - matches graph gradient base
+    { color: '#E0E0E0', label: 'Uncategorized', count: '14' }       // Light Gray - matches graph gradient base
   ];
 
   if (error) {
@@ -500,7 +500,7 @@ function GraphViewD3({ onNodeSelect }) {
                 <div style={{ 
                   width: '12px', 
                   height: '12px', 
-                  background: `radial-gradient(circle at 30% 30%, ${d3.color(item.color).brighter(0.3)}, ${item.color})`,
+                  backgroundColor: item.color,
                   borderRadius: '50%',
                   flexShrink: 0,
                   boxShadow: `0 0 0 2px ${item.color}20, 0 2px 4px -1px rgba(0, 0, 0, 0.2)`

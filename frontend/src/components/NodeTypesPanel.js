@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import './NodeTypesPanel.css';
 
 const nodeTypesData = [
-  { name: 'Theme', count: 70, color: '#DC2626' },
-  { name: 'Value Framework', count: 168, color: '#059669' },
-  { name: 'Cognitive Tensions', count: 132, color: '#2563EB' },
-  { name: 'Decision Architecture', count: 105, color: '#7C3AED' },
-  { name: 'Adaptive Core', count: 88, color: '#EA580C' },
-  { name: 'Energy Patterns', count: 36, color: '#DB2777' },
-  { name: 'Uncategorized', count: 14, color: '#64748B' },
+  { name: 'Theme', count: 70, color: '#F4B8A2' },
+  { name: 'Value Framework', count: 168, color: '#A3D9D2' },
+  { name: 'Cognitive Tensions', count: 132, color: '#A9C7E8' },
+  { name: 'Decision Architecture', count: 105, color: '#C3B4E5' },
+  { name: 'Adaptive Core', count: 88, color: '#F9D6B3' },
+  { name: 'Energy Patterns', count: 36, color: '#E9C3E1' },
+  { name: 'Uncategorized', count: 14, color: '#E0E0E0' },
 ];
 
 function NodeTypesPanel({ onFilterChange }) {
@@ -31,8 +31,10 @@ function NodeTypesPanel({ onFilterChange }) {
     <div className={`node-types-panel ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="panel-header" onClick={() => setIsCollapsed(!isCollapsed)}>
         <h3 className="panel-title">Node Types</h3>
-        <button className="panel-toggle">
-          {isCollapsed ? '+' : '−'}
+        <button className="panel-toggle" aria-label={isCollapsed ? 'Expand legend' : 'Collapse legend'}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {isCollapsed ? <polyline points="6 9 12 15 18 9"></polyline> : <polyline points="18 15 12 9 6 9"></polyline>}
+          </svg>
         </button>
       </div>
       {!isCollapsed && (
