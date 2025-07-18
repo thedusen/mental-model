@@ -1,35 +1,43 @@
 .app {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .app-header {
-    background-color: #282c34;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .app-header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-  }
-  
-  .app-content {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-  }
-  
-  .graph-container {
-    flex: 1;
-    border-right: 1px solid #ddd;
-    position: relative;
-  }
-  
-  .chat-container {
-    width: 400px;
-    display: flex;
-    flex-direction: column;
-  }
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  padding: var(--spacing-4);
+  gap: var(--spacing-4);
+  background-color: var(--background);
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0; /* Prevents flexbox overflow */
+}
+
+.graph-container {
+  flex: 1;
+  position: relative; /* Needed for child absolute positioning */
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  background-color: var(--card-background);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  overflow: hidden;
+}
+
+.chat-container {
+  flex-shrink: 0;
+  /* The ChatPanel itself will have styling */
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: 384px; /* 96 * 4 */
+  transition: width 300ms ease-in-out;
+}
+
+.sidebar.collapsed {
+  width: 48px;
+  overflow: hidden;
+}

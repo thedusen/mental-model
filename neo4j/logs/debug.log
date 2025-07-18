@@ -1616,3 +1616,557 @@
 2025-07-17 01:10:00.601+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=210, gcTime=0, gcCount=0}
 2025-07-17 01:10:05.344+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=1797, gcTime=0, gcCount=0}
 2025-07-17 01:10:12.216+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=9467, gcTime=0, gcCount=0}
+2025-07-17 02:35:59.461+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index population started: [Index( id=18, name='entity_embeddings', type='VECTOR', schema=(:Entity {embedding}), indexProvider='vector-2.0' )]
+2025-07-17 02:35:59.478+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index creation finished for index [Index( id=18, name='entity_embeddings', type='VECTOR', schema=(:Entity {embedding}), indexProvider='vector-2.0' )].
+2025-07-17 02:36:01.530+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 67, append index: 67 checkpoint started...
+2025-07-17 02:36:01.578+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 67, append index: 67 checkpoint completed in 48ms. Checkpoint flushed 82 pages (0% of total available pages), in 66 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 02:36:01.579+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 02:36:10.205+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: NodesAllCardinality changed from 10.0 to 90.0, which is a divergence of 0.8888888888888888 which is greater than threshold 0.7499821957382672. Query id: 4839.
+2025-07-17 02:36:10.655+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: NodesAllCardinality changed from 10.0 to 94.0, which is a divergence of 0.8936170212765957 which is greater than threshold 0.749902087020079. Query id: 4848.
+2025-07-17 02:36:10.974+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: IndexPropertyExistsSelectivity(IndexDescriptor(Range,Node(LabelId(3)),List(PropertyKeyId(35)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.1 to 0.0, which is a divergence of 1.0 which is greater than threshold 0.7499373017881078. Query id: 4854.
+2025-07-17 02:36:11.182+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: IndexPropertyExistsSelectivity(IndexDescriptor(Range,Node(LabelId(4)),List(PropertyKeyId(35)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.1 to 0.0, which is a divergence of 1.0 which is greater than threshold 0.7499462027475838. Query id: 4858.
+2025-07-17 02:47:03.502+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 660 seconds. Reason: NodesAllCardinality changed from 28.0 to 100.0, which is a divergence of 0.72 which is greater than threshold 0.6422676793208896. Query id: 5255.
+2025-07-17 02:47:03.522+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 660 seconds. Reason: NodesAllCardinality changed from 29.0 to 100.0, which is a divergence of 0.71 which is greater than threshold 0.6422678212449923. Query id: 5257.
+2025-07-17 02:49:19.982+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 789 seconds. Reason: NodesAllCardinality changed from 90.0 to 292.0, which is a divergence of 0.6917808219178082 which is greater than threshold 0.6243700426840413. Query id: 5689.
+2025-07-17 02:49:19.990+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 789 seconds. Reason: NodesWithLabelCardinality(Some(LabelId(2))) changed from 45.0 to 144.0, which is a divergence of 0.6875 which is greater than threshold 0.6244295996321343. Query id: 5690.
+2025-07-17 02:49:20.204+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 789 seconds. Reason: NodesWithLabelCardinality(Some(LabelId(3))) changed from 26.0 to 79.0, which is a divergence of 0.6708860759493671 which is greater than threshold 0.624443819862906. Query id: 5694.
+2025-07-17 02:49:20.442+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 789 seconds. Reason: NodesWithLabelCardinality(Some(LabelId(4))) changed from 23.0 to 69.0, which is a divergence of 0.6666666666666666 which is greater than threshold 0.6244399293580536. Query id: 5704.
+2025-07-17 02:50:40.217+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 216 seconds. Reason: NodesAllCardinality changed from 100.0 to 399.0, which is a divergence of 0.7493734335839599 which is greater than threshold 0.7120230802135409. Query id: 5940.
+2025-07-17 02:50:40.242+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 216 seconds. Reason: NodesAllCardinality changed from 100.0 to 399.0, which is a divergence of 0.7493734335839599 which is greater than threshold 0.7120213359544111. Query id: 5942.
+2025-07-17 02:51:01.721+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 462, append index: 462 checkpoint started...
+2025-07-17 02:51:01.789+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 462, append index: 462 checkpoint completed in 66ms. Checkpoint flushed 493 pages (0% of total available pages), in 108 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 02:51:01.789+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 02:52:58.275+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 299 seconds. Reason: NodesAllCardinality changed from 100.0 to 552.0, which is a divergence of 0.8188405797101449 which is greater than threshold 0.6978410624086733. Query id: 6285.
+2025-07-17 02:52:59.085+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 297 seconds. Reason: NodesAllCardinality changed from 128.0 to 552.0, which is a divergence of 0.7681159420289855 which is greater than threshold 0.6982142217321038. Query id: 6287.
+2025-07-17 03:06:01.921+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 615, append index: 615 checkpoint started...
+2025-07-17 03:06:01.974+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 615, append index: 615 checkpoint completed in 53ms. Checkpoint flushed 223 pages (0% of total available pages), in 70 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 03:06:01.974+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 16:49:02.707+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index population started: [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )]
+2025-07-17 16:49:02.750+0000 ERROR [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Failed to populate index: [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )]
+org.neo4j.kernel.api.exceptions.index.IndexEntryConflictException: Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156) ~[neo4j-kernel-api-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:264) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) [?:?]
+	at java.lang.Thread.run(Thread.java:840) [?:?]
+2025-07-17 16:49:02.760+0000 INFO  [o.n.k.i.a.i.FailedIndexProxy] [neo4j/3567ec8f] FailedIndexProxy#drop index on Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' ) dropped due to:
+IndexEntryConflictException{propertyValues=( String("Partner Role Model Disillusionment") ), addedEntityId=341, existingEntityId=335}
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377)
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360)
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275)
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156)
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671)
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349)
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144)
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88)
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136)
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+2025-07-17 16:49:02.818+0000 ERROR [o.n.b.f.StateMachineImpl] Client triggered an unexpected error [Neo.DatabaseError.Schema.ConstraintCreationFailed]: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference e7d036fc-f067-4a95-bbf0-6068f31a6c30.
+2025-07-17 16:49:02.818+0000 ERROR [o.n.b.f.StateMachineImpl] Client triggered an unexpected error [Neo.DatabaseError.Schema.ConstraintCreationFailed]: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference e7d036fc-f067-4a95-bbf0-6068f31a6c30.
+org.neo4j.bolt.protocol.common.fsm.error.TransactionStateTransitionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:84) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:44) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.fsm.state.MultiTransitionState.process(MultiTransitionState.java:53) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.fsm.StateMachineImpl.process(StateMachineImpl.java:159) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection$ProcessJob.perform(AtomicSchedulingConnection.java:634) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.executeJob(AtomicSchedulingConnection.java:338) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.doExecuteJobs(AtomicSchedulingConnection.java:271) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.executeJobs(AtomicSchedulingConnection.java:212) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) [?:?]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:264) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) [?:?]
+	at java.lang.Thread.run(Thread.java:840) [?:?]
+Caused by: org.neo4j.bolt.tx.error.statement.StatementExecutionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:143) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.impl.query.QueryExecutionKernelException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.tx.statement.StatementQuerySubscriber.assertSuccess(StatementQuerySubscriber.java:89) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:140) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.exceptions.CypherExecutionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:754) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.internal.kernel.api.exceptions.schema.CreateConstraintFailureException: Unable to create constraint Constraint( name='entity_id', type='UNIQUENESS', schema=(:Label[5] {PropertyKey[35]}) ): Existing data does not satisfy Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ): Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.internal.kernel.api.exceptions.schema.CreateConstraintFailureException.constraintCreationFailed(CreateConstraintFailureException.java:87) ~[neo4j-schema-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.indexBackedConstraintCreate(Operations.java:2728) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.uniquePropertyConstraintCreate(Operations.java:1850) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.RestrictedSchemaWrite.uniquePropertyConstraintCreate(RestrictedSchemaWrite.java:92) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.TransactionBoundQueryContext.createNodeUniqueConstraint(TransactionBoundQueryContext.scala:399) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:756) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.api.exceptions.schema.UniquePropertyValueValidationException: Existing data does not satisfy Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ): Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.api.state.ConstraintIndexCreator.awaitConstraintIndexPopulation(ConstraintIndexCreator.java:225) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.state.ConstraintIndexCreator.createUniquenessConstraintIndex(ConstraintIndexCreator.java:132) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.indexBackedConstraintCreate(Operations.java:2703) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.uniquePropertyConstraintCreate(Operations.java:1850) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.RestrictedSchemaWrite.uniquePropertyConstraintCreate(RestrictedSchemaWrite.java:92) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.TransactionBoundQueryContext.createNodeUniqueConstraint(TransactionBoundQueryContext.scala:399) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:756) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.api.exceptions.index.IndexEntryConflictException: Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156) ~[neo4j-kernel-api-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	... 4 more
+2025-07-17 16:49:10.576+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 617, append index: 617 checkpoint started...
+2025-07-17 16:49:10.606+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 617, append index: 617 checkpoint completed in 29ms. Checkpoint flushed 41 pages (0% of total available pages), in 40 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 16:49:10.606+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 16:58:34.680+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index population started: [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )]
+2025-07-17 16:58:34.696+0000 ERROR [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Failed to populate index: [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )]
+org.neo4j.kernel.api.exceptions.index.IndexEntryConflictException: Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156) ~[neo4j-kernel-api-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:264) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) [?:?]
+	at java.lang.Thread.run(Thread.java:840) [?:?]
+2025-07-17 16:58:34.700+0000 INFO  [o.n.k.i.a.i.FailedIndexProxy] [neo4j/3567ec8f] FailedIndexProxy#drop index on Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' ) dropped due to:
+IndexEntryConflictException{propertyValues=( String("Partner Role Model Disillusionment") ), addedEntityId=341, existingEntityId=335}
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377)
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360)
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275)
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156)
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671)
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349)
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144)
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88)
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136)
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+2025-07-17 16:58:34.701+0000 ERROR [o.n.b.f.StateMachineImpl] Client triggered an unexpected error [Neo.DatabaseError.Schema.ConstraintCreationFailed]: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference 31495b29-1a54-440a-8e7c-1ba262e8b85f.
+2025-07-17 16:58:34.702+0000 ERROR [o.n.b.f.StateMachineImpl] Client triggered an unexpected error [Neo.DatabaseError.Schema.ConstraintCreationFailed]: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference 31495b29-1a54-440a-8e7c-1ba262e8b85f.
+org.neo4j.bolt.protocol.common.fsm.error.TransactionStateTransitionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:84) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:44) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.fsm.state.MultiTransitionState.process(MultiTransitionState.java:53) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.fsm.StateMachineImpl.process(StateMachineImpl.java:159) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection$ProcessJob.perform(AtomicSchedulingConnection.java:634) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.executeJob(AtomicSchedulingConnection.java:338) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.doExecuteJobs(AtomicSchedulingConnection.java:271) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.executeJobs(AtomicSchedulingConnection.java:212) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) [?:?]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:264) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) [?:?]
+	at java.lang.Thread.run(Thread.java:840) [?:?]
+Caused by: org.neo4j.bolt.tx.error.statement.StatementExecutionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:143) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.impl.query.QueryExecutionKernelException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.tx.statement.StatementQuerySubscriber.assertSuccess(StatementQuerySubscriber.java:89) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:140) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.exceptions.CypherExecutionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:754) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.internal.kernel.api.exceptions.schema.CreateConstraintFailureException: Unable to create constraint Constraint( name='entity_id', type='UNIQUENESS', schema=(:Label[5] {PropertyKey[35]}) ): Existing data does not satisfy Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ): Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.internal.kernel.api.exceptions.schema.CreateConstraintFailureException.constraintCreationFailed(CreateConstraintFailureException.java:87) ~[neo4j-schema-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.indexBackedConstraintCreate(Operations.java:2728) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.uniquePropertyConstraintCreate(Operations.java:1850) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.RestrictedSchemaWrite.uniquePropertyConstraintCreate(RestrictedSchemaWrite.java:92) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.TransactionBoundQueryContext.createNodeUniqueConstraint(TransactionBoundQueryContext.scala:399) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:756) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.api.exceptions.schema.UniquePropertyValueValidationException: Existing data does not satisfy Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ): Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.api.state.ConstraintIndexCreator.awaitConstraintIndexPopulation(ConstraintIndexCreator.java:225) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.state.ConstraintIndexCreator.createUniquenessConstraintIndex(ConstraintIndexCreator.java:132) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.indexBackedConstraintCreate(Operations.java:2703) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.uniquePropertyConstraintCreate(Operations.java:1850) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.RestrictedSchemaWrite.uniquePropertyConstraintCreate(RestrictedSchemaWrite.java:92) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.TransactionBoundQueryContext.createNodeUniqueConstraint(TransactionBoundQueryContext.scala:399) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:756) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.api.exceptions.index.IndexEntryConflictException: Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156) ~[neo4j-kernel-api-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	... 4 more
+2025-07-17 17:03:51.459+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index population started: [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )]
+2025-07-17 17:03:51.471+0000 ERROR [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Failed to populate index: [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )]
+org.neo4j.kernel.api.exceptions.index.IndexEntryConflictException: Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156) ~[neo4j-kernel-api-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:264) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) [?:?]
+	at java.lang.Thread.run(Thread.java:840) [?:?]
+2025-07-17 17:03:51.475+0000 INFO  [o.n.k.i.a.i.FailedIndexProxy] [neo4j/3567ec8f] FailedIndexProxy#drop index on Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' ) dropped due to:
+IndexEntryConflictException{propertyValues=( String("Partner Role Model Disillusionment") ), addedEntityId=341, existingEntityId=335}
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377)
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360)
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275)
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156)
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671)
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349)
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144)
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88)
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136)
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+2025-07-17 17:03:51.476+0000 ERROR [o.n.b.f.StateMachineImpl] Client triggered an unexpected error [Neo.DatabaseError.Schema.ConstraintCreationFailed]: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference cea4f6cd-2e14-4e74-827d-c411eea19656.
+2025-07-17 17:03:51.476+0000 ERROR [o.n.b.f.StateMachineImpl] Client triggered an unexpected error [Neo.DatabaseError.Schema.ConstraintCreationFailed]: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference cea4f6cd-2e14-4e74-827d-c411eea19656.
+org.neo4j.bolt.protocol.common.fsm.error.TransactionStateTransitionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:84) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:44) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.fsm.state.MultiTransitionState.process(MultiTransitionState.java:53) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.fsm.StateMachineImpl.process(StateMachineImpl.java:159) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection$ProcessJob.perform(AtomicSchedulingConnection.java:634) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.executeJob(AtomicSchedulingConnection.java:338) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.doExecuteJobs(AtomicSchedulingConnection.java:271) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.connector.connection.AtomicSchedulingConnection.executeJobs(AtomicSchedulingConnection.java:212) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) [?:?]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:264) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) [?:?]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) [?:?]
+	at java.lang.Thread.run(Thread.java:840) [?:?]
+Caused by: org.neo4j.bolt.tx.error.statement.StatementExecutionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:143) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.impl.query.QueryExecutionKernelException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.bolt.tx.statement.StatementQuerySubscriber.assertSuccess(StatementQuerySubscriber.java:89) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:140) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.exceptions.CypherExecutionException: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
+Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown.
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:754) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.internal.kernel.api.exceptions.schema.CreateConstraintFailureException: Unable to create constraint Constraint( name='entity_id', type='UNIQUENESS', schema=(:Label[5] {PropertyKey[35]}) ): Existing data does not satisfy Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ): Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.internal.kernel.api.exceptions.schema.CreateConstraintFailureException.constraintCreationFailed(CreateConstraintFailureException.java:87) ~[neo4j-schema-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.indexBackedConstraintCreate(Operations.java:2728) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.uniquePropertyConstraintCreate(Operations.java:1850) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.RestrictedSchemaWrite.uniquePropertyConstraintCreate(RestrictedSchemaWrite.java:92) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.TransactionBoundQueryContext.createNodeUniqueConstraint(TransactionBoundQueryContext.scala:399) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:756) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.api.exceptions.schema.UniquePropertyValueValidationException: Existing data does not satisfy Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ): Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.api.state.ConstraintIndexCreator.awaitConstraintIndexPopulation(ConstraintIndexCreator.java:225) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.state.ConstraintIndexCreator.createUniquenessConstraintIndex(ConstraintIndexCreator.java:132) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.indexBackedConstraintCreate(Operations.java:2703) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.newapi.Operations.uniquePropertyConstraintCreate(Operations.java:1850) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.RestrictedSchemaWrite.uniquePropertyConstraintCreate(RestrictedSchemaWrite.java:92) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.TransactionBoundQueryContext.createNodeUniqueConstraint(TransactionBoundQueryContext.scala:399) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.planning.ExceptionTranslatingQueryContext.createNodeUniqueConstraint(ExceptionTranslatingQueryContext.scala:756) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.runtime.interpreted.UpdateCountingQueryContext.createNodeUniqueConstraint(UpdateCountingQueryContext.scala:263) ~[neo4j-cypher-interpreted-runtime-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.SchemaCommandRuntime$$anonfun$1.$anonfun$applyOrElse$14(SchemaCommandRuntime.scala:199) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:60) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.SchemaExecutionPlan.runSpecific(SchemaExecutionPlan.scala:39) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.procs.ChainedExecutionPlan.run(ChainedExecutionPlan.scala:93) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.innerExecute(CypherCurrentCompiler.scala:537) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.CypherCurrentCompiler$CypherExecutableQuery.execute(CypherCurrentCompiler.scala:475) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.doExecute(ExecutionEngine.scala:280) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.$anonfun$executeSubquery$1(ExecutionEngine.scala:197) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.closing(ExecutionEngine.scala:203) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.executeSubquery(ExecutionEngine.scala:177) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.ExecutionEngine.execute(ExecutionEngine.scala:110) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.cypher.internal.javacompat.ExecutionEngine.executeQuery(ExecutionEngine.java:150) ~[neo4j-cypher-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.lambda$executeQuery$1(LocalDatabaseTransaction.java:142) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.translateLocalError(LocalDatabaseTransaction.java:163) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.transaction.database.LocalDatabaseTransaction.executeQuery(LocalDatabaseTransaction.java:134) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.QueryRouterImpl.executeQuery(QueryRouterImpl.java:278) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.router.impl.bolt.QueryRouterBoltSpi$Transaction.executeQuery(QueryRouterBoltSpi.java:161) ~[neo4j-query-router-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.tx.TransactionImpl.run(TransactionImpl.java:136) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	at org.neo4j.bolt.protocol.common.fsm.transition.ready.CreateAutocommitStatementStateTransition.process(CreateAutocommitStatementStateTransition.java:79) ~[neo4j-bolt-5.25.1.jar:5.25.1]
+	... 12 more
+Caused by: org.neo4j.kernel.api.exceptions.index.IndexEntryConflictException: Both Node(335) and Node(341) have the label `Label[5]` and property `PropertyKey[35]` = 'Partner Role Model Disillusionment'
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueSeek(BlockBasedIndexPopulator.java:377) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.verifyUniqueKeys(BlockBasedIndexPopulator.java:360) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.index.schema.BlockBasedIndexPopulator.scanCompleted(BlockBasedIndexPopulator.java:275) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.api.index.IndexPopulator.scanCompleted(IndexPopulator.java:156) ~[neo4j-kernel-api-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator$IndexPopulation.scanCompleted(MultipleIndexPopulator.java:671) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.MultipleIndexPopulator.flipAfterStoreScan(MultipleIndexPopulator.java:349) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJob.run(IndexPopulationJob.java:144) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.api.index.IndexPopulationJobController$IndexPopulationJobWrapper.run(IndexPopulationJobController.java:88) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$asCallable$1(ThreadPool.java:136) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	at org.neo4j.kernel.impl.scheduler.ThreadPool.lambda$submit$0(ThreadPool.java:108) ~[neo4j-kernel-5.25.1.jar:5.25.1]
+	... 4 more
+2025-07-17 17:04:10.746+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 621, append index: 621 checkpoint started...
+2025-07-17 17:04:10.771+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 621, append index: 621 checkpoint completed in 24ms. Checkpoint flushed 42 pages (0% of total available pages), in 40 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 17:04:10.771+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 17:04:31.911+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 23 seconds. Reason: NodesAllCardinality changed from 552.0 to 10.0, which is a divergence of 0.9818840579710145 which is greater than threshold 0.7473103354651077. Query id: 13693.
+2025-07-17 17:04:31.979+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 23 seconds. Reason: NodesAllCardinality changed from 552.0 to 10.0, which is a divergence of 0.9818840579710145 which is greater than threshold 0.7473028419401979. Query id: 13695.
+2025-07-17 17:04:36.966+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: NodesAllCardinality changed from 552.0 to 10.0, which is a divergence of 0.9818840579710145 which is greater than threshold 0.7499572324904933. Query id: 13698.
+2025-07-17 17:04:48.881+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index population started: [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )]
+2025-07-17 17:04:48.886+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index creation finished for index [Index( id=19, name='entity_id', type='RANGE', schema=(:Entity {id}), indexProvider='range-1.0' )].
+2025-07-17 17:04:48.888+0000 INFO  [o.n.k.i.a.i.IndexingService] [neo4j/3567ec8f] Constraint Index( id=19, name='entity_id', type='RANGE', schema=(:Label[5] {PropertyKey[35]}), indexProvider='range-1.0' ) is ONLINE.
+2025-07-17 17:04:48.893+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index population started: [Index( id=21, name='theme_name', type='RANGE', schema=(:Theme {name}), indexProvider='range-1.0' )]
+2025-07-17 17:04:48.897+0000 INFO  [o.n.k.i.a.i.IndexPopulationJob] [neo4j/3567ec8f] Index creation finished for index [Index( id=21, name='theme_name', type='RANGE', schema=(:Theme {name}), indexProvider='range-1.0' )].
+2025-07-17 17:04:48.899+0000 INFO  [o.n.k.i.a.i.IndexingService] [neo4j/3567ec8f] Constraint Index( id=21, name='theme_name', type='RANGE', schema=(:Label[6] {PropertyKey[22]}), indexProvider='range-1.0' ) is ONLINE.
+2025-07-17 17:05:47.953+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 39 seconds. Reason: NodesAllCardinality changed from 10.0 to 76.0, which is a divergence of 0.868421052631579 which is greater than threshold 0.7442413916079038. Query id: 13928.
+2025-07-17 17:05:47.996+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 39 seconds. Reason: CardinalityByLabelsAndRelationshipType(None,None,None) changed from 3.0 to 66.0, which is a divergence of 0.9545454545454546 which is greater than threshold 0.7442410104707038. Query id: 13933.
+2025-07-17 17:05:49.587+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: IndexPropertyExistsSelectivity(IndexDescriptor(Text,Node(LabelId(6)),List(PropertyKeyId(22)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.1 to 0.0, which is a divergence of 1.0 which is greater than threshold 0.7499787123946264. Query id: 13975.
+2025-07-17 17:05:49.938+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: IndexPropertyExistsSelectivity(IndexDescriptor(Text,Node(LabelId(5)),List(PropertyKeyId(35)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.1 to 0.0, which is a divergence of 1.0 which is greater than threshold 0.7499856791142654. Query id: 13982.
+2025-07-17 17:05:49.965+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 10 seconds. Reason: IndexSelectivity(IndexDescriptor(Range,Node(LabelId(6)),List(PropertyKeyId(22)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.0 to 0.1, which is a divergence of 1.0 which is greater than threshold 0.7499889689990864. Query id: 13983.
+2025-07-17 17:08:27.967+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 160 seconds. Reason: NodesAllCardinality changed from 76.0 to 341.0, which is a divergence of 0.7771260997067448 which is greater than threshold 0.7220521806482256. Query id: 14681.
+2025-07-17 17:08:28.007+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 160 seconds. Reason: CardinalityByLabelsAndRelationshipType(None,None,None) changed from 66.0 to 300.0, which is a divergence of 0.78 which is greater than threshold 0.7220521806482256. Query id: 14683.
+2025-07-17 17:09:18.875+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 208 seconds. Reason: IndexSelectivity(IndexDescriptor(Range,Node(LabelId(5)),List(PropertyKeyId(35)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.014492753623188406 to 0.003367003367003367, which is a divergence of 0.7676767676767676 which is greater than threshold 0.7133820080696278. Query id: 14696.
+2025-07-17 17:09:18.900+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 208 seconds. Reason: IndexSelectivity(IndexDescriptor(Range,Node(LabelId(5)),List(PropertyKeyId(35)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.014492753623188406 to 0.003367003367003367, which is a divergence of 0.7676767676767676 which is greater than threshold 0.7133830586278342. Query id: 14697.
+2025-07-17 17:09:18.916+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 209 seconds. Reason: IndexSelectivity(IndexDescriptor(Range,Node(LabelId(6)),List(PropertyKeyId(22)),Set(),NONE,DoNotGetValue,None,false)) changed from 0.1 to 0.025, which is a divergence of 0.7500000000000001 which is greater than threshold 0.7133121528927445. Query id: 14698.
+2025-07-17 17:19:10.905+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1368, append index: 1368 checkpoint started...
+2025-07-17 17:19:11.025+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1368, append index: 1368 checkpoint completed in 120ms. Checkpoint flushed 735 pages (1% of total available pages), in 177 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 17:19:11.026+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 17:34:11.131+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1793, append index: 1793 checkpoint started...
+2025-07-17 17:34:11.259+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1793, append index: 1793 checkpoint completed in 123ms. Checkpoint flushed 320 pages (0% of total available pages), in 105 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 17:34:11.259+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 18:44:43.322+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 5775 seconds. Reason: NodesAllCardinality changed from 341.0 to 613.0, which is a divergence of 0.4437194127243067 which is greater than threshold 0.3014853834165198. Query id: 17942.
+2025-07-17 18:44:43.691+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 5775 seconds. Reason: CardinalityByLabelsAndRelationshipType(None,None,None) changed from 300.0 to 556.0, which is a divergence of 0.460431654676259 which is greater than threshold 0.3014750327210317. Query id: 17952.
+2025-07-17 18:44:52.034+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1952, append index: 1952 checkpoint started...
+2025-07-17 18:44:52.081+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1952, append index: 1952 checkpoint completed in 46ms. Checkpoint flushed 58 pages (0% of total available pages), in 53 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 18:44:52.081+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 19:13:41.418+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 7462 seconds. Reason: NodesAllCardinality changed from 342.0 to 613.0, which is a divergence of 0.44208809135399674 which is greater than threshold 0.2565826783542968. Query id: 20673.
+2025-07-17 20:57:03.370+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1962, append index: 1962 checkpoint started...
+2025-07-17 20:57:03.490+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1962, append index: 1962 checkpoint completed in 118ms. Checkpoint flushed 69 pages (0% of total available pages), in 63 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 20:57:03.490+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 20:57:18.268+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 7954 seconds. Reason: CardinalityByLabelsAndRelationshipType(None,None,None) changed from 556.0 to 739.0, which is a divergence of 0.2476319350473613 which is greater than threshold 0.24590106643553722. Query id: 26685.
+2025-07-17 20:57:25.224+0000 INFO  [o.n.c.i.c.CypherQueryCaches] [neo4j/3567ec8f] Discarded stale query from the query cache after 12738 seconds. Reason: CardinalityByLabelsAndRelationshipType(None,None,None) changed from 544.0 to 739.0, which is a divergence of 0.2638700947225981 which is greater than threshold 0.17505171403355563. Query id: 26688.
+2025-07-17 21:12:03.617+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1993, append index: 1993 checkpoint started...
+2025-07-17 21:12:03.656+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 1993, append index: 1993 checkpoint completed in 38ms. Checkpoint flushed 66 pages (0% of total available pages), in 60 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 21:12:03.656+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 22:13:09.279+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=270, gcTime=0, gcCount=0}
+2025-07-17 22:13:09.557+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=1169, gcTime=0, gcCount=0}
+2025-07-17 22:13:11.404+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=446, gcTime=0, gcCount=0}
+2025-07-17 23:13:40.470+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 2178, append index: 2178 checkpoint started...
+2025-07-17 23:13:40.509+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 2178, append index: 2178 checkpoint completed in 38ms. Checkpoint flushed 56 pages (0% of total available pages), in 51 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-17 23:13:40.509+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-17 23:50:36.008+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=865, gcTime=0, gcCount=0}
+2025-07-18 00:19:06.103+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 2255, append index: 2255 checkpoint started...
+2025-07-18 00:19:06.173+0000 INFO  [o.n.k.i.t.l.c.CheckPointerImpl] [neo4j/3567ec8f] Checkpoint triggered by "Scheduled checkpoint for every 15 minutes threshold" @ txId: 2255, append index: 2255 checkpoint completed in 68ms. Checkpoint flushed 55 pages (0% of total available pages), in 50 IOs. Checkpoint performed with IO limit: unlimited, paused in total 0 times( 0 millis).
+2025-07-18 00:19:06.173+0000 INFO  [o.n.k.i.t.l.p.LogPruningImpl] [neo4j/3567ec8f] No log version pruned. The strategy used was '2 days 2147483648 size'. 
+2025-07-18 00:27:26.486+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=46658, gcTime=0, gcCount=0}
+2025-07-18 00:27:30.646+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=4382, gcTime=0, gcCount=0}
+2025-07-18 00:27:48.452+0000 WARN  [o.n.k.i.c.VmPauseMonitorComponent] Detected VM stop-the-world pause: {pauseTime=361, gcTime=0, gcCount=0}

@@ -84,6 +84,8 @@ async def get_graph():
                 e.id as id, 
                 COALESCE(e.category, 'Uncategorized') as type, 
                 e.description as description,
+                e.content as content,
+                e.theme as theme,
                 collect(DISTINCT {from: e.id, to: t.name, type: 'BELONGS_TO'}) + 
                 collect(DISTINCT {from: e.id, to: other.id, type: type(r2)}) + 
                 collect(DISTINCT {from: other.id, to: e.id, type: type(r2)}) as relationships
@@ -97,6 +99,8 @@ async def get_graph():
                 t.name as id,
                 'Theme' as type,
                 t.description as description,
+                null as content,
+                null as theme,
                 [] as relationships
         """)
         
@@ -111,7 +115,9 @@ async def get_graph():
                     'id': record['id'], 
                     'label': record['id'],  # Use ID as label
                     'type': record['type'],
-                    'description': record['description'] or ''
+                    'description': record['description'] or '',
+                    'content': record['content'] or '',
+                    'theme': record['theme'] or ''
                 })
                 seen_nodes.add(record['id'])
         
