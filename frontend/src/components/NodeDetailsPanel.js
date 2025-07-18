@@ -40,15 +40,32 @@ function NodeDetailsPanel({ selectedNode, isCollapsed, onToggleCollapse }) {
   const labels = selectedNode ? selectedNode.labels || [] : [];
 
   return (
-    <div className="node-details-panel">
-      <div className="panel-header">
-        <h2 className="panel-title">Node Details</h2>
-        <button onClick={onToggleCollapse} className="panel-toggle" aria-label="Collapse sidebar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-      </div>
+    <div className={`node-details-panel ${!selectedNode ? 'empty-state' : ''}`}>
+      {selectedNode && (
+        <div className="panel-header">
+          <button onClick={onToggleCollapse} className="panel-toggle" aria-label="Collapse sidebar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      )}
 
-      <div className="panel-content">
+      {!selectedNode && (
+        <div className="empty-panel-header">
+          <button onClick={onToggleCollapse} className="panel-toggle-with-text" aria-label="Collapse sidebar">
+            <span>Collapse</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      )}
+
+      <div className="panel-content" aria-live="polite">
+        {/* Screen reader announcement for selected node */}
+        {selectedNode && (
+          <div className="sr-only" aria-live="polite">
+            Showing details for {properties.name || properties.label}
+          </div>
+        )}
+        
         {selectedNode ? (
           <div className="details-card" style={getCategoryStyle(properties.type)}>
             <div className="card-header">
@@ -75,7 +92,7 @@ function NodeDetailsPanel({ selectedNode, isCollapsed, onToggleCollapse }) {
             </div>
           </div>
         ) : (
-          <div className="empty-state">
+          <div className="empty-state-content">
             <div className="empty-icon">🎯</div>
             <p className="empty-title">Click a Node</p>
             <p className="empty-subtitle">Select any node on the graph to view its details here.</p>

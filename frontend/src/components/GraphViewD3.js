@@ -305,15 +305,6 @@ function GraphViewD3({ onNodeSelect }) {
     }
   };
 
-  const handleZoomReset = () => {
-    if (zoomRef.current) {
-      d3.select(svgRef.current)
-        .transition()
-        .duration(500)
-        .call(zoomRef.current.transform, d3.zoomIdentity);
-    }
-  };
-
   const legendItems = [
     { color: '#F4B8A2', label: 'Theme', count: '70' },              // Light Salmon - matches graph gradient base
     { color: '#A3D9D2', label: 'Value Framework', count: '168' },   // Teal - matches graph gradient base
@@ -411,28 +402,6 @@ function GraphViewD3({ onNodeSelect }) {
         >
           －
         </button>
-        <button
-          onClick={handleZoomReset}
-          style={{
-            width: '44px',
-            height: '44px',
-            backgroundColor: '#FFFFFF',
-            border: '1px solid #E2E8F0',
-            borderRadius: '12px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-            color: '#475569',
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          title="Reset Zoom"
-        >
-          ⌂
-        </button>
       </div>
 
       {/* Enhanced Legend */}
@@ -475,10 +444,15 @@ function GraphViewD3({ onNodeSelect }) {
               borderRadius: '6px',
               color: '#64748B',
               fontSize: '14px',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontWeight: '500'
             }}
             title={isLegendMinimized ? 'Expand' : 'Minimize'}
           >
+            <span>{isLegendMinimized ? 'Show' : 'Hide'}</span>
             {isLegendMinimized ? '▼' : '▲'}
           </button>
         </div>

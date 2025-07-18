@@ -1,9 +1,45 @@
+/* Accessibility styles */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only:focus {
+  position: absolute;
+  width: auto;
+  height: auto;
+  padding: 8px 16px;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: var(--radius);
+  z-index: 9999;
+  top: 16px;
+  left: 16px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Enhanced focus indicators */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .app {
   height: 100vh;
   width: 100vw;
   display: flex;
-  padding: var(--spacing-4);
-  gap: var(--spacing-4);
   background-color: var(--background);
   overflow: hidden;
 }
@@ -12,32 +48,36 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
-  min-width: 0; /* Prevents flexbox overflow */
+  min-width: 0;
+  position: relative; /* For positioning children */
 }
 
 .graph-container {
   flex: 1;
-  position: relative; /* Needed for child absolute positioning */
-  border-radius: var(--radius);
-  border: 1px solid var(--border-color);
-  background-color: var(--card-background);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  position: relative;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .chat-container {
-  flex-shrink: 0;
-  /* The ChatPanel itself will have styling */
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 10; /* Ensure it's above the graph */
+  pointer-events: none; /* Allow graph interactions behind it */
+}
+
+.chat-container > * {
+  pointer-events: auto; /* Re-enable pointer events for chat panel content */
 }
 
 .sidebar {
   flex-shrink: 0;
-  width: 384px; /* 96 * 4 */
   transition: width 300ms ease-in-out;
 }
 
 .sidebar.collapsed {
-  width: 48px;
   overflow: hidden;
 }
