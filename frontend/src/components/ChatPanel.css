@@ -5,18 +5,35 @@
   border-radius: var(--radius);
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  transition: all 200ms ease-in-out;
-  overflow: hidden; /* Added to contain children */
+  transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), 
+              border-radius 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  overflow: hidden;
+  height: auto;
+  min-height: auto;
+  max-height: 100%;
 }
 
 .chat-panel.no-messages {
-  /* When no messages, just show the input area */
+  height: auto;
+  min-height: auto;
+}
+
+.chat-panel.has-messages {
+  /* Smooth transition handled by main transition */
+  min-height: 120px; /* Ensure minimum space for messages */
 }
 
 .chat-panel.collapsed {
-  height: 60px;
-  min-height: 60px; /* Explicitly set min-height for collapsed state */
-  overflow: hidden; /* Ensure content is clipped */
+  height: 60px !important;
+  min-height: 60px;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+.chat-panel.fullscreen {
+  height: 100%;
+  max-height: 100%;
+  border-radius: var(--radius);
 }
 
 .chat-header {
@@ -27,6 +44,7 @@
   height: 60px;
   cursor: pointer;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .chat-header:hover {
@@ -39,6 +57,12 @@
   margin: 0;
   line-height: 1.3;
   color: var(--foreground);
+}
+
+.chat-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
 }
 
 .chat-toggle {
@@ -57,6 +81,18 @@
   font-size: 0.875rem;
   transition: background-color 150ms, color 150ms;
   flex-shrink: 0;
+  min-width: fit-content; /* Ensure text fits */
+}
+
+.chat-toggle.fullscreen-toggle {
+  padding: 0 var(--spacing-2);
+  width: auto; /* Allow dynamic width for text */
+  min-width: fit-content;
+}
+
+.chat-toggle.fullscreen-toggle span {
+  display: inline; /* Show text for fullscreen toggle */
+  white-space: nowrap;
 }
 
 .chat-header:hover .chat-toggle {
@@ -71,7 +107,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
-  min-height: 120px; /* Ensure minimum height for the messages area */
+  min-height: 120px;
+  max-height: calc(100vh - 300px); /* Adjusted to work with new container sizing */
+}
+
+.chat-panel.fullscreen .messages {
+  max-height: calc(100vh - 120px); /* More room in fullscreen */
 }
 
 /* Base Message Styling */
@@ -168,6 +209,26 @@
   50%, 100% { background-color: var(--gray-200); }
 }
 
+@keyframes slideUpFromBottom {
+  from { transform: translateY(20px); opacity: 0;} to { transform: translateY(0); opacity:1; }
+}
+@keyframes slideDownToBottom {
+  from { transform: translateY(0); opacity:1;} to { transform: translateY(20px); opacity:0; }
+}
+
+.chat-panel.has-messages {
+  animation: slideUpFromBottom 0.4s ease-out;
+  min-height: 120px;
+}
+
+.chat-panel.collapsed {
+  animation: slideDownToBottom 0.3s ease-in;
+  height: 60px !important;
+  min-height: 60px;
+  max-height: 60px;
+  overflow: hidden;
+}
+
 
 /* Input Area */
 .input-area {
@@ -177,6 +238,7 @@
   display: flex;
   gap: var(--spacing-2);
   align-items: flex-start;
+  flex-shrink: 0; /* Prevent the input area from shrinking during transitions */
 }
 
 .input-area textarea {
@@ -187,11 +249,11 @@
   background-color: var(--card-background);
   color: var(--foreground);
   font-size: 0.9rem;
-  resize: vertical; /* Allow user to resize manually */
+  resize: none; /* Disable manual resize to prevent conflicts */
   line-height: 1.5;
   max-height: 250px; /* Set a max-height to prevent infinite growth */
   overflow-y: auto; /* Add scrollbar when max-height is reached */
-  transition: border-color 150ms, box-shadow 150ms;
+  transition: border-color 150ms, box-shadow 150ms, height 0.2s ease-out;
 }
 
 .input-area textarea:focus {

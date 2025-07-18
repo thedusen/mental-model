@@ -65,12 +65,21 @@
   bottom: 16px;
   left: 16px;
   right: 16px;
-  z-index: 10; /* Ensure it's above the graph */
-  pointer-events: none; /* Allow graph interactions behind it */
+  z-index: 1000;
+  pointer-events: none;
+  height: auto;
+  max-height: calc(100vh - 120px);
+  transition: height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.chat-container.fullscreen {
+  height: calc(100vh - 32px); /* full height minus margins */
+  max-height: calc(100vh - 32px);
+  z-index: 2000;
 }
 
 .chat-container > * {
-  pointer-events: auto; /* Re-enable pointer events for chat panel content */
+  pointer-events: auto;
 }
 
 .sidebar {

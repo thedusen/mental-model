@@ -10,6 +10,7 @@ function App() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [nodeFilters, setNodeFilters] = useState([]);
+  const [isChatFullscreen, setIsChatFullscreen] = useState(false);
 
   console.log('App state:', { selectedNode, isSidebarCollapsed });
 
@@ -65,8 +66,11 @@ function App() {
               onNodeSelect={setSelectedNode} 
               filters={nodeFilters}
             />
-            <div className="chat-container">
-              <ChatPanel selectedNode={selectedNode} />
+            <div className={`chat-container ${isChatFullscreen ? 'fullscreen' : ''}`}>
+              <ChatPanel 
+                selectedNode={selectedNode} 
+                onFullscreenChange={setIsChatFullscreen}
+              />
             </div>
           </div>
         </main>
