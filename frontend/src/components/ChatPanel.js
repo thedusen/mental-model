@@ -40,13 +40,13 @@ function ChatPanel({ selectedNode }) {
   // Get category icon and color
   const getCategoryInfo = (category) => {
     const categoryMap = {
-      'Theme': { icon: '🎯', color: '#DC2626', bg: '#FEF2F2' },
-      'VALUE FRAMEWORK': { icon: '⚖️', color: '#059669', bg: '#F0FDF4' },
-      'COGNITIVE TENSIONS': { icon: '🧩', color: '#2563EB', bg: '#EFF6FF' },
-      'DECISION ARCHITECTURE': { icon: '🏗️', color: '#7C3AED', bg: '#F5F3FF' },
-      'ADAPTIVE CORE': { icon: '🔄', color: '#EA580C', bg: '#FFF7ED' },
-      'ENERGY PATTERNS': { icon: '⚡', color: '#DB2777', bg: '#FDF2F8' },
-      'Uncategorized': { icon: '📋', color: '#64748B', bg: '#F8FAFC' }
+      'Theme': { color: '#DC2626', bg: '#FEF2F2' },
+      'VALUE FRAMEWORK': { color: '#059669', bg: '#F0FDF4' },
+      'COGNITIVE TENSIONS': { color: '#2563EB', bg: '#EFF6FF' },
+      'DECISION ARCHITECTURE': { color: '#7C3AED', bg: '#F5F3FF' },
+      'ADAPTIVE CORE': { color: '#EA580C', bg: '#FFF7ED' },
+      'ENERGY PATTERNS': { color: '#DB2777', bg: '#FDF2F8' },
+      'Uncategorized': { color: '#64748B', bg: '#F8FAFC' }
     };
     return categoryMap[category] || categoryMap['Uncategorized'];
   };
@@ -94,7 +94,6 @@ function ChatPanel({ selectedNode }) {
                     fontWeight: '500',
                     border: `1px solid ${getCategoryInfo(selectedNode.properties.category).color}20`
                   }}>
-                    <span>{getCategoryInfo(selectedNode.properties.category).icon}</span>
                     {selectedNode.properties.category || 'Uncategorized'}
                   </div>
 

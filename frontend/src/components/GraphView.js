@@ -278,13 +278,13 @@ function GraphView({ onNodeSelect }) {
         </div>
         
         {[
-          { color: '#DC2626', icon: '🎯', label: 'Theme', count: '66' },
-          { color: '#059669', icon: '⚖️', label: 'Value Framework', count: '97' },
-          { color: '#2563EB', icon: '🧩', label: 'Cognitive Tensions', count: '85' },
-          { color: '#7C3AED', icon: '🏗️', label: 'Decision Architecture', count: '35' },
-          { color: '#EA580C', icon: '🔄', label: 'Adaptive Core', count: '31' },
-          { color: '#DB2777', icon: '⚡', label: 'Energy Patterns', count: '19' },
-          { color: '#64748B', icon: '📋', label: 'Uncategorized', count: '276' }
+          { color: '#DC2626', label: 'Theme', count: '70' },
+          { color: '#059669', label: 'Value Framework', count: '152' },
+          { color: '#2563EB', label: 'Cognitive Tensions', count: '118' },
+          { color: '#7C3AED', label: 'Decision Architecture', count: '77' },
+          { color: '#EA580C', label: 'Adaptive Core', count: '77' },
+          { color: '#DB2777', label: 'Energy Patterns', count: '28' },
+          { color: '#64748B', label: 'Uncategorized', count: '91' }
         ].map((item, index) => (
           <div key={index} style={{ 
             display: 'flex', 
@@ -302,12 +302,8 @@ function GraphView({ onNodeSelect }) {
             <span style={{ 
               fontSize: '13px',
               color: '#475569',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
               flex: 1
             }}>
-              <span>{item.icon}</span>
               {item.label}
             </span>
             <span style={{
