@@ -213,41 +213,6 @@ function GraphView({ onNodeSelect }) {
         >
           －
         </button>
-        
-        <div style={{ height: '8px' }}></div> {/* Separator */}
-        
-        <button 
-          onClick={fitGraph}
-          style={{
-            width: '40px',
-            height: '40px',
-            border: '1px solid #E2E8F0',
-            borderRadius: '8px',
-            backgroundColor: '#FFFFFF',
-            color: '#1E293B',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-            transition: 'all 0.15s ease',
-            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          title="Fit All Nodes"
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#F8FAFC';
-            e.target.style.borderColor = '#CBD5E1';
-            e.target.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#FFFFFF';
-            e.target.style.borderColor = '#E2E8F0';
-            e.target.style.boxShadow = '0 1px 2px 0 rgb(0 0 0 / 0.05)';
-          }}
-        >
-          ⌂
-        </button>
       </div>
 
       {/* Shadcn-inspired Legend */}
@@ -279,12 +244,12 @@ function GraphView({ onNodeSelect }) {
         
         {[
           { color: '#DC2626', label: 'Theme', count: '70' },
-          { color: '#059669', label: 'Value Framework', count: '152' },
-          { color: '#2563EB', label: 'Cognitive Tensions', count: '118' },
-          { color: '#7C3AED', label: 'Decision Architecture', count: '77' },
-          { color: '#EA580C', label: 'Adaptive Core', count: '77' },
-          { color: '#DB2777', label: 'Energy Patterns', count: '28' },
-          { color: '#64748B', label: 'Uncategorized', count: '91' }
+          { color: '#059669', label: 'Value Framework', count: '168' },
+          { color: '#2563EB', label: 'Cognitive Tensions', count: '132' },
+          { color: '#7C3AED', label: 'Decision Architecture', count: '105' },
+          { color: '#EA580C', label: 'Adaptive Core', count: '88' },
+          { color: '#DB2777', label: 'Energy Patterns', count: '36' },
+          { color: '#64748B', label: 'Uncategorized', count: '14' }
         ].map((item, index) => (
           <div key={index} style={{ 
             display: 'flex', 
