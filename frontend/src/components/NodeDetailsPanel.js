@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import './NodeDetailsPanel.css';
 
 const getCategoryStyle = (category) => {
@@ -24,7 +24,21 @@ const DetailRow = ({ label, value, isContent = false }) => {
   );
 };
 
-function NodeDetailsPanel({ selectedNode, isCollapsed, onToggleCollapse }) {
+function NodeDetailsPanel({ selectedNode, chatContextNode, onSetChatContext, isCollapsed, onToggleCollapse }) {
+  const chatButtonRef = useRef(null);
+
+  // Focus management: when a new node is selected, focus the chat button
+  useEffect(() => {
+    if (selectedNode && !isCollapsed && chatButtonRef.current) {
+      // Small delay to ensure the panel is fully rendered
+      setTimeout(() => {
+        if (chatButtonRef.current) {
+          chatButtonRef.current.focus();
+        }
+      }, 100);
+    }
+  }, [selectedNode, isCollapsed]);
+
   // Main render logic
   if (isCollapsed) {
     return (
@@ -38,6 +52,22 @@ function NodeDetailsPanel({ selectedNode, isCollapsed, onToggleCollapse }) {
 
   const properties = selectedNode ? selectedNode.properties || selectedNode : null;
   const labels = selectedNode ? selectedNode.labels || [] : [];
+  
+  // Check if this node is currently in chat context
+  const isInChatContext = chatContextNode && selectedNode && 
+    (chatContextNode.id === selectedNode.id);
+
+  // Handle chat context button click
+  const handleChatContextClick = () => {
+    if (isInChatContext) {
+      // If already in context, we could remove it, but the UI expert suggested
+      // either disabling the button or making it a "Remove from chat" button
+      // For simplicity, we'll just disable when in context
+      return;
+    } else {
+      onSetChatContext(selectedNode);
+    }
+  };
 
   return (
     <div className={`node-details-panel ${!selectedNode ? 'empty-state' : ''}`}>
@@ -87,8 +117,45 @@ function NodeDetailsPanel({ selectedNode, isCollapsed, onToggleCollapse }) {
               <DetailRow label="Source Chunk" value={properties.source_chunk} />
             </div>
 
+            {/* Chat Context Button */}
+            <div className="card-actions">
+              <button
+                ref={chatButtonRef}
+                data-chat-context-button
+                onClick={handleChatContextClick}
+                disabled={isInChatContext}
+                className={`chat-context-button ${isInChatContext ? 'in-context' : ''}`}
+                aria-label={
+                  isInChatContext 
+                    ? `Node "${properties.name || properties.label}" is already added to chat context`
+                    : `Add "${properties.name || properties.label}" to chat context`
+                }
+                title={
+                  isInChatContext 
+                    ? 'This node is already in your chat context'
+                    : 'Add this node to your chat context for more focused conversations'
+                }
+              >
+                {isInChatContext ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="check-icon">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Added to Chat
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="chat-icon">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Chat with this node
+                  </>
+                )}
+              </button>
+            </div>
+
             <div className="card-footer">
-              💡 Ask questions about this in the chat.
+              💡 {isInChatContext ? 'This node is now part of your conversation context.' : 'Click the button above to add this node to your chat context.'}
             </div>
           </div>
         ) : (

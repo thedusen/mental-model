@@ -188,6 +188,104 @@
   background: var(--gray-400);
 }
 
+/* Card Actions Section */
+.card-actions {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--gray-25);
+}
+
+/* Chat Context Button */
+.chat-context-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--primary);
+  background-color: transparent;
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+  min-height: 44px; /* Accessibility: minimum touch target size */
+  position: relative;
+}
+
+.chat-context-button:hover:not(:disabled) {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.chat-context-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+}
+
+.chat-context-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* Chat context button when node is already in context */
+.chat-context-button.in-context {
+  background-color: var(--success-bg, #F0FDF4);
+  border-color: var(--success-border, #10B981);
+  color: var(--success-text, #047857);
+  cursor: not-allowed;
+}
+
+.chat-context-button.in-context:disabled {
+  opacity: 0.8;
+}
+
+/* Icon styling within the button */
+.chat-context-button .chat-icon,
+.chat-context-button .check-icon {
+  flex-shrink: 0;
+  transition: transform 150ms ease-in-out;
+}
+
+.chat-context-button:hover:not(:disabled) .chat-icon {
+  transform: scale(1.1);
+}
+
+.chat-context-button.in-context .check-icon {
+  color: var(--success-text, #047857);
+}
+
+/* Loading state for the button (optional future enhancement) */
+.chat-context-button.loading {
+  pointer-events: none;
+}
+
+.chat-context-button.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s linear infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 /* Card Footer */
 .card-footer {
   padding: var(--spacing-2) var(--spacing-4);
@@ -241,5 +339,43 @@
 
   .panel-content {
     padding: 16px;
+  }
+
+  .chat-context-button {
+    font-size: 0.8rem;
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+} 
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .chat-context-button {
+    border-width: 2px;
+  }
+  
+  .chat-context-button.in-context {
+    border-width: 2px;
+    background-color: #F0FDF4;
+    border-color: #047857;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .chat-context-button {
+    transition: none;
+  }
+  
+  .chat-context-button .chat-icon,
+  .chat-context-button .check-icon {
+    transition: none;
+  }
+  
+  .chat-context-button:hover:not(:disabled) {
+    transform: none;
+  }
+  
+  .chat-context-button:active:not(:disabled) {
+    transform: none;
   }
 } 

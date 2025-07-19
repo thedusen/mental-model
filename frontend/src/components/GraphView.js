@@ -1,19 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { InteractiveNvlWrapper as NVL } from '@neo4j-nvl/react';
 import axios from 'axios';
 
-function GraphView({ onNodeSelect }) {
+// Helper function to programmatically brighten a hex color
+// This simulates the d3.brighter() function to restore the gradient effect
+const brightenHexColor = (hex, percent) => {
+  hex = hex.replace(/^\s*#|\s*$/g, '');
+  if (hex.length === 3) {
+    hex = hex.replace(/(.)/g, '$1$1');
+  }
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+
+  const calculatedPercent = (100 + percent) / 100;
+
+  const newR = Math.min(255, Math.floor(r * calculatedPercent));
+  const newG = Math.min(255, Math.floor(g * calculatedPercent));
+  const newB = Math.min(255, Math.floor(b * calculatedPercent));
+
+  return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+};
+
+function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
   console.log('GraphView component rendering...');
-  const [graphData, setGraphData] = useState({ nodes: [], relationships: [] });
-  const [isLegendMinimized, setIsLegendMinimized] = useState(false);
+  const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
+  // State to manage the legend's collapsed state
+  const [isLegendMinimized, setIsLegendMinimized] = useState(false); 
   const [error, setError] = useState(null);
   const nvlRef = useRef(null);
-
+  
   // Use environment variable for API URL, fallback to localhost for development
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
-    console.log('GraphView useEffect running...');
+    console.log('GraphViewD3 useEffect running...');
     loadGraph();
   }, []);
 
@@ -23,101 +44,149 @@ function GraphView({ onNodeSelect }) {
       const response = await axios.get(`${API_URL}/api/graph`);
       console.log('API response:', response.data);
       const { nodes, edges } = response.data;
-
       console.log('Processing nodes:', nodes?.length, 'edges:', edges?.length);
-
-      // Transform data for NVL with enhanced styling for different node types
-      const nvlNodes = nodes.map(node => {
-        const isTheme = node.type === 'Theme';
-        
-        // Shadcn-inspired color palette - more muted and professional
-        const typeColors = {
-          'Theme': '#DC2626',                    // Red-600 for themes
-          'VALUE FRAMEWORK': '#059669',          // Emerald-600 for value frameworks
-          'COGNITIVE TENSIONS': '#2563EB',       // Blue-600 for cognitive tensions  
-          'DECISION ARCHITECTURE': '#7C3AED',    // Violet-600 for decision architecture
-          'ADAPTIVE CORE': '#EA580C',           // Orange-600 for adaptive core
-          'ENERGY PATTERNS': '#DB2777',         // Pink-600 for energy patterns
-          'Uncategorized': '#64748B'            // Slate-500 for uncategorized
-        };
-
-        const baseSize = isTheme ? 35 : 20;
-        const nodeColor = typeColors[node.type] || typeColors['Uncategorized'];
-        
-        return {
-          id: node.id,
-          caption: node.label,
-          size: baseSize,
-          color: nodeColor,
-          fontSize: isTheme ? 14 : 11,
-          font: {
-            color: '#FFFFFF',
-            strokeWidth: 0.3,
-            strokeColor: '#1E293B',
-            size: isTheme ? 14 : 11
-          },
-          type: 'circle',
-          borderColor: nodeColor,
-          borderWidth: isTheme ? 3 : 2,
-          shadowEnabled: true,
-          shadowColor: 'rgba(0, 0, 0, 0.2)',
-          shadowBlur: 6,
-          shadowOffsetX: 2,
-          shadowOffsetY: 2,
-          properties: {
-            name: node.label,
-            description: node.description,
-            category: node.type,
-            fullData: node
-          }
-        };
-      });
-
-      const nvlRels = edges.map((edge, idx) => ({
-        id: `rel-${idx}`,
-        from: edge.from,
-        to: edge.to,
-        caption: edge.label,
-        color: '#94A3B8',       // Slate-400 for relationships
-        width: 2,
-        length: 150,
-        arrows: 'to',
-        arrowStrikethrough: false,
-        font: {
-          size: 10,
-          color: '#64748B',      // Slate-500 for relationship labels
-          strokeWidth: 0,
-          align: 'middle'
-        },
-        smooth: {
-          enabled: true,
-          type: 'continuous',
-          roundness: 0.2
-        }
-      }));
-
-      console.log('Processed data:', { nodes: nvlNodes.length, relationships: nvlRels.length });
-      setGraphData({ nodes: nvlNodes, relationships: nvlRels });
+      setGraphData({ nodes, edges });
     } catch (error) {
       console.error('Error loading graph:', error);
       setError(error.message);
     }
   };
 
-  const mouseEventCallbacks = {
-    onNodeClick: (node) => {
-      console.log('Node clicked:', node);
-      if (onNodeSelect) {
-        onNodeSelect(node);
-      }
+  const memoizedNodes = useMemo(() => {
+    if (!graphData.nodes || graphData.nodes.length === 0) {
+      return [];
     }
-  };
+    
+    // Restore the original D3 pastel color palette
+    const typeColors = {
+      'Theme': '#F4B8A2',
+      'VALUE FRAMEWORK': '#A3D9D2',
+      'COGNITIVE TENSIONS': '#A9C7E8',
+      'DECISION ARCHITECTURE': '#C3B4E5',
+      'ADAPTIVE CORE': '#F9D6B3',
+      'ENERGY PATTERNS': '#E9C3E1',
+      'Uncategorized': '#E0E0E0'
+    };
+    
+    return graphData.nodes.map(node => {
+      const isTheme = node.type === 'Theme';
+      const isChatContext = chatContextNode && node.id === chatContextNode.id;
+      const baseColor = typeColors[node.type] || typeColors['Uncategorized'];
 
-  const nvlCallbacks = {
-    onLayoutComputed: (nodes, rels) => {
-      console.log('Layout computed');
+      // Simulate the gradient: bright fill, original color border
+      const fillColor = brightenHexColor(baseColor, 20); // 20% brighter for the center
+
+      let finalNode = {
+        id: node.id,
+        caption: node.label,
+        size: isTheme ? 40 : 25, // Slightly larger nodes
+        color: fillColor,
+        fontSize: isTheme ? 14 : 11,
+        font: {
+          color: '#1E293B', // Darker font for better readability on light backgrounds
+          strokeWidth: 0,
+          size: isTheme ? 14 : 11
+        },
+        type: 'circle',
+        borderColor: baseColor, // Original pastel color as border
+        borderWidth: isTheme ? 4 : 3, // Thicker border to enhance the two-tone effect
+        shadowEnabled: true,
+        shadowColor: 'rgba(0, 0, 0, 0.15)',
+        shadowBlur: 8,
+        shadowOffsetX: 3,
+        shadowOffsetY: 3,
+        properties: {
+          name: node.label,
+          description: node.description,
+          category: node.type,
+          fullData: node
+        }
+      };
+
+      if (isChatContext) {
+        finalNode = {
+          ...finalNode,
+          borderColor: '#10B981',
+          borderWidth: 4,
+          shadowEnabled: true,
+          shadowColor: 'rgba(16, 185, 129, 0.4)',
+          shadowBlur: 12,
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
+        };
+      }
+      
+      return finalNode;
+    });
+  }, [graphData.nodes, chatContextNode]);
+
+  const memoizedRels = useMemo(() => {
+    if (!graphData.edges || graphData.edges.length === 0) {
+      return [];
     }
-  };
+    return graphData.edges.map((edge, idx) => ({
+      id: `rel-${idx}`,
+      from: edge.from,
+      to: edge.to,
+      caption: edge.label,
+      color: '#94A3B8',
+      width: 2,
+      length: 150,
+      arrows: 'to',
+      arrowStrikethrough: false,
+      font: {
+        size: 10,
+        color: '#64748B',
+        strokeWidth: 0,
+        align: 'middle'
+      },
+      smooth: {
+        enabled: true,
+        type: 'continuous',
+        roundness: 0.2
+      }
+    }));
+  }, [graphData.edges]);
+
+  // **THE FIX**: Wrap all callback props in `useCallback` to ensure their
+  // references are stable across re-renders. This prevents the child component
+  // from crashing due to unstable function references.
+  const handleNodeClick = useCallback((node) => {
+    console.log('Node clicked:', node);
+    if (onNodeSelect) {
+      onNodeSelect(node);
+      
+      setTimeout(() => {
+        const detailsPanel = document.querySelector('.node-details-panel');
+        if (detailsPanel && !detailsPanel.classList.contains('collapsed')) {
+          const chatButton = detailsPanel.querySelector('[data-chat-context-button]');
+          if (chatButton) {
+            chatButton.focus();
+          }
+        }
+      }, 100);
+    }
+  }, [onNodeSelect]);
+
+  const handleCanvasClick = useCallback(() => {
+    console.log('Canvas clicked - deselecting node');
+    if (onCanvasClick) {
+      onCanvasClick();
+    }
+  }, [onCanvasClick]);
+
+  const handleLayoutDone = useCallback((nodes, rels) => {
+    console.log('Layout computed');
+  }, []);
+
+  const mouseEventCallbacks = useMemo(() => ({
+    onNodeClick: handleNodeClick,
+    onCanvasClick: handleCanvasClick,
+  }), [handleNodeClick, handleCanvasClick]);
+
+  const nvlCallbacks = useMemo(() => ({
+    onLayoutDone: handleLayoutDone,
+  }), [handleLayoutDone]);
 
   const handleZoomIn = () => {
     if (nvlRef.current) {
@@ -131,15 +200,20 @@ function GraphView({ onNodeSelect }) {
     }
   };
 
-  const legendItems = [
-    { color: '#DC2626', label: 'Theme', count: '70' },
-    { color: '#059669', label: 'Value Framework', count: '168' },
-    { color: '#2563EB', label: 'Cognitive Tensions', count: '132' },
-    { color: '#7C3AED', label: 'Decision Architecture', count: '105' },
-    { color: '#EA580C', label: 'Adaptive Core', count: '88' },
-    { color: '#DB2777', label: 'Energy Patterns', count: '36' },
-    { color: '#64748B', label: 'Uncategorized', count: '14' }
-  ];
+  const handleKeyDown = (event) => {
+    if (event.target.closest('.graph-container')) {
+      if (event.key === '+' || event.key === '=') {
+        event.preventDefault();
+        handleZoomIn();
+      } else if (event.key === '-') {
+        event.preventDefault();
+        handleZoomOut();
+      }
+    }
+  };
+
+  // **THE FIX**: This hardcoded list is now removed.
+  // The legend will be generated dynamically by the NVL component.
 
   if (error) {
     return (
@@ -153,10 +227,16 @@ function GraphView({ onNodeSelect }) {
     );
   }
 
-  console.log('Rendering GraphView with data:', graphData);
+  console.log('Rendering GraphView with data:', memoizedNodes.length, 'nodes');
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div 
+      style={{ position: 'relative', width: '100%', height: '100%' }}
+      onKeyDown={handleKeyDown}
+      tabIndex="0"
+      role="application"
+      aria-label="Knowledge graph visualization..."
+    >
       {/* Enhanced Zoom Controls */}
       <div style={{
         position: 'absolute',
@@ -185,7 +265,8 @@ function GraphView({ onNodeSelect }) {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          title="Zoom In"
+          title="Zoom In (or press +)"
+          aria-label="Zoom in to the graph"
           onMouseEnter={(e) => {
             e.target.style.backgroundColor = '#F8FAFC';
             e.target.style.borderColor = '#CBD5E1';
@@ -219,7 +300,8 @@ function GraphView({ onNodeSelect }) {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          title="Zoom Out"
+          title="Zoom Out (or press -)"
+          aria-label="Zoom out from the graph"
           onMouseEnter={(e) => {
             e.target.style.backgroundColor = '#F8FAFC';
             e.target.style.borderColor = '#CBD5E1';
@@ -237,144 +319,31 @@ function GraphView({ onNodeSelect }) {
         </button>
       </div>
 
-      {/* Enhanced Minimizable Legend */}
-      <div style={{
-        position: 'absolute',
-        bottom: '16px',
-        left: '16px',
-        zIndex: 1000,
-        backgroundColor: '#FFFFFF',
-        border: '1px solid #E2E8F0',
-        borderRadius: '16px',
-        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        overflow: 'hidden',
-        transition: 'all 0.3s ease',
-        backdropFilter: 'blur(8px)',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)'
-      }}>
-        {/* Legend Header */}
-        <div 
-          style={{ 
-            padding: '16px 20px',
-            borderBottom: isLegendMinimized ? 'none' : '1px solid #F1F5F9',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onClick={() => setIsLegendMinimized(!isLegendMinimized)}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#F8FAFC';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }}
-        >
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <span style={{ fontSize: '16px' }}>🧠</span>
-            <span style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#0F172A'
-            }}>
-              Mental Model Types
-            </span>
-          </div>
-          
-          <button style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '12px',
-            color: '#64748B',
-            cursor: 'pointer',
-            padding: '4px',
-            borderRadius: '4px',
-            transition: 'all 0.2s ease',
-            transform: isLegendMinimized ? 'rotate(180deg)' : 'rotate(0deg)'
-          }}>
-            ▼
-          </button>
-        </div>
-        
-        {/* Legend Content */}
-        {!isLegendMinimized && (
-          <div style={{
-            padding: '16px 20px'
-          }}>
-            {legendItems.map((item, index) => (
-              <div key={index} style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                marginBottom: index === legendItems.length - 1 ? '0' : '12px',
-                gap: '12px',
-                padding: '4px 0',
-                borderRadius: '6px',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F8FAFC';
-                e.currentTarget.style.transform = 'translateX(2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.transform = 'translateX(0)';
-              }}
-              >
-                <div style={{ 
-                  width: '12px', 
-                  height: '12px', 
-                  backgroundColor: item.color, 
-                  borderRadius: '50%',
-                  flexShrink: 0,
-                  boxShadow: `0 0 0 2px ${item.color}20`
-                }}></div>
-                <span style={{ 
-                  fontSize: '13px',
-                  color: '#475569',
-                  flex: 1,
-                  fontWeight: '500'
-                }}>
-                  {item.label}
-                </span>
-                <span style={{
-                  fontSize: '11px',
-                  color: '#64748B',
-                  fontWeight: '600',
-                  backgroundColor: '#F1F5F9',
-                  padding: '2px 8px',
-                  borderRadius: '6px',
-                  minWidth: '28px',
-                  textAlign: 'center',
-                  border: '1px solid #E2E8F0'
-                }}>
-                  {item.count}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* **THE FIX**: The custom legend component is completely removed from here. */}
 
-      <NVL
-        ref={nvlRef}
-        nodes={graphData.nodes}
-        rels={graphData.relationships}
-        nvlOptions={{
-          layout: 'force-directed',
-          initialZoom: 1,
-          allowDynamicMinZoom: true
-        }}
-        mouseEventCallbacks={mouseEventCallbacks}
-        nvlCallbacks={nvlCallbacks}
-      />
+      {memoizedNodes.length > 0 && (
+        <NVL
+          ref={nvlRef}
+          nodes={memoizedNodes}
+          rels={memoizedRels}
+          nvlOptions={{
+            layout: 'force-directed',
+            initialZoom: 1,
+            allowDynamicMinZoom: true,
+            // New options to control the NVL legend
+            legend: {
+              enabled: true,
+              orientation: 'top-left', // Move legend to top-left
+              isCollapsed: isLegendMinimized, // Control collapse state
+              onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
+            },
+          }}
+          mouseEventCallbacks={mouseEventCallbacks}
+          nvlCallbacks={nvlCallbacks}
+        />
+      )}
     </div>
   );
 }
 
-export default GraphView;
+export default GraphView; 

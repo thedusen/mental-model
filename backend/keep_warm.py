@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from datetime import datetime
-from .config import get_db_session
+from backend.config import get_db_session
 
 logger = logging.getLogger(__name__)
 

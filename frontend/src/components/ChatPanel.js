@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import './ChatPanel.css';
 
-function ChatPanel({ selectedNode, onFullscreenChange }) {
+function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,17 +65,19 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         content: msg.content
       }));
 
-      // Prepare selected node context
-      let selectedNodeContext = null;
-      if (selectedNode) {
-        const properties = selectedNode.properties || selectedNode;
-        selectedNodeContext = {
-          id: selectedNode.id,
-          name: properties.name || properties.label,
-          type: properties.type || 'Uncategorized',
-          description: properties.description || properties.content,
-          theme: properties.theme,
-          labels: selectedNode.labels || []
+      // Prepare chat context node (ONLY if explicitly set via the button)
+      let chatContextNodeData = null;
+      if (chatContextNode) {
+        const properties = chatContextNode.properties || {};
+        const fullData = properties.fullData || {};
+
+        chatContextNodeData = {
+          id: chatContextNode.id,
+          name: properties.name || fullData.label || chatContextNode.caption,
+          type: properties.category || fullData.type || 'Uncategorized',
+          description: properties.description || fullData.content,
+          theme: properties.theme || fullData.theme,
+          labels: chatContextNode.labels || []
         };
       }
 
@@ -88,8 +90,8 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         body: JSON.stringify({
           question: currentInput,
           conversation_history: conversationHistory,
-          selected_node: selectedNodeContext
-        })
+          chat_context_node: chatContextNodeData,
+        }),
       });
 
       if (!response.ok) {
@@ -105,7 +107,6 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         const { done, value } = await reader.read();
         if (done) {
           setMessages(prev => [...prev, assistantResponse]);
-          console.log(`Streaming complete. Sent ${conversationHistory.length} previous messages.`);
           break;
         }
 
@@ -139,13 +140,14 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         const fallbackResponse = await axios.post(`${API_URL}/api/chat`, {
           question: currentInput,
           conversation_history: messages.map(msg => ({ role: msg.role, content: msg.content })),
-          selected_node: selectedNode ? {
-            id: selectedNode.id,
-            name: (selectedNode.properties || selectedNode).name || (selectedNode.properties || selectedNode).label,
-            type: (selectedNode.properties || selectedNode).type || 'Uncategorized',
-            description: (selectedNode.properties || selectedNode).description || (selectedNode.properties || selectedNode).content,
-            theme: (selectedNode.properties || selectedNode).theme,
-            labels: selectedNode.labels || []
+          // Only include chat context node, not selected node
+          chat_context_node: chatContextNode ? {
+            id: chatContextNode.id,
+            name: (chatContextNode.properties || chatContextNode).name || (chatContextNode.properties || chatContextNode).label,
+            type: (chatContextNode.properties || chatContextNode).type || 'Uncategorized',
+            description: (chatContextNode.properties || chatContextNode).description || (chatContextNode.properties || chatContextNode).content,
+            theme: (chatContextNode.properties || chatContextNode).theme,
+            labels: chatContextNode.labels || []
           } : null
         });
 
@@ -178,11 +180,12 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
     }
   };
 
-  const placeholderText = selectedNode
-    ? `Ask questions about "${(selectedNode.properties ? selectedNode.properties.name : selectedNode.name) || (selectedNode.properties ? selectedNode.properties.label : selectedNode.label)}"...`
+  // Dynamic placeholder text based on context
+  const placeholderText = chatContextNode
+    ? `Ask questions about "${(chatContextNode.properties ? chatContextNode.properties.name : chatContextNode.name) || (chatContextNode.properties ? chatContextNode.properties.label : chatContextNode.label)}"...`
     : 'Ask about concepts, patterns, and relationships in the mental model...';
 
-  // Show selected node indicator
+  // Show selected node indicator (for currently selected node, not chat context)
   const selectedNodeInfo = selectedNode ? (
     <div className="selected-node-indicator">
       <span className="node-type">{selectedNode.properties?.type || 'Node'}</span>
@@ -267,6 +270,31 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
             </div>
           )}
           
+          {/* Context Pills Container - NEW */}
+          <div 
+            className="context-pills-container" 
+            aria-live="polite" 
+            aria-atomic="false"
+            role="region"
+            aria-label="Chat context nodes"
+          >
+            {chatContextNode && (
+              <div className="context-pill" role="group" aria-label={`Chat context: ${chatContextNode.properties?.name || chatContextNode.name || 'Unknown node'}`}>
+                <span className="pill-text">
+                  {chatContextNode.properties?.name || chatContextNode.name || chatContextNode.properties?.label || chatContextNode.label || 'Unknown'}
+                </span>
+                <button 
+                  className="pill-remove-btn"
+                  onClick={onClearChatContext}
+                  aria-label={`Remove "${chatContextNode.properties?.name || chatContextNode.name || 'this node'}" from chat context`}
+                  title="Remove from chat context"
+                >
+                  &times;
+                </button>
+              </div>
+            )}
+          </div>
+          
           <div className="input-area">
             <textarea
               ref={textareaRef}
@@ -276,8 +304,14 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
               placeholder={placeholderText}
               disabled={loading}
               rows={1}
+              aria-label="Chat message input"
             />
-            <button onClick={sendMessage} disabled={loading || !input.trim()} title="Send message" aria-label="Send message">
+            <button 
+              onClick={sendMessage} 
+              disabled={loading || !input.trim()} 
+              title="Send message" 
+              aria-label="Send message"
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
