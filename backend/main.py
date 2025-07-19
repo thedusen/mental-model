@@ -7,9 +7,9 @@ import logging
 import os
 import asyncio
 import json
-from .config import anthropic_client, cohere_client, get_db_session
-from .keep_warm import keep_warm_service
-from .prompts import SYSTEM_PROMPT
+from config import anthropic_client, cohere_client, get_db_session
+from keep_warm import keep_warm_service
+from prompts import SYSTEM_PROMPT
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
