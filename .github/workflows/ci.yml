@@ -36,10 +36,9 @@ jobs:
           
       - name: Run linting
         run: |
-          # Install flake8 if not in requirements
-          pip install flake8
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          # The flake8 command will use the configuration from backend/.flake8
+          # It will exit with a non-zero code if there are any linting errors.
+          flake8 .
           
       - name: Test imports
         run: |
