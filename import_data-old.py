@@ -1,7 +1,7 @@
 import os
 import json
 import time
-from backend.config import cohere_client, get_db_session
+from config import cohere_client, get_db_session
 from cohere.errors import TooManyRequestsError
 
 JSON_DATA_PATH = '../data/json'

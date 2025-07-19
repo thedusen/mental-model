@@ -3,7 +3,7 @@
 Script to categorize uncategorized Entity nodes based on keywords in their descriptions and themes.
 """
 
-from backend.config import get_db_session
+from config import get_db_session
 import re
 
 def categorize_uncategorized_nodes():

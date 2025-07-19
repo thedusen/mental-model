@@ -4,7 +4,7 @@ Script to update Entity node categories from the master_knowledge.json file.
 """
 
 import json
-from backend.config import get_db_session
+from config import get_db_session
 
 def update_categories_from_master():
     """Update categories from master_knowledge.json file."""
