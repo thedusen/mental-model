@@ -47,6 +47,33 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+/* Streaming indicator styles */
+.message.streaming .message-content::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  margin-left: 8px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.message.streaming {
+  opacity: 0.9;
+}
+
 .chat-header:hover {
   background-color: var(--gray-50);
 }

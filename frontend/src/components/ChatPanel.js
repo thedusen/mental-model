@@ -59,27 +59,129 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API_URL}/api/chat`, {
-        question: currentInput
-      });
+      // Prepare conversation history - send last 15 messages (excluding the current one we just added)
+      const conversationHistory = messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
 
+      // Create placeholder for streaming response
       const assistantMessage = {
         role: 'assistant',
-        content: response.data.answer,
-        context: response.data.context
+        content: '',
+        context: [],
+        isStreaming: true
       };
-
+      
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Use streaming endpoint for real-time responses
+      const response = await fetch(`${API_URL}/api/chat/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: currentInput,
+          conversation_history: conversationHistory
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let streamingContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              
+              if (data.type === 'metadata') {
+                // Update context when received
+                setMessages(prev => prev.map((msg, index) => 
+                  index === prev.length - 1 
+                    ? { ...msg, context: data.context }
+                    : msg
+                ));
+              } else if (data.type === 'content') {
+                // Append streaming text
+                streamingContent += data.text;
+                setMessages(prev => prev.map((msg, index) => 
+                  index === prev.length - 1 
+                    ? { ...msg, content: streamingContent }
+                    : msg
+                ));
+              } else if (data.type === 'done') {
+                // Mark streaming as complete
+                setMessages(prev => prev.map((msg, index) => 
+                  index === prev.length - 1 
+                    ? { ...msg, content: data.full_response, isStreaming: false }
+                    : msg
+                ));
+                console.log(`Sent ${conversationHistory.length} previous messages. Streaming complete.`);
+              } else if (data.type === 'error') {
+                throw new Error(data.message);
+              }
+            } catch (parseError) {
+              console.error('Error parsing stream data:', parseError);
+            }
+          }
+        }
+      }
+
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error with streaming, falling back to regular chat:', error);
       
-      const errorMessage = {
-        role: 'assistant',
-        content: 'Sorry, I encountered an error while processing your request. Please try again.',
-        isError: true
-      };
-      
-      setMessages(prev => [...prev, errorMessage]);
+      try {
+        // Fallback to regular chat endpoint
+        const response = await axios.post(`${API_URL}/api/chat`, {
+          question: currentInput,
+          conversation_history: conversationHistory
+        });
+
+        const assistantMessage = {
+          role: 'assistant',
+          content: response.data.answer,
+          context: response.data.context
+        };
+
+        setMessages(prev => {
+          const newMessages = [...prev];
+          // Replace the streaming placeholder with regular response
+          newMessages[newMessages.length - 1] = assistantMessage;
+          return newMessages;
+        });
+        
+        console.log(`Fallback successful. Sent ${conversationHistory.length} previous messages.`);
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError);
+        
+        const errorMessage = {
+          role: 'assistant',
+          content: 'Sorry, I encountered an error while processing your request. Please try again.',
+          isError: true
+        };
+        
+        setMessages(prev => {
+          const newMessages = [...prev];
+          // Replace the last message (streaming placeholder) with error
+          newMessages[newMessages.length - 1] = errorMessage;
+          return newMessages;
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -148,15 +250,17 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
           {messages.length > 0 && (
             <div className="messages" aria-live="polite">
               {messages.map((msg, idx) => (
-                <div key={idx} className={`message-wrapper ${msg.type}`}>
-                  <div className="message">
-                    {msg.type === 'assistant' ? (
-                      <div className="markdown-content">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-                      </div>
-                    ) : (
-                      msg.content
-                    )}
+                <div key={idx} className={`message-wrapper ${msg.role}`}>
+                  <div className={`message ${msg.isStreaming ? 'streaming' : ''}`}>
+                    <div className="message-content">
+                      {(msg.role === 'assistant') ? (
+                        <div className="markdown-content">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                        </div>
+                      ) : (
+                        msg.content
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

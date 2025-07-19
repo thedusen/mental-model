@@ -1,12 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List, Dict, Optional
 import logging
 import os
 import asyncio
+import json
 from config import anthropic_client, cohere_client, get_db_session
 from keep_warm import keep_warm_service
+from prompts import SYSTEM_PROMPT
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,8 +59,23 @@ async def shutdown_event():
     await keep_warm_service.stop_keep_warm_loop()
     logger.info("Application shutdown completed")
 
+class ChatMessage(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str
+
 class ChatQuery(BaseModel):
     question: str
+    conversation_history: List[ChatMessage] = []
+
+class TokensUsed(BaseModel):
+    input: Optional[int]
+    output: Optional[int]
+
+class ChatResponse(BaseModel):
+    answer: str
+    context: List[Dict]
+    conversation_length: int
+    tokens_used: TokensUsed
 
 def generate_query_embedding(text):
     # CORRECTED: Specify embedding_types and access the .float attribute.
@@ -66,10 +84,13 @@ def generate_query_embedding(text):
     )
     return response.embeddings.float[0]  # type: ignore
 
-@app.post("/api/chat")
+@app.post("/api/chat", response_model=ChatResponse)
 async def chat(query: ChatQuery):
     try:
+        # Generate embedding for the current question
         embedding = generate_query_embedding(query.question)
+        
+        # Retrieve relevant context from knowledge graph
         with get_db_session() as session:
             result = session.run("""
                 CALL db.index.vector.queryNodes('entity_embeddings', 5, $embedding) YIELD node, score
@@ -84,20 +105,46 @@ async def chat(query: ChatQuery):
             """, {'embedding': embedding})
             context_data = [dict(record) for record in result]
 
-        if not context_data:
-            return {"answer": "I couldn't find any relevant information in the knowledge graph to answer your question.", "context": []}
+        # Build knowledge graph context string
+        if context_data:
+            context_str = "Knowledge Graph Context:\n" + "\n".join(
+                [f"- {item['entity']}: {item['description']}" for item in context_data]
+            )
+        else:
+            context_str = "No specific knowledge graph context found for this question."
 
-        context_str = "Knowledge Graph Context:\n" + "\n".join(
-            [f"- {item['entity']}: {item['description']}" for item in context_data]
-        )
+        # Build conversation messages with rolling window (last 15 messages)
+        messages = []
+        
+        # Add conversation history (limit to last 15 messages)
+        recent_history = query.conversation_history[-15:]
+        
+        for msg in recent_history:
+            messages.append({
+                "role": msg.role,
+                "content": msg.content
+            })
+        
+        # Add current question with knowledge graph context
+        current_message = f"{context_str}\n\nQuestion: {query.question}"
+        messages.append({
+            "role": "user", 
+            "content": current_message
+        })
 
+        # Call Claude with conversation history and prompt caching
         response = anthropic_client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=4096,
-            system="You are a business consultant answering questions based on mental models from the provided knowledge graph context.",
-            messages=[
-                {"role": "user", "content": f"{context_str}\n\nQuestion: {query.question}\n\nAnswer based on the context provided:"}
-            ]
+            max_tokens=8192,  # Increased for large context windows and extended responses
+            system=[
+                {
+                    "type": "text",
+                    "text": SYSTEM_PROMPT,
+                    "cache_control": {"type": "ephemeral"}  # Cache the long system prompt
+                }
+            ],
+            messages=messages,
+            stream=False  # We'll implement streaming in a separate endpoint
         )
         
         answer_text = ""
@@ -106,9 +153,126 @@ async def chat(query: ChatQuery):
                 answer_text = block.text
                 break
                 
-        return {"answer": answer_text, "context": context_data}
+        return {
+            "answer": answer_text, 
+            "context": context_data,
+            "conversation_length": len(recent_history) + 1,  # Include current message
+            "tokens_used": {
+                "input": response.usage.input_tokens if hasattr(response, 'usage') else None,
+                "output": response.usage.output_tokens if hasattr(response, 'usage') else None
+            }
+        }
+        
     except Exception as e:
         logger.error(f"Error in /api/chat: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/api/chat/stream")
+async def chat_stream(query: ChatQuery):
+    """Streaming chat endpoint for real-time responses"""
+    try:
+        # Generate embedding for the current question
+        embedding = generate_query_embedding(query.question)
+        
+        # Retrieve relevant context from knowledge graph
+        with get_db_session() as session:
+            result = session.run("""
+                CALL db.index.vector.queryNodes('entity_embeddings', 5, $embedding) YIELD node, score
+                WHERE score > 0.5
+                WITH node
+                OPTIONAL MATCH (node)-[r]-(connected:Entity)
+                RETURN node.id as entity, node.description as description,
+                       collect(DISTINCT {
+                           type: type(r),
+                           connected: connected.id
+                       }) as relationships
+            """, {'embedding': embedding})
+            context_data = [dict(record) for record in result]
+
+        # Build knowledge graph context string
+        if context_data:
+            context_str = "Knowledge Graph Context:\n" + "\n".join(
+                [f"- {item['entity']}: {item['description']}" for item in context_data]
+            )
+        else:
+            context_str = "No specific knowledge graph context found for this question."
+
+        # Build conversation messages with rolling window (last 15 messages)
+        messages = []
+        
+        # Add conversation history (limit to last 15 messages)
+        recent_history = query.conversation_history[-15:]
+        
+        for msg in recent_history:
+            messages.append({
+                "role": msg.role,
+                "content": msg.content
+            })
+        
+        # Add current question with knowledge graph context
+        current_message = f"{context_str}\n\nQuestion: {query.question}"
+        messages.append({
+            "role": "user", 
+            "content": current_message
+        })
+
+        async def generate_stream():
+            try:
+                # Send initial metadata
+                yield f"data: {json.dumps({'type': 'metadata', 'context': context_data})}\n\n"
+                
+                # Call Claude with streaming enabled
+                stream = anthropic_client.messages.create(
+                    model="claude-sonnet-4-20250514",
+                    max_tokens=8192,
+                    system=[
+                        {
+                            "type": "text",
+                            "text": SYSTEM_PROMPT,
+                            "cache_control": {"type": "ephemeral"}
+                        }
+                    ],
+                    messages=messages,
+                    stream=True
+                )
+                
+                full_response = ""
+                for event in stream:
+                    if event.type == "content_block_delta":
+                        if event.delta.type == "text_delta":
+                            text_chunk = event.delta.text
+                            full_response += text_chunk
+                            # Send each text chunk to the client
+                            yield f"data: {json.dumps({'type': 'content', 'text': text_chunk})}\n\n"
+                    
+                    elif event.type == "message_stop":
+                        # Send completion signal with full response
+                        yield f"data: {json.dumps({'type': 'done', 'full_response': full_response})}\n\n"
+                        break
+                    
+                    elif event.type == "error":
+                        logger.error(f"Error in stream: {event.error}")
+                        yield f"data: {json.dumps({'type': 'error', 'message': str(event.error)})}\n\n"
+                        break
+                        
+            except Exception as e:
+                logger.error(f"Error in streaming: {e}", exc_info=True)
+                yield f"data: {json.dumps({'type': 'error', 'message': 'An error occurred while streaming the response.'})}\n\n"
+
+        return StreamingResponse(
+            generate_stream(),
+            media_type="text/plain",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "Content-Type": "text/event-stream",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*"
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Error in /api/chat/stream: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.get("/api/graph")

@@ -198,5 +198,4 @@ PRODUCTION-ROADMAP.md
 .vercel
 
 # Environment variables
-.env
 .env*.local
