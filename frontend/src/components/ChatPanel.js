@@ -68,13 +68,15 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
       // Prepare chat context node (ONLY if explicitly set via the button)
       let chatContextNodeData = null;
       if (chatContextNode) {
-        const properties = chatContextNode.properties || chatContextNode;
+        const properties = chatContextNode.properties || {};
+        const fullData = properties.fullData || {};
+
         chatContextNodeData = {
           id: chatContextNode.id,
-          name: properties.name || properties.label,
-          type: properties.type || 'Uncategorized',
-          description: properties.description || properties.content,
-          theme: properties.theme,
+          name: properties.name || fullData.label || chatContextNode.caption,
+          type: properties.category || fullData.type || 'Uncategorized',
+          description: properties.description || fullData.content,
+          theme: properties.theme || fullData.theme,
           labels: chatContextNode.labels || []
         };
       }
@@ -88,9 +90,8 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
         body: JSON.stringify({
           question: currentInput,
           conversation_history: conversationHistory,
-          // Only include chat context node, not selected node
-          chat_context_node: chatContextNodeData
-        })
+          chat_context_node: chatContextNodeData,
+        }),
       });
 
       if (!response.ok) {
@@ -106,7 +107,6 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
         const { done, value } = await reader.read();
         if (done) {
           setMessages(prev => [...prev, assistantResponse]);
-          console.log(`Streaming complete. Sent ${conversationHistory.length} previous messages.`);
           break;
         }
 

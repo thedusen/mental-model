@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import GraphViewD3 from './components/GraphViewD3';
+import GraphView from './components/GraphView';
 import ChatPanel from './components/ChatPanel';
 import NodeDetailsPanel from './components/NodeDetailsPanel';
 import NodeTypesPanel from './components/NodeTypesPanel';
@@ -115,7 +115,7 @@ function App() {
         <main className="main-content" id="main-content" role="main">
           <div className="graph-container">
             <NodeTypesPanel onFilterChange={setNodeFilters} />
-            <GraphViewD3 
+            <GraphView 
               onNodeSelect={setSelectedNode}
               onCanvasClick={handleDeselectNode}
               chatContextNode={chatContextNode}

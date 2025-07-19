@@ -33,7 +33,7 @@ function NodeTypesPanel({ onFilterChange }) {
         <h3 className="panel-title">Node Types</h3>
         <button className="panel-toggle" aria-label={isCollapsed ? 'Expand legend' : 'Collapse legend'}>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {isCollapsed ? <polyline points="6 9 12 15 18 9"></polyline> : <polyline points="18 15 12 9 6 9"></polyline>}
+            {isCollapsed ? <polyline points="6 9 12 15 18 9"></polyline> : <polyline points="18 15 12 9 6 15"></polyline>}
           </svg>
         </button>
       </div>
