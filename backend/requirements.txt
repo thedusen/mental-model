@@ -11,3 +11,6 @@ PyJWT==2.8.0
 # Production performance and monitoring
 uvloop==0.21.0
 gunicorn==21.2.0
+
+# Development and testing
+flake8==7.0.0

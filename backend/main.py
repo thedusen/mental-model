@@ -20,14 +20,25 @@ app = FastAPI(
 # CORS - Allow your frontend domain
 allowed_origins = [
     "http://localhost:3000",  # Local development
-    "https://*.vercel.app",   # Vercel deployments
+    "https://mental-model-frontend.vercel.app",  # Your specific Vercel deployment
+    "https://*.vercel.app",   # Vercel deployments wildcard
     "https://*.netlify.app",  # Netlify deployments
     os.getenv("FRONTEND_URL", "")  # Custom frontend URL
 ]
 
+# Filter out empty strings and add wildcard support
+cors_origins = []
+for origin in allowed_origins:
+    if origin:
+        if "*" in origin:
+            # For wildcard domains, we need to use allow_origin_regex
+            continue
+        cors_origins.append(origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin for origin in allowed_origins if origin],
+    allow_origins=cors_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Handle Vercel wildcards
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
