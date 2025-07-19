@@ -59,23 +59,27 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
     setLoading(true);
 
     try {
-      // Prepare conversation history - send last 15 messages (excluding the current one we just added)
+      // Prepare conversation history
       const conversationHistory = messages.map(msg => ({
         role: msg.role,
         content: msg.content
       }));
 
-      // Create placeholder for streaming response
-      const assistantMessage = {
-        role: 'assistant',
-        content: '',
-        context: [],
-        isStreaming: true
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
+      // Prepare selected node context
+      let selectedNodeContext = null;
+      if (selectedNode) {
+        const properties = selectedNode.properties || selectedNode;
+        selectedNodeContext = {
+          id: selectedNode.id,
+          name: properties.name || properties.label,
+          type: properties.type || 'Uncategorized',
+          description: properties.description || properties.content,
+          theme: properties.theme,
+          labels: selectedNode.labels || []
+        };
+      }
 
-      // Use streaming endpoint for real-time responses
+      // Use streaming endpoint
       const response = await fetch(`${API_URL}/api/chat/stream`, {
         method: 'POST',
         headers: {
@@ -83,7 +87,8 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         },
         body: JSON.stringify({
           question: currentInput,
-          conversation_history: conversationHistory
+          conversation_history: conversationHistory,
+          selected_node: selectedNodeContext
         })
       });
 
@@ -94,15 +99,19 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
-      let streamingContent = '';
+      let assistantResponse = { role: 'assistant', content: '', context: [] };
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          setMessages(prev => [...prev, assistantResponse]);
+          console.log(`Streaming complete. Sent ${conversationHistory.length} previous messages.`);
+          break;
+        }
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Keep incomplete line in buffer
+        buffer = lines.pop() || '';
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
@@ -110,28 +119,9 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
               const data = JSON.parse(line.slice(6));
               
               if (data.type === 'metadata') {
-                // Update context when received
-                setMessages(prev => prev.map((msg, index) => 
-                  index === prev.length - 1 
-                    ? { ...msg, context: data.context }
-                    : msg
-                ));
+                assistantResponse.context = data.context;
               } else if (data.type === 'content') {
-                // Append streaming text
-                streamingContent += data.text;
-                setMessages(prev => prev.map((msg, index) => 
-                  index === prev.length - 1 
-                    ? { ...msg, content: streamingContent }
-                    : msg
-                ));
-              } else if (data.type === 'done') {
-                // Mark streaming as complete
-                setMessages(prev => prev.map((msg, index) => 
-                  index === prev.length - 1 
-                    ? { ...msg, content: data.full_response, isStreaming: false }
-                    : msg
-                ));
-                console.log(`Sent ${conversationHistory.length} previous messages. Streaming complete.`);
+                assistantResponse.content += data.text;
               } else if (data.type === 'error') {
                 throw new Error(data.message);
               }
@@ -141,46 +131,40 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
           }
         }
       }
-
     } catch (error) {
-      console.error('Error with streaming, falling back to regular chat:', error);
+      console.error('Error with streaming, attempting fallback:', error);
       
       try {
         // Fallback to regular chat endpoint
-        const response = await axios.post(`${API_URL}/api/chat`, {
+        const fallbackResponse = await axios.post(`${API_URL}/api/chat`, {
           question: currentInput,
-          conversation_history: conversationHistory
+          conversation_history: messages.map(msg => ({ role: msg.role, content: msg.content })),
+          selected_node: selectedNode ? {
+            id: selectedNode.id,
+            name: (selectedNode.properties || selectedNode).name || (selectedNode.properties || selectedNode).label,
+            type: (selectedNode.properties || selectedNode).type || 'Uncategorized',
+            description: (selectedNode.properties || selectedNode).description || (selectedNode.properties || selectedNode).content,
+            theme: (selectedNode.properties || selectedNode).theme,
+            labels: selectedNode.labels || []
+          } : null
         });
 
         const assistantMessage = {
           role: 'assistant',
-          content: response.data.answer,
-          context: response.data.context
+          content: fallbackResponse.data.answer,
+          context: fallbackResponse.data.context
         };
+        setMessages(prev => [...prev, assistantMessage]);
+        console.log(`Fallback successful.`);
 
-        setMessages(prev => {
-          const newMessages = [...prev];
-          // Replace the streaming placeholder with regular response
-          newMessages[newMessages.length - 1] = assistantMessage;
-          return newMessages;
-        });
-        
-        console.log(`Fallback successful. Sent ${conversationHistory.length} previous messages.`);
       } catch (fallbackError) {
         console.error('Fallback also failed:', fallbackError);
-        
         const errorMessage = {
           role: 'assistant',
           content: 'Sorry, I encountered an error while processing your request. Please try again.',
           isError: true
         };
-        
-        setMessages(prev => {
-          const newMessages = [...prev];
-          // Replace the last message (streaming placeholder) with error
-          newMessages[newMessages.length - 1] = errorMessage;
-          return newMessages;
-        });
+        setMessages(prev => [...prev, errorMessage]);
       }
     } finally {
       setLoading(false);
@@ -198,6 +182,14 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
     ? `Ask questions about "${(selectedNode.properties ? selectedNode.properties.name : selectedNode.name) || (selectedNode.properties ? selectedNode.properties.label : selectedNode.label)}"...`
     : 'Ask about concepts, patterns, and relationships in the mental model...';
 
+  // Show selected node indicator
+  const selectedNodeInfo = selectedNode ? (
+    <div className="selected-node-indicator">
+      <span className="node-type">{selectedNode.properties?.type || 'Node'}</span>
+      <span className="node-name">{(selectedNode.properties ? selectedNode.properties.name : selectedNode.name) || (selectedNode.properties ? selectedNode.properties.label : selectedNode.label)}</span>
+    </div>
+  ) : null;
+
   return (
     <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
       {messages.length > 0 && (
@@ -209,6 +201,7 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
           }
         }}>
           <h3 className="chat-title">Chat</h3>
+          {selectedNodeInfo}
           <div className="chat-controls">
             <button 
               className="chat-toggle fullscreen-toggle" 
@@ -251,7 +244,7 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
             <div className="messages" aria-live="polite">
               {messages.map((msg, idx) => (
                 <div key={idx} className={`message-wrapper ${msg.role}`}>
-                  <div className={`message ${msg.isStreaming ? 'streaming' : ''}`}>
+                  <div className="message">
                     <div className="message-content">
                       {(msg.role === 'assistant') ? (
                         <div className="markdown-content">

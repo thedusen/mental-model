@@ -7,9 +7,9 @@ import logging
 import os
 import asyncio
 import json
-from config import anthropic_client, cohere_client, get_db_session
-from keep_warm import keep_warm_service
-from prompts import SYSTEM_PROMPT
+from .config import anthropic_client, cohere_client, get_db_session
+from .keep_warm import keep_warm_service
+from .prompts import SYSTEM_PROMPT
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,9 +63,18 @@ class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
     content: str
 
+class SelectedNode(BaseModel):
+    id: Optional[str] = None
+    name: Optional[str] = None
+    type: Optional[str] = None
+    description: Optional[str] = None
+    theme: Optional[str] = None
+    labels: List[str] = []
+
 class ChatQuery(BaseModel):
     question: str
     conversation_history: List[ChatMessage] = []
+    selected_node: Optional[SelectedNode] = None
 
 class TokensUsed(BaseModel):
     input: Optional[int]
@@ -125,8 +134,13 @@ async def chat(query: ChatQuery):
                 "content": msg.content
             })
         
-        # Add current question with knowledge graph context
-        current_message = f"{context_str}\n\nQuestion: {query.question}"
+        # Add selected node context if available
+        selected_node_context = ""
+        if query.selected_node:
+            selected_node_context = f"\n\nCurrently Selected Node:\n- Name: {query.selected_node.name}\n- Type: {query.selected_node.type}\n- Description: {query.selected_node.description}\n- Theme: {query.selected_node.theme}\n- Labels: {', '.join(query.selected_node.labels) if query.selected_node.labels else 'None'}"
+        
+        # Add current question with knowledge graph context and selected node
+        current_message = f"{context_str}{selected_node_context}\n\nQuestion: {query.question}"
         messages.append({
             "role": "user", 
             "content": current_message
@@ -209,8 +223,13 @@ async def chat_stream(query: ChatQuery):
                 "content": msg.content
             })
         
-        # Add current question with knowledge graph context
-        current_message = f"{context_str}\n\nQuestion: {query.question}"
+        # Add selected node context if available
+        selected_node_context = ""
+        if query.selected_node:
+            selected_node_context = f"\n\nCurrently Selected Node:\n- Name: {query.selected_node.name}\n- Type: {query.selected_node.type}\n- Description: {query.selected_node.description}\n- Theme: {query.selected_node.theme}\n- Labels: {', '.join(query.selected_node.labels) if query.selected_node.labels else 'None'}"
+        
+        # Add current question with knowledge graph context and selected node
+        current_message = f"{context_str}{selected_node_context}\n\nQuestion: {query.question}"
         messages.append({
             "role": "user", 
             "content": current_message
