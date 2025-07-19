@@ -5,6 +5,13 @@ import axios from 'axios';
 // Use environment variable for API URL, fallback to localhost for development
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
+// Debug logging
+console.log('API_URL configured as:', API_URL);
+console.log('Environment variables:', {
+  NODE_ENV: process.env.NODE_ENV,
+  REACT_APP_API_URL: process.env.REACT_APP_API_URL
+});
+
 // A helper function to wrap text into multiple lines inside an SVG
 function wrap(text, width) {
   text.each(function () {
@@ -70,16 +77,27 @@ function GraphViewD3({ onNodeSelect }) {
 
   const loadGraph = async () => {
     try {
+      console.log('Loading graph from:', `${API_URL}/api/graph`);
       const response = await axios.get(`${API_URL}/api/graph`);
+      console.log('API response received:', response);
+      console.log('Response data:', response.data);
       
       // Validate the structure of the response
       if (!response.data || !response.data.nodes || !response.data.edges) {
-        throw new Error('Invalid graph data structure received from API');
+        console.error('Invalid response structure:', response.data);
+        throw new Error(`Invalid graph data structure received from API. Received: ${JSON.stringify(response.data)}`);
       }
       
+      console.log('Graph data loaded successfully:', response.data.nodes.length, 'nodes,', response.data.edges.length, 'edges');
       setGraphData(response.data);
     } catch (error) {
       console.error('Error loading graph:', error);
+      console.error('Error details:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data
+      });
       setError(error.message);
     }
   };
@@ -321,30 +339,46 @@ function GraphViewD3({ onNodeSelect }) {
   if (error) {
     return (
       <div style={{ 
-        padding: '20px', 
-        color: '#DC2626', 
-        backgroundColor: '#FEF2F2', 
-        border: '1px solid #FECACA', 
-        borderRadius: '12px', 
-        margin: '20px',
-        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 2000,
+        backgroundColor: 'rgba(255, 255, 255, 0.95)'
       }}>
-        <h3 style={{ margin: '0 0 8px 0', fontWeight: '600' }}>Graph Loading Error</h3>
-        <p style={{ margin: '0 0 16px 0' }}>Failed to load graph data: {error}</p>
-        <button 
-          onClick={loadGraph} 
-          style={{ 
-            padding: '8px 16px', 
-            backgroundColor: '#DC2626',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: '500'
-          }}
-        >
-          Retry
-        </button>
+        <div style={{ 
+          padding: '32px', 
+          color: '#DC2626', 
+          backgroundColor: '#FEF2F2', 
+          border: '1px solid #FECACA', 
+          borderRadius: '16px', 
+          maxWidth: '500px',
+          width: '90%',
+          textAlign: 'center',
+          boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)'
+        }}>
+          <h3 style={{ margin: '0 0 16px 0', fontWeight: '600', fontSize: '18px' }}>Graph Loading Error</h3>
+          <p style={{ margin: '0 0 24px 0', lineHeight: '1.5' }}>Failed to load graph data: {error}</p>
+          <button 
+            onClick={loadGraph} 
+            style={{ 
+              padding: '12px 24px', 
+              backgroundColor: '#DC2626',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '500',
+              fontSize: '14px'
+            }}
+          >
+            Retry Connection
+          </button>
+        </div>
       </div>
     );
   }
