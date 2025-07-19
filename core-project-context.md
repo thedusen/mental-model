@@ -1,6 +1,3 @@
----
-alwaysApply: true
----
 
 ## Project Overview & Goal
 This is a Minimum Viable Product (MVP) to translate an expert's mental model into an interactive knowledge graph. The primary goal is to create a system that allows users to visualize and chat with the expert's knowledge. The graph represents the expert's patterns of thinking, feeling, and intuiting as a dynamic network of concepts and relationships.

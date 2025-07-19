@@ -9,9 +9,6 @@ on:
 jobs:
   test-backend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     
     steps:
       - name: Checkout code
@@ -31,6 +28,7 @@ jobs:
             ${{ runner.os }}-pip-
             
       - name: Install dependencies
+        working-directory: ./backend
         run: |
           pip install -r requirements.txt
         env:
@@ -40,6 +38,7 @@ jobs:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
           
       - name: Run linting (advisory)
+        working-directory: ./backend
         run: |
           # The flake8 command will use the configuration from backend/.flake8
           # We'll let this pass for now and address linting issues separately.
@@ -47,7 +46,7 @@ jobs:
           
       - name: Test imports
         run: |
-          python -c "import main; print('✅ Backend imports successfully')"
+          python -c "from backend import main; print('✅ Backend imports successfully')"
         env:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -55,7 +54,7 @@ jobs:
           
       - name: Check FastAPI app
         run: |
-          python -c "from main import app; print('✅ FastAPI app loads successfully')"
+          python -c "from backend.main import app; print('✅ FastAPI app loads successfully')"
         env:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
