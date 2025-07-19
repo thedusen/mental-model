@@ -74,6 +74,37 @@
   opacity: 0.9;
 }
 
+/* Selected node indicator styles */
+.selected-node-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0 12px;
+  padding: 4px 8px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.2;
+  max-width: 120px;
+  overflow: hidden;
+}
+
+.selected-node-indicator .node-type {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.selected-node-indicator .node-name {
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
 .chat-header:hover {
   background-color: var(--gray-50);
 }

@@ -65,6 +65,20 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         content: msg.content
       }));
 
+      // Prepare selected node context if available
+      let selectedNodeContext = null;
+      if (selectedNode) {
+        const properties = selectedNode.properties || selectedNode;
+        selectedNodeContext = {
+          id: selectedNode.id,
+          name: properties.name || properties.label,
+          type: properties.type || 'Uncategorized',
+          description: properties.description || properties.content,
+          theme: properties.theme,
+          labels: selectedNode.labels || []
+        };
+      }
+
       // Create placeholder for streaming response
       const assistantMessage = {
         role: 'assistant',
@@ -83,7 +97,8 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         },
         body: JSON.stringify({
           question: currentInput,
-          conversation_history: conversationHistory
+          conversation_history: conversationHistory,
+          selected_node: selectedNodeContext
         })
       });
 
@@ -149,7 +164,8 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
         // Fallback to regular chat endpoint
         const response = await axios.post(`${API_URL}/api/chat`, {
           question: currentInput,
-          conversation_history: conversationHistory
+          conversation_history: conversationHistory,
+          selected_node: selectedNodeContext
         });
 
         const assistantMessage = {
@@ -198,6 +214,14 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
     ? `Ask questions about "${(selectedNode.properties ? selectedNode.properties.name : selectedNode.name) || (selectedNode.properties ? selectedNode.properties.label : selectedNode.label)}"...`
     : 'Ask about concepts, patterns, and relationships in the mental model...';
 
+  // Show selected node indicator
+  const selectedNodeInfo = selectedNode ? (
+    <div className="selected-node-indicator">
+      <span className="node-type">{selectedNode.properties?.type || 'Node'}</span>
+      <span className="node-name">{(selectedNode.properties ? selectedNode.properties.name : selectedNode.name) || (selectedNode.properties ? selectedNode.properties.label : selectedNode.label)}</span>
+    </div>
+  ) : null;
+
   return (
     <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
       {messages.length > 0 && (
@@ -209,6 +233,7 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
           }
         }}>
           <h3 className="chat-title">Chat</h3>
+          {selectedNodeInfo}
           <div className="chat-controls">
             <button 
               className="chat-toggle fullscreen-toggle" 
