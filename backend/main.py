@@ -63,7 +63,8 @@ class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
     content: str
 
-class SelectedNode(BaseModel):
+class ChatContextNode(BaseModel):
+    """Represents a node explicitly added to chat context by the user"""
     id: Optional[str] = None
     name: Optional[str] = None
     type: Optional[str] = None
@@ -74,7 +75,10 @@ class SelectedNode(BaseModel):
 class ChatQuery(BaseModel):
     question: str
     conversation_history: List[ChatMessage] = []
-    selected_node: Optional[SelectedNode] = None
+    # DEPRECATED: selected_node - keeping for backward compatibility but not using
+    selected_node: Optional[ChatContextNode] = None
+    # NEW: chat_context_node - only used when explicitly set by user
+    chat_context_node: Optional[ChatContextNode] = None
 
 class TokensUsed(BaseModel):
     input: Optional[int]
@@ -134,13 +138,16 @@ async def chat(query: ChatQuery):
                 "content": msg.content
             })
         
-        # Add selected node context if available
-        selected_node_context = ""
-        if query.selected_node:
-            selected_node_context = f"\n\nCurrently Selected Node:\n- Name: {query.selected_node.name}\n- Type: {query.selected_node.type}\n- Description: {query.selected_node.description}\n- Theme: {query.selected_node.theme}\n- Labels: {', '.join(query.selected_node.labels) if query.selected_node.labels else 'None'}"
+        # Add chat context node ONLY if explicitly provided (user clicked "Chat with this node")
+        chat_context_str = ""
+        if query.chat_context_node:
+            chat_context_str = f"\n\nChat Context Node (User explicitly added this for focused discussion):\n- Name: {query.chat_context_node.name}\n- Type: {query.chat_context_node.type}\n- Description: {query.chat_context_node.description}\n- Theme: {query.chat_context_node.theme}\n- Labels: {', '.join(query.chat_context_node.labels) if query.chat_context_node.labels else 'None'}"
+            logger.info(f"Chat context node added: {query.chat_context_node.name}")
+        else:
+            logger.info("No chat context node provided - proceeding with general knowledge graph context only")
         
-        # Add current question with knowledge graph context and selected node
-        current_message = f"{context_str}{selected_node_context}\n\nQuestion: {query.question}"
+        # Add current question with knowledge graph context and optional chat context node
+        current_message = f"{context_str}{chat_context_str}\n\nQuestion: {query.question}"
         messages.append({
             "role": "user", 
             "content": current_message
@@ -223,25 +230,28 @@ async def chat_stream(query: ChatQuery):
                 "content": msg.content
             })
         
-        # Add selected node context if available
-        selected_node_context = ""
-        if query.selected_node:
-            selected_node_context = f"\n\nCurrently Selected Node:\n- Name: {query.selected_node.name}\n- Type: {query.selected_node.type}\n- Description: {query.selected_node.description}\n- Theme: {query.selected_node.theme}\n- Labels: {', '.join(query.selected_node.labels) if query.selected_node.labels else 'None'}"
+        # Add chat context node ONLY if explicitly provided
+        chat_context_str = ""
+        if query.chat_context_node:
+            chat_context_str = f"\n\nChat Context Node (User explicitly added this for focused discussion):\n- Name: {query.chat_context_node.name}\n- Type: {query.chat_context_node.type}\n- Description: {query.chat_context_node.description}\n- Theme: {query.chat_context_node.theme}\n- Labels: {', '.join(query.chat_context_node.labels) if query.chat_context_node.labels else 'None'}"
+            logger.info(f"Streaming chat context node added: {query.chat_context_node.name}")
+        else:
+            logger.info("Streaming: No chat context node provided")
         
-        # Add current question with knowledge graph context and selected node
-        current_message = f"{context_str}{selected_node_context}\n\nQuestion: {query.question}"
+        # Add current question with knowledge graph context and optional chat context node
+        current_message = f"{context_str}{chat_context_str}\n\nQuestion: {query.question}"
         messages.append({
             "role": "user", 
             "content": current_message
         })
 
-        async def generate_stream():
+        async def generate():
             try:
-                # Send initial metadata
+                # Send metadata first
                 yield f"data: {json.dumps({'type': 'metadata', 'context': context_data})}\n\n"
                 
-                # Call Claude with streaming enabled
-                stream = anthropic_client.messages.create(
+                # Stream response from Claude
+                with anthropic_client.messages.stream(
                     model="claude-sonnet-4-20250514",
                     max_tokens=8192,
                     system=[
@@ -252,47 +262,29 @@ async def chat_stream(query: ChatQuery):
                         }
                     ],
                     messages=messages,
-                    stream=True
-                )
+                ) as stream:
+                    for text in stream.text_stream:
+                        yield f"data: {json.dumps({'type': 'content', 'text': text})}\n\n"
                 
-                full_response = ""
-                for event in stream:
-                    if event.type == "content_block_delta":
-                        if event.delta.type == "text_delta":
-                            text_chunk = event.delta.text
-                            full_response += text_chunk
-                            # Send each text chunk to the client
-                            yield f"data: {json.dumps({'type': 'content', 'text': text_chunk})}\n\n"
-                    
-                    elif event.type == "message_stop":
-                        # Send completion signal with full response
-                        yield f"data: {json.dumps({'type': 'done', 'full_response': full_response})}\n\n"
-                        break
-                    
-                    elif event.type == "error":
-                        logger.error(f"Error in stream: {event.error}")
-                        yield f"data: {json.dumps({'type': 'error', 'message': str(event.error)})}\n\n"
-                        break
-                        
+                yield f"data: {json.dumps({'type': 'done'})}\n\n"
+                
             except Exception as e:
                 logger.error(f"Error in streaming: {e}", exc_info=True)
-                yield f"data: {json.dumps({'type': 'error', 'message': 'An error occurred while streaming the response.'})}\n\n"
+                yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
 
         return StreamingResponse(
-            generate_stream(),
+            generate(),
             media_type="text/plain",
             headers={
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "Content-Type": "text/event-stream",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "*"
             }
         )
         
     except Exception as e:
         logger.error(f"Error in /api/chat/stream: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+        raise HTTPException(status_code=500, detail="An unexpected error occurred during streaming.")
 
 @app.get("/api/graph")
 async def get_graph():

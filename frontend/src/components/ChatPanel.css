@@ -287,6 +287,126 @@
   overflow: hidden;
 }
 
+/* Context Pills Container */
+.context-pills-container {
+  padding: var(--spacing-2) var(--spacing-4) 0 var(--spacing-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  align-items: center;
+  min-height: 0; /* Allow container to collapse when empty */
+  transition: all 200ms ease-in-out;
+}
+
+.context-pills-container:empty {
+  padding: 0;
+  min-height: 0;
+}
+
+/* Context Pill */
+.context-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-2);
+  background-color: var(--primary-bg, #EFF6FF);
+  border: 1px solid var(--primary-border, #2563EB);
+  border-radius: 20px; /* Pill shape */
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary-text, #1E40AF);
+  max-width: 250px;
+  animation: pillSlideIn 200ms ease-out;
+}
+
+@keyframes pillSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.context-pill.removing {
+  animation: pillSlideOut 200ms ease-in forwards;
+}
+
+@keyframes pillSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+}
+
+/* Pill Text */
+.pill-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* Allow text to shrink */
+}
+
+/* Pill Remove Button */
+.pill-remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px; /* Ensure minimum touch target size */
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--primary-text, #1E40AF);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+  margin-left: var(--spacing-1);
+}
+
+.pill-remove-btn:hover {
+  background-color: var(--primary-hover-bg, #DBEAFE);
+  color: var(--primary-hover-text, #1D4ED8);
+  transform: scale(1.1);
+}
+
+.pill-remove-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+  background-color: var(--primary-hover-bg, #DBEAFE);
+}
+
+.pill-remove-btn:active {
+  transform: scale(0.95);
+}
+
+/* Enhanced accessibility for pill remove button */
+@media (min-width: 768px) {
+  .pill-remove-btn {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+  }
+}
+
+/* Touch devices - ensure adequate touch target */
+@media (hover: none) and (pointer: coarse) {
+  .pill-remove-btn {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+  }
+}
 
 /* Input Area */
 .input-area {
@@ -351,4 +471,47 @@
 .input-area button:disabled {
   background-color: var(--gray-200);
   cursor: not-allowed;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .context-pill {
+    border-width: 2px;
+    background-color: #EFF6FF;
+    border-color: #1D4ED8;
+  }
+  
+  .pill-remove-btn {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .context-pill {
+    animation: none;
+  }
+  
+  .context-pill.removing {
+    animation: none;
+    opacity: 0;
+  }
+  
+  .pill-remove-btn:hover {
+    transform: none;
+  }
+  
+  .pill-remove-btn:active {
+    transform: none;
+  }
+  
+  @keyframes pillSlideIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes pillSlideOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
 }
