@@ -3,7 +3,12 @@ import * as d3 from 'd3';
 import axios from 'axios';
 
 // Use environment variable for API URL, fallback to localhost for development
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+let API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+// Ensure the API URL has a protocol
+if (API_URL && !API_URL.startsWith('http://') && !API_URL.startsWith('https://')) {
+  API_URL = `https://${API_URL}`;
+}
 
 // Debug logging
 console.log('API_URL configured as:', API_URL);
