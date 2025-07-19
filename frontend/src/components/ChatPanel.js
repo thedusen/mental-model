@@ -13,6 +13,9 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
   const [hasMessagesEver, setHasMessagesEver] = useState(false);
   const textareaRef = useRef(null);
 
+  // Use environment variable for API URL, fallback to localhost for development
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
   useEffect(() => {
     if (textareaRef.current) {
       // Use requestAnimationFrame to coordinate with transitions
@@ -32,7 +35,7 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
     if (messages.length > 0 && !hasMessagesEver) {
       setHasMessagesEver(true);
     }
-  }, [messages.length, hasMessagesEver]);
+  }, [messages, hasMessagesEver]);
 
   // Notify parent component when fullscreen state changes
   useEffect(() => {
@@ -44,25 +47,34 @@ function ChatPanel({ selectedNode, onFullscreenChange }) {
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 
-    const userMessage = { type: 'user', content: input };
-    setMessages([...messages, userMessage]);
+    const userMessage = { role: 'user', content: input.trim() };
+    const currentInput = input.trim();
     setInput('');
+    setMessages(prev => [...prev, userMessage]);
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/chat', { question: input });
+      const response = await axios.post(`${API_URL}/api/chat`, {
+        question: currentInput
+      });
+
       const assistantMessage = {
-        type: 'assistant',
+        role: 'assistant',
         content: response.data.answer,
         context: response.data.context
       };
+
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Chat error:', error);
-      setMessages(prev => [...prev, {
-        type: 'error',
-        content: 'Sorry, I encountered an error.'
-      }]);
+      console.error('Error sending message:', error);
+      
+      const errorMessage = {
+        role: 'assistant',
+        content: 'Sorry, I encountered an error while processing your request. Please try again.',
+        isError: true
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
     }

@@ -28,3 +28,6 @@ Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partne
 Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference 31495b29-1a54-440a-8e7c-1ba262e8b85f.
 2025-07-17 17:03:51.476+0000 ERROR Client triggered an unexpected error [Neo.DatabaseError.Schema.ConstraintCreationFailed]: Unable to create Constraint( name='entity_id', type='UNIQUENESS', schema=(:Entity {id}) ):
 Both Node(335) and Node(341) have the label `Entity` and property `id` = 'Partner Role Model Disillusionment'. Note that only the first found violation is shown., reference cea4f6cd-2e14-4e74-827d-c411eea19656.
+2025-07-18 22:49:05.962+0000 INFO  Neo4j Server shutdown initiated by request
+2025-07-18 22:49:05.964+0000 INFO  Stopping...
+2025-07-18 22:49:11.340+0000 INFO  Stopped.

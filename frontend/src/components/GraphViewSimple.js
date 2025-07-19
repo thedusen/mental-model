@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+// Use environment variable for API URL, fallback to localhost for development
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 function GraphViewSimple({ onNodeSelect }) {
   console.log('GraphViewSimple component rendering...');
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
@@ -15,7 +18,7 @@ function GraphViewSimple({ onNodeSelect }) {
   const loadGraph = async () => {
     console.log('Loading graph data...');
     try {
-      const response = await axios.get('/api/graph');
+      const response = await axios.get(`${API_URL}/api/graph`);
       console.log('API response:', response.data);
       setGraphData(response.data);
     } catch (error) {

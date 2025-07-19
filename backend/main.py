@@ -3,17 +3,65 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
 import logging
+import os
+import asyncio
 from config import anthropic_client, cohere_client, get_db_session
+from keep_warm import keep_warm_service
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-app = FastAPI()
+app = FastAPI(
+    title="Mental Model Knowledge Graph API",
+    description="A Neo4j-based knowledge graph system for building and exploring mental models",
+    version="1.0.0"
+)
+
+# CORS - Allow your frontend domain
+allowed_origins = [
+    "http://localhost:3000",  # Local development
+    "https://*.vercel.app",   # Vercel deployments
+    "https://*.netlify.app",  # Netlify deployments
+    os.getenv("FRONTEND_URL", "")  # Custom frontend URL
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_methods=["*"],
+    allow_origins=[origin for origin in allowed_origins if origin],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# Simple health check for deployment platforms
+@app.get("/health")
+async def health_check():
+    try:
+        with get_db_session() as session:
+            session.run("RETURN 1")
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {"status": "unhealthy", "error": str(e)}
+
+# Startup event to begin keep-warm service (only for Aura deployments)
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Mental Model API starting up...")
+    
+    # Start keep-warm service if using Neo4j Aura
+    if os.getenv("NEO4J_URI", "").startswith("neo4j+s://"):
+        logger.info("Detected Neo4j Aura connection - starting keep-warm service")
+        asyncio.create_task(keep_warm_service.start_keep_warm_loop())
+    else:
+        logger.info("Using local/Railway Neo4j - keep-warm service not needed")
+
+# Shutdown event to stop keep-warm service
+@app.on_event("shutdown")
+async def shutdown_event():
+    logger.info("Mental Model API shutting down...")
+    await keep_warm_service.stop_keep_warm_loop()
+    logger.info("Application shutdown completed")
 
 class ChatQuery(BaseModel):
     question: str
@@ -67,7 +115,7 @@ async def chat(query: ChatQuery):
                 
         return {"answer": answer_text, "context": context_data}
     except Exception as e:
-        logging.error(f"Error in /api/chat: {e}", exc_info=True)
+        logger.error(f"Error in /api/chat: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.get("/api/graph")
@@ -138,3 +186,7 @@ async def get_graph():
                             edge_set.add(edge_key)
         
         return {"nodes": nodes, "edges": edges}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

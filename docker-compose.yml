@@ -5,7 +5,7 @@ services:
     image: neo4j:5.25.1
     container_name: mental-model-neo4j
     environment:
-      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_AUTH=${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-your-secure-password-123}
       - NEO4J_PLUGINS=["apoc"]
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*
     ports:

@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:5.25.1
+    container_name: mental-model-neo4j-prod
+    restart: unless-stopped
+    environment:
+      - NEO4J_AUTH=${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_dbms_memory_heap_initial__size=512m
+      - NEO4J_dbms_memory_heap_max__size=1G
+      - NEO4J_dbms_memory_pagecache_size=256m
+      - NEO4J_dbms_security_auth__enabled=true
+      - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
+      - NEO4J_dbms_connector_http_listen__address=0.0.0.0:7474
+      # Security hardening
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*
+      - NEO4J_dbms_logs_debug_level=INFO
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"
+      - "${NEO4J_BOLT_PORT:-7687}:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_conf:/conf
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "${NEO4J_USERNAME:-neo4j}", "-p", "${NEO4J_PASSWORD}", "RETURN 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - mental-model-network
+    # Resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: mental-model-backend-prod
+    restart: unless-stopped
+    environment:
+      # Database configuration
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USERNAME=${NEO4J_USERNAME:-neo4j}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      
+      # API keys (should be set via secrets in production)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - COHERE_API_KEY=${COHERE_API_KEY}
+      
+      # Security configuration
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - VALID_API_KEYS=${VALID_API_KEYS}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-https://yourdomain.com}
+      - TRUSTED_HOSTS=${TRUSTED_HOSTS:-yourdomain.com}
+      
+      # Application configuration
+      - ENVIRONMENT=production
+      - PORT=8000
+      - WORKERS=${BACKEND_WORKERS:-1}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      
+      # Rate limiting
+      - CHAT_RATE_LIMIT=${CHAT_RATE_LIMIT:-10}
+      - GRAPH_RATE_LIMIT=${GRAPH_RATE_LIMIT:-60}
+      - HEALTH_RATE_LIMIT=${HEALTH_RATE_LIMIT:-120}
+    
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    networks:
+      - mental-model-network
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.1'
+    
+    # Security: read-only root filesystem where possible
+    read_only: false  # Set to true if application doesn't need to write to filesystem
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Add a reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    container_name: mental-model-nginx-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+    networks:
+      - mental-model-network
+    # Uncomment for production deployment
+    # profiles:
+    #   - production
+
+volumes:
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  neo4j_conf:
+    driver: local
+
+networks:
+  mental-model-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16 

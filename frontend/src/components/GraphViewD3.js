@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import axios from 'axios';
 
+// Use environment variable for API URL, fallback to localhost for development
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 // A helper function to wrap text into multiple lines inside an SVG
 function wrap(text, width) {
   text.each(function () {
@@ -67,7 +70,7 @@ function GraphViewD3({ onNodeSelect }) {
 
   const loadGraph = async () => {
     try {
-      const response = await axios.get('/api/graph');
+      const response = await axios.get(`${API_URL}/api/graph`);
       
       // Validate the structure of the response
       if (!response.data || !response.data.nodes || !response.data.edges) {

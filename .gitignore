@@ -189,3 +189,7 @@ logs/
 
 # Secrets
 .env
+
+# Deployment guides with sensitive info
+QUICK-DEPLOY.md
+PRODUCTION-ROADMAP.md

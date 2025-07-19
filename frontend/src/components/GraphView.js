@@ -9,6 +9,9 @@ function GraphView({ onNodeSelect }) {
   const [error, setError] = useState(null);
   const nvlRef = useRef(null);
 
+  // Use environment variable for API URL, fallback to localhost for development
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
   useEffect(() => {
     console.log('GraphView useEffect running...');
     loadGraph();
@@ -17,7 +20,7 @@ function GraphView({ onNodeSelect }) {
   const loadGraph = async () => {
     console.log('Loading graph data...');
     try {
-      const response = await axios.get('/api/graph');
+      const response = await axios.get(`${API_URL}/api/graph`);
       console.log('API response:', response.data);
       const { nodes, edges } = response.data;
 
