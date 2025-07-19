@@ -83,6 +83,17 @@ function GraphViewD3({ onNodeSelect }) {
   const loadGraph = async () => {
     try {
       console.log('Loading graph from:', `${API_URL}/api/graph`);
+      
+      // First test if backend is reachable with health check
+      try {
+        console.log('Testing backend health...');
+        const healthResponse = await axios.get(`${API_URL}/health`);
+        console.log('Backend health check successful:', healthResponse.data);
+      } catch (healthError) {
+        console.error('Backend health check failed:', healthError);
+        throw new Error(`Backend is not accessible. Health check failed: ${healthError.message}`);
+      }
+      
       const response = await axios.get(`${API_URL}/api/graph`);
       console.log('API response received:', response);
       console.log('Response data:', response.data);
