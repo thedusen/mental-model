@@ -193,3 +193,10 @@ logs/
 # Deployment guides with sensitive info
 QUICK-DEPLOY.md
 PRODUCTION-ROADMAP.md
+
+# Vercel
+.vercel
+
+# Environment variables
+.env
+.env*.local
