@@ -5,7 +5,7 @@ from typing import Dict, Any
 import time
 import psutil
 import logging
-from config import neo4j_driver
+from backend.config import neo4j_driver
 from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)

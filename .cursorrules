@@ -1,0 +1,34 @@
+# Cursor AI Rules for Mental Model Project
+
+## Directory Structure and CI Workflow
+- **CRITICAL**: When moving files between directories (especially backend files), always update `.github/workflows/ci.yml`
+- Check for these patterns in ci.yml that need updating when backend structure changes:
+  - `working-directory: ./backend` → remove or update path
+  - `backend/requirements.txt` → update to correct path
+  - `from backend.main import` → update import statements in test commands
+  - `backend/**/*.py` file patterns → update to correct patterns
+  - Cache paths in `hashFiles()` functions → update file paths
+
+## File Movement Checklist
+When moving Python files from backend/ to root or other directories:
+1. Update all relative import statements in the moved files
+2. Update .github/workflows/ci.yml paths and commands
+3. Move any configuration files (.flake8, .pyproject.toml, etc.)
+4. Update any Dockerfile or docker-compose.yml references
+5. Check for hardcoded paths in deployment scripts
+6. Update any IDE configuration that references the old paths
+
+## Import Statement Rules
+- Always use relative imports when files are in the same directory
+- After moving files from backend/ to root: change `from backend.module import` to `from module import`
+- Test imports locally before committing structural changes
+
+## Deployment Consistency
+- Ensure local development, CI/CD, and production deployment all use the same file structure
+- Railway, Docker, and GitHub Actions should all reference the same paths
+- Always test deployment after structural changes
+
+## Code Quality
+- Run linters locally after file moves to catch import errors
+- Clear any IDE caches after major structural changes
+- Update any documentation that references old file paths 

@@ -23,11 +23,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
             
       - name: Install dependencies
+        working-directory: ./backend
         run: |
           pip install -r requirements.txt
         env:
@@ -37,14 +38,15 @@ jobs:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
           
       - name: Run linting (advisory)
+        working-directory: ./backend
         run: |
-          # The flake8 command will use the configuration from .flake8
+          # The flake8 command will use the configuration from backend/.flake8
           # We'll let this pass for now and address linting issues separately.
           flake8 . || true
           
       - name: Test imports
         run: |
-          python -c "import main; print('✅ Backend imports successfully')"
+          python -c "from backend import main; print('✅ Backend imports successfully')"
         env:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -52,7 +54,7 @@ jobs:
           
       - name: Check FastAPI app
         run: |
-          python -c "from main import app; print('✅ FastAPI app loads successfully')"
+          python -c "from backend.main import app; print('✅ FastAPI app loads successfully')"
         env:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -112,16 +114,18 @@ jobs:
           pip install black autopep8
           
       - name: Run autopep8 for PEP 8 fixes
+        working-directory: ./backend
         run: |
-          autopep8 --in-place --recursive --aggressive --aggressive *.py
+          autopep8 --in-place --recursive --aggressive --aggressive .
           
       - name: Run black for consistent formatting
+        working-directory: ./backend
         run: |
-          black *.py
+          black .
           
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: auto-format Python code with black and autopep8"
           branch: development
-          file_pattern: '*.py' 
+          file_pattern: 'backend/**/*.py' 

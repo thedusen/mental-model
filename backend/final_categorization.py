@@ -3,7 +3,7 @@
 Final categorization script for remaining uncategorized nodes using enhanced keyword analysis.
 """
 
-from config import get_db_session
+from backend.config import get_db_session
 import re
 
 def final_categorization():
