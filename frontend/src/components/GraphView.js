@@ -182,6 +182,16 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
   const mouseEventCallbacks = useMemo(() => ({
     onNodeClick: handleNodeClick,
     onCanvasClick: handleCanvasClick,
+    onPan: (evt) => {
+      // Pan interaction is handled automatically by the NVL library
+      // This callback is just for tracking if needed
+      console.log('Graph panned');
+    },
+    onZoom: (zoomLevel) => {
+      // Zoom interaction is handled automatically by the NVL library
+      // This callback is just for tracking if needed
+      console.log('Graph zoomed to level:', zoomLevel);
+    },
   }), [handleNodeClick, handleCanvasClick]);
 
   const nvlCallbacks = useMemo(() => ({
@@ -201,7 +211,8 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
   };
 
   const handleKeyDown = (event) => {
-    if (event.target.closest('.graph-container')) {
+    // Only handle keyboard shortcuts if the focus is on the container itself, not child elements
+    if (event.target === event.currentTarget) {
       if (event.key === '+' || event.key === '=') {
         event.preventDefault();
         handleZoomIn();
@@ -330,6 +341,8 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
             layout: 'force-directed',
             initialZoom: 1,
             allowDynamicMinZoom: true,
+            minZoom: 0.1,
+            maxZoom: 8,
             // New options to control the NVL legend
             legend: {
               enabled: true,
