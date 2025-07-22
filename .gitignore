@@ -199,3 +199,6 @@ PRODUCTION-ROADMAP.md
 
 # Environment variables
 .env*.local
+
+# Claude local settings
+.claude/settings.local.json

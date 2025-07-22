@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import './ChatPanel.css';
 
-function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange }) {
+function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -48,6 +48,23 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
       onFullscreenChange(isFullscreen);
     }
   }, [isFullscreen, onFullscreenChange]);
+
+  // Handle external input from suggestion buttons
+  useEffect(() => {
+    if (externalInput && externalInput.trim() !== '') {
+      setInput(externalInput);
+      if (onExternalInputReceived) {
+        onExternalInputReceived();
+      }
+      // Focus the textarea
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          textareaRef.current.setSelectionRange(textareaRef.current.value.length, textareaRef.current.value.length);
+        }
+      }, 100);
+    }
+  }, [externalInput, onExternalInputReceived]);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;

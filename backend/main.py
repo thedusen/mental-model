@@ -355,6 +355,113 @@ async def get_graph():
         
         return {"nodes": nodes, "edges": edges}
 
+class SearchResult(BaseModel):
+    id: str
+    type: str
+    description: str
+    theme: Optional[str] = None
+    score: float
+
+class SearchResponse(BaseModel):
+    results: List[SearchResult]
+    query: str
+    total_count: int
+    execution_time_ms: int
+
+@app.get("/api/search", response_model=SearchResponse)
+async def search_nodes(
+    q: str,
+    limit: int = 10,
+    threshold: float = 0.3,
+    include_themes: bool = False
+):
+    """
+    Semantic search across knowledge graph nodes using vector similarity.
+    
+    Args:
+        q: Search query string
+        limit: Maximum number of results (max 50)
+        threshold: Minimum similarity score (0.0-1.0)
+        include_themes: Whether to include Theme nodes in results
+    """
+    try:
+        import time
+        start_time = time.time()
+        
+        # Validate parameters
+        if not q or len(q.strip()) < 2:
+            raise HTTPException(status_code=400, detail="Query must be at least 2 characters long")
+        
+        limit = min(max(1, limit), 50)  # Clamp between 1 and 50
+        threshold = max(0.0, min(1.0, threshold))  # Clamp between 0 and 1
+        
+        # Generate embedding for search query
+        embedding = generate_query_embedding(q.strip())
+        
+        # Build search query based on include_themes parameter
+        if include_themes:
+            # Search both Entity and Theme nodes
+            search_query = """
+                // Search Entity nodes
+                CALL db.index.vector.queryNodes('entity_embeddings', $limit, $embedding) YIELD node, score
+                WHERE score > $threshold AND node:Entity
+                WITH node, score, 'Entity' as node_type
+                RETURN node.id as id, 
+                       COALESCE(node.category, 'Uncategorized') as type,
+                       node.description as description,
+                       node.theme as theme,
+                       score,
+                       node_type
+                ORDER BY score DESC
+                LIMIT $limit
+            """
+        else:
+            # Search only Entity nodes (default for better relevance)
+            search_query = """
+                CALL db.index.vector.queryNodes('entity_embeddings', $limit, $embedding) YIELD node, score
+                WHERE score > $threshold AND node:Entity
+                RETURN node.id as id,
+                       COALESCE(node.category, 'Uncategorized') as type, 
+                       node.description as description,
+                       node.theme as theme,
+                       score
+                ORDER BY score DESC
+                LIMIT $limit
+            """
+        
+        # Execute search
+        with get_db_session() as session:
+            result = session.run(search_query, {
+                'embedding': embedding,
+                'limit': limit,
+                'threshold': threshold
+            })
+            
+            search_results = []
+            for record in result:
+                search_results.append(SearchResult(
+                    id=record['id'],
+                    type=record['type'],
+                    description=record['description'] or '',
+                    theme=record.get('theme'),
+                    score=record['score']
+                ))
+        
+        execution_time = int((time.time() - start_time) * 1000)
+        
+        logger.info(f"Search query '{q}' returned {len(search_results)} results in {execution_time}ms")
+        
+        return SearchResponse(
+            results=search_results,
+            query=q.strip(),
+            total_count=len(search_results),
+            execution_time_ms=execution_time
+        )
+        
+    except Exception as e:
+        logger.error(f"Error in /api/search: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Search request failed")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
