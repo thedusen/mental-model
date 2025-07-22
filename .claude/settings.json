@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd backend && uvicorn main:app --reload --host 0.0.0.0 --port 8000)",
+      "Bash(cd backend && python main.py)",
+      "Bash(cd backend && black .)",
+      "Bash(cd backend && flake8 .)",
+      "Bash(cd backend && pip install -r requirements.txt)",
+      "Bash(cd frontend && npm start)",
+      "Bash(cd frontend && npm run build)",
+      "Bash(cd frontend && npm install)",
+      "Bash(docker compose up)",
+      "Bash(cd backend && python import_data.py)"
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_PROJECT": "mental-model"
+  },
+  "enableAllProjectMcpServers": true
+}

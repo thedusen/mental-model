@@ -6,8 +6,8 @@ import cohere
 
 load_dotenv()
 
-anthropic_client = anthropic.Anthropic()
-cohere_client = cohere.Client()
+anthropic_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+cohere_client = cohere.Client(api_key=os.getenv("COHERE_API_KEY"))
 
 NEO4J_URI = os.getenv("NEO4J_URI")
 if not NEO4J_URI:
