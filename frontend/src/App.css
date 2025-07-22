@@ -48,8 +48,19 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  position: relative; /* For positioning children */
+}
+
+/* Search Header */
+.search-header {
+  position: relative;
+  z-index: 100;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 64px;
 }
 
 .graph-container {

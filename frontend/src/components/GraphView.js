@@ -22,8 +22,7 @@ const brightenHexColor = (hex, percent) => {
   return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
 };
 
-function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
-  console.log('GraphView component rendering...');
+const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNode, searchResults = [], filters }, ref) => {
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   // State to manage the legend's collapsed state
   const [isLegendMinimized, setIsLegendMinimized] = useState(false); 
@@ -71,6 +70,11 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
     return graphData.nodes.map(node => {
       const isTheme = node.type === 'Theme';
       const isChatContext = chatContextNode && node.id === chatContextNode.id;
+      
+      // Check if this node is in search results
+      const searchResult = searchResults.find(result => result.id === node.id);
+      const isSearchResult = !!searchResult;
+      
       const baseColor = typeColors[node.type] || typeColors['Uncategorized'];
 
       // Simulate the gradient: bright fill, original color border
@@ -99,10 +103,12 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
           name: node.label,
           description: node.description,
           category: node.type,
-          fullData: node
+          fullData: node,
+          searchScore: searchResult?.score // Add search score to properties
         }
       };
 
+      // Chat context highlighting (takes precedence over search)
       if (isChatContext) {
         finalNode = {
           ...finalNode,
@@ -115,10 +121,38 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
           shadowOffsetY: 0,
         };
       }
+      // Search result highlighting (if not already chat context)
+      else if (isSearchResult) {
+        const searchScore = searchResult.score;
+        // Different intensity based on score
+        const intensity = Math.max(0.3, searchScore); // Minimum 30% intensity
+        
+        finalNode = {
+          ...finalNode,
+          borderColor: '#3B82F6', // Blue border for search results
+          borderWidth: 5,
+          shadowEnabled: true,
+          shadowColor: `rgba(59, 130, 246, ${intensity * 0.6})`, // Dynamic shadow opacity
+          shadowBlur: 15,
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
+          // Slightly larger size for high-relevance results
+          size: finalNode.size + (searchScore > 0.8 ? 8 : searchScore > 0.6 ? 5 : 3),
+          // Add a subtle pulsing effect for very high relevance
+          ...(searchScore > 0.8 && {
+            animation: {
+              enabled: true,
+              type: 'pulse',
+              duration: 2000,
+              intensity: 0.2
+            }
+          })
+        };
+      }
       
       return finalNode;
     });
-  }, [graphData.nodes, chatContextNode]);
+  }, [graphData.nodes, chatContextNode, searchResults]);
 
   const memoizedRels = useMemo(() => {
     if (!graphData.edges || graphData.edges.length === 0) {
@@ -209,6 +243,35 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
       nvlRef.current.zoomOut();
     }
   };
+
+  // New function to zoom to search results
+  const zoomToSearchResults = useCallback((results = searchResults) => {
+    if (nvlRef.current && results.length > 0) {
+      const nodeIds = results.map(result => result.id);
+      
+      try {
+        // Use NVL's zoomToNodes method to focus on search results
+        nvlRef.current.zoomToNodes(nodeIds);
+        console.log('Zoomed to search results:', nodeIds);
+      } catch (error) {
+        console.warn('Error zooming to search results:', error);
+        // Fallback: try to fit all nodes if zoomToNodes fails
+        try {
+          nvlRef.current.fitToScreen();
+        } catch (fallbackError) {
+          console.warn('Fallback zoom also failed:', fallbackError);
+        }
+      }
+    }
+  }, [searchResults]);
+
+  // Expose methods to parent component via ref
+  React.useImperativeHandle(ref, () => ({
+    zoomToSearchResults,
+    zoomIn: handleZoomIn,
+    zoomOut: handleZoomOut,
+    fitToScreen: () => nvlRef.current?.fitToScreen()
+  }), [zoomToSearchResults]);
 
   const handleKeyDown = (event) => {
     // Only handle keyboard shortcuts if the focus is on the container itself, not child elements
@@ -357,6 +420,8 @@ function GraphView({ onNodeSelect, onCanvasClick, chatContextNode, filters }) {
       )}
     </div>
   );
-}
+});
+
+GraphView.displayName = 'GraphView';
 
 export default GraphView; 

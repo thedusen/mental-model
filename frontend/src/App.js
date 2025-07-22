@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import GraphView from './components/GraphView';
 import ChatPanel from './components/ChatPanel';
 import NodeDetailsPanel from './components/NodeDetailsPanel';
 import NodeTypesPanel from './components/NodeTypesPanel';
+import SearchBar from './components/SearchBar';
+import SearchResults from './components/SearchResults';
 
 function App() {
   console.log('App component rendering...');
@@ -13,8 +15,20 @@ function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [nodeFilters, setNodeFilters] = useState([]);
   const [isChatFullscreen, setIsChatFullscreen] = useState(false);
+  
+  // Search-related state
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [isSearchResultsVisible, setIsSearchResultsVisible] = useState(false);
+  const [searchExecutionTime, setSearchExecutionTime] = useState(0);
+  
+  // Refs
+  const graphViewRef = useRef(null);
+  
+  // API URL configuration
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-  console.log('App state:', { selectedNode, chatContextNode, isSidebarCollapsed });
 
   // Handler to deselect the currently selected node (triggered by canvas clicks)
   const handleDeselectNode = () => {
@@ -50,6 +64,79 @@ function App() {
         chatInput.focus();
       }
     }, 100);
+  };
+
+  // Search handlers
+  const handleSearch = async (query) => {
+    if (!query || query.length < 2) return;
+    
+    setIsSearchLoading(true);
+    setSearchQuery(query);
+    setIsSearchResultsVisible(true);
+    
+    try {
+      const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}&limit=10&threshold=0.3`);
+      
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setSearchResults(data.results);
+      setSearchExecutionTime(data.execution_time_ms);
+      
+      // Auto-zoom to search results if there are any
+      // TODO: Re-enable after fixing ref issue
+      // if (data.results.length > 0) {
+      //   setTimeout(() => {
+      //     if (graphViewRef.current) {
+      //       graphViewRef.current.zoomToSearchResults(data.results);
+      //     }
+      //   }, 100);
+      // }
+      
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+      setSearchExecutionTime(0);
+      // Could add user notification here
+    } finally {
+      setIsSearchLoading(false);
+    }
+  };
+
+  const handleSearchClear = () => {
+    setSearchResults([]);
+    setSearchQuery('');
+    setIsSearchResultsVisible(false);
+    setSearchExecutionTime(0);
+  };
+
+  const handleSearchResultClick = (result) => {
+    // Find the corresponding node and select it
+    setSelectedNode({
+      id: result.id,
+      properties: {
+        name: result.id,
+        description: result.description,
+        category: result.type,
+        theme: result.theme,
+        searchScore: result.score
+      }
+    });
+    
+    // Optional: zoom to the specific node
+    // TODO: Re-enable after fixing ref issue
+    // if (graphViewRef.current) {
+    //   graphViewRef.current.zoomToSearchResults([result]);
+    // }
+  };
+
+  const handleFocusAllResults = (results) => {
+    // TODO: Re-enable after fixing ref issue
+    // if (graphViewRef.current && results.length > 0) {
+    //   graphViewRef.current.zoomToSearchResults(results);
+    // }
   };
 
   // Keyboard navigation for accessibility
@@ -113,6 +200,15 @@ function App() {
         ></div>
         
         <main className="main-content" id="main-content" role="main">
+          {/* Search Bar */}
+          <div className="search-header">
+            <SearchBar 
+              onSearch={handleSearch}
+              onClear={handleSearchClear}
+              isLoading={isSearchLoading}
+            />
+          </div>
+          
           <div className="graph-container">
             <NodeTypesPanel onFilterChange={setNodeFilters} />
             <GraphView 
@@ -130,6 +226,18 @@ function App() {
               />
             </div>
           </div>
+          
+          {/* Search Results Overlay */}
+          <SearchResults
+            results={searchResults}
+            query={searchQuery}
+            isLoading={isSearchLoading}
+            executionTime={searchExecutionTime}
+            isVisible={isSearchResultsVisible}
+            onResultClick={handleSearchResultClick}
+            onFocusAll={handleFocusAllResults}
+            onClear={handleSearchClear}
+          />
         </main>
         <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`} role="complementary" aria-label="Node details">
           <NodeDetailsPanel
