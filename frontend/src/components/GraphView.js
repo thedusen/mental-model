@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { InteractiveNvlWrapper as NVL } from '@neo4j-nvl/react';
 import axios from 'axios';
+import LoadingSpinner from './LoadingSpinner';
 
 // Helper function to programmatically brighten a hex color
 // This simulates the d3.brighter() function to restore the gradient effect
@@ -27,6 +28,7 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
   // State to manage the legend's collapsed state
   const [isLegendMinimized, setIsLegendMinimized] = useState(false); 
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const nvlRef = useRef(null);
   
   // Use environment variable for API URL, fallback to localhost for development
@@ -39,6 +41,8 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
 
   const loadGraph = async () => {
     console.log('Loading graph data...');
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await axios.get(`${API_URL}/api/graph`);
       console.log('API response:', response.data);
@@ -48,6 +52,8 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
     } catch (error) {
       console.error('Error loading graph:', error);
       setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
