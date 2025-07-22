@@ -48,10 +48,20 @@ cd backend && python import_data.py
 ```
 
 ### Full Development Setup
-1. `docker compose up` (start Neo4j)
-2. `cd backend && python main.py` (start API server)
-3. `cd frontend && npm start` (start React app)
-4. Access at http://localhost:3000
+1. `./setup-hooks.sh` (install Git hooks for CI validation)
+2. `docker compose up` (start Neo4j)
+3. `cd backend && python main.py` (start API server)
+4. `cd frontend && npm start` (start React app)
+5. Access at http://localhost:3000
+
+### Git Hooks
+```bash
+# Install development hooks (run once after cloning)
+./setup-hooks.sh
+
+# The pre-push hook will automatically check if CI workflow needs updating
+# To bypass the hook if needed: git push --no-verify
+```
 
 ## High-Level Architecture
 

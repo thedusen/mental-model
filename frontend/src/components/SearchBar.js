@@ -19,12 +19,6 @@ function SearchBar({
   const [showValidation, setShowValidation] = useState(false);
   const [searchHistory, setSearchHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState({
-    types: [],
-    themes: [],
-    minScore: 0.3
-  });
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
 
@@ -148,34 +142,6 @@ function SearchBar({
     }
   };
 
-  const handleFilterToggle = () => {
-    setShowFilters(!showFilters);
-    setShowHistory(false);
-  };
-
-  const handleFilterChange = (filterType, value) => {
-    setFilters(prev => {
-      const newFilters = { ...prev };
-      
-      if (filterType === 'types') {
-        if (newFilters.types.includes(value)) {
-          newFilters.types = newFilters.types.filter(t => t !== value);
-        } else {
-          newFilters.types = [...newFilters.types, value];
-        }
-      } else if (filterType === 'themes') {
-        if (newFilters.themes.includes(value)) {
-          newFilters.themes = newFilters.themes.filter(t => t !== value);
-        } else {
-          newFilters.themes = [...newFilters.themes, value];
-        }
-      } else if (filterType === 'minScore') {
-        newFilters.minScore = value;
-      }
-      
-      return newFilters;
-    });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -188,7 +154,6 @@ function SearchBar({
         clearTimeout(debounceRef.current);
       }
       setShowValidation(false);
-      setShowHistory(false);
       saveToHistory(trimmedQuery);
       onSearch(trimmedQuery);
     } else if (trimmedQuery.length > 0) {
@@ -299,22 +264,6 @@ function SearchBar({
             </button>
           )}
 
-          {/* Filter Button */}
-          <button
-            type="button"
-            onClick={handleFilterToggle}
-            className={`filter-button ${showFilters ? 'active' : ''}`}
-            aria-label="Search filters"
-            aria-expanded={showFilters}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3"></polygon>
-            </svg>
-            {(filters.types.length > 0 || filters.themes.length > 0 || filters.minScore > 0.3) && (
-              <span className="filter-indicator"></span>
-            )}
-          </button>
-
           {/* Search Button */}
           {!isLoading && query.trim().length > 0 && (
             <button
@@ -365,69 +314,6 @@ function SearchBar({
                 <span>{item}</span>
               </button>
             ))}
-          </div>
-        )}
-        
-        {/* Search Filters Dropdown */}
-        {showFilters && (
-          <div className="search-filters" role="dialog" aria-label="Search filters">
-            <div className="search-filters-header">
-              <span>Filter Results</span>
-              <button
-                type="button"
-                onClick={() => setFilters({ types: [], themes: [], minScore: 0.3 })}
-                className="filter-clear"
-              >
-                Clear All
-              </button>
-            </div>
-            
-            {/* Node Types Filter */}
-            <div className="filter-section">
-              <h4 className="filter-title">Node Types</h4>
-              <div className="filter-checkboxes">
-                {['Principle', 'Pattern', 'Example'].map(type => (
-                  <label key={type} className="filter-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={filters.types.includes(type)}
-                      onChange={() => handleFilterChange('types', type)}
-                    />
-                    <span className="checkmark"></span>
-                    <span className="checkbox-label">{type}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-            
-            {/* Relevance Score Filter */}
-            <div className="filter-section">
-              <h4 className="filter-title">Minimum Relevance</h4>
-              <div className="filter-slider">
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={filters.minScore}
-                  onChange={(e) => handleFilterChange('minScore', parseFloat(e.target.value))}
-                  className="relevance-slider"
-                />
-                <div className="slider-labels">
-                  <span>Any</span>
-                  <span className="slider-value">{Math.round(filters.minScore * 100)}%</span>
-                  <span>Perfect</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Themes Filter (placeholder - would need backend data) */}
-            <div className="filter-section">
-              <h4 className="filter-title">Themes</h4>
-              <div className="filter-themes">
-                <span className="theme-placeholder">Themes will be loaded from search results</span>
-              </div>
-            </div>
           </div>
         )}
       </form>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './SearchResults.css';
 
 function SearchResults({ 
@@ -7,11 +7,16 @@ function SearchResults({
   isLoading = false, 
   executionTime = 0,
   onResultClick,
-  onFocusAll,
   onClear,
   isVisible = false 
 }) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    types: [],
+    themes: [],
+    minScore: 0.3
+  });
   const resultsRef = useRef(null);
 
   // Reset selection when results change
@@ -19,15 +24,67 @@ function SearchResults({
     setSelectedIndex(-1);
   }, [results]);
 
+  // Filter results based on current filters
+  const filteredResults = useMemo(() => {
+    return results.filter(result => {
+      // Filter by types
+      if (filters.types.length > 0 && !filters.types.includes(result.type)) {
+        return false;
+      }
+      
+      // Filter by themes
+      if (filters.themes.length > 0 && !filters.themes.includes(result.theme)) {
+        return false;
+      }
+      
+      // Filter by minimum score
+      if (result.score < filters.minScore) {
+        return false;
+      }
+      
+      return true;
+    });
+  }, [results, filters]);
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prev => {
+      const newFilters = { ...prev };
+      
+      if (filterType === 'types') {
+        if (newFilters.types.includes(value)) {
+          newFilters.types = newFilters.types.filter(t => t !== value);
+        } else {
+          newFilters.types = [...newFilters.types, value];
+        }
+      } else if (filterType === 'themes') {
+        if (newFilters.themes.includes(value)) {
+          newFilters.themes = newFilters.themes.filter(t => t !== value);
+        } else {
+          newFilters.themes = [...newFilters.themes, value];
+        }
+      } else if (filterType === 'minScore') {
+        newFilters.minScore = value;
+      }
+      
+      return newFilters;
+    });
+  };
+
+  const clearFilters = () => {
+    setFilters({ types: [], themes: [], minScore: 0.3 });
+  };
+
+  const hasActiveFilters = filters.types.length > 0 || filters.themes.length > 0 || filters.minScore > 0.3;
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (!isVisible || results.length === 0) return;
+      if (!isVisible || filteredResults.length === 0) return;
 
       switch (event.key) {
         case 'ArrowDown':
           event.preventDefault();
-          setSelectedIndex(prev => Math.min(prev + 1, results.length - 1));
+          setSelectedIndex(prev => Math.min(prev + 1, filteredResults.length - 1));
           break;
         case 'ArrowUp':
           event.preventDefault();
@@ -35,8 +92,8 @@ function SearchResults({
           break;
         case 'Enter':
           event.preventDefault();
-          if (selectedIndex >= 0 && selectedIndex < results.length) {
-            handleResultClick(results[selectedIndex]);
+          if (selectedIndex >= 0 && selectedIndex < filteredResults.length) {
+            handleResultClick(filteredResults[selectedIndex]);
           }
           break;
         case 'Escape':
@@ -50,7 +107,7 @@ function SearchResults({
       document.addEventListener('keydown', handleKeyDown);
       return () => document.removeEventListener('keydown', handleKeyDown);
     }
-  }, [isVisible, results, selectedIndex, onClear]);
+  }, [isVisible, filteredResults, selectedIndex, onClear]);
 
   // Scroll selected item into view
   useEffect(() => {
@@ -71,11 +128,6 @@ function SearchResults({
     }
   };
 
-  const handleFocusAllClick = () => {
-    if (onFocusAll && results.length > 0) {
-      onFocusAll(results);
-    }
-  };
 
   const getScoreColor = (score) => {
     if (score >= 0.8) return '#059669'; // Darker green for high relevance (WCAG AA compliant)
@@ -121,7 +173,15 @@ function SearchResults({
               <span className="search-status loading">Searching...</span>
             ) : results.length > 0 ? (
               <span className="search-status">
-                {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+                {hasActiveFilters ? (
+                  <>
+                    {filteredResults.length} of {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+                  </>
+                ) : (
+                  <>
+                    {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+                  </>
+                )}
                 {executionTime > 0 && (
                   <span className="execution-time"> • {executionTime}ms</span>
                 )}
@@ -132,42 +192,79 @@ function SearchResults({
           </div>
           
           <div className="search-results-actions">
-            {results.length > 1 && (
+            {results.length > 0 && (
               <button
-                onClick={handleFocusAllClick}
-                className="action-button focus-all"
-                title="Zoom to show all search results in the graph visualization"
-                aria-label="Zoom graph to show all search results"
+                onClick={() => setShowFilters(!showFilters)}
+                className={`action-button filter-toggle ${showFilters ? 'active' : ''}`}
+                title="Filter search results"
+                aria-label="Toggle search filters"
+                aria-expanded={showFilters}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <circle cx="12" cy="12" r="11"></circle>
-                  <path d="m12 1 0 6"></path>
-                  <path d="m12 17 0 6"></path>
-                  <path d="m4.22 4.22 4.24 4.24"></path>
-                  <path d="m15.54 15.54 4.24 4.24"></path>
-                  <path d="m1 12 6 0"></path>
-                  <path d="m17 12 6 0"></path>
-                  <path d="m4.22 19.78 4.24-4.24"></path>
-                  <path d="m15.54 8.46 4.24-4.24"></path>
+                  <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3"></polygon>
                 </svg>
-                Focus All
+                {hasActiveFilters && <span className="filter-indicator"></span>}
               </button>
             )}
             
-            <button
-              onClick={onClear}
-              className="action-button close"
-              title="Clear search results"
-              aria-label="Clear search results"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
           </div>
         </div>
+
+        {/* Filter Controls */}
+        {showFilters && results.length > 0 && (
+          <div className="search-filters">
+            <div className="search-filters-header">
+              <span>Filter Results</span>
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="filter-clear"
+                disabled={!hasActiveFilters}
+              >
+                Clear All
+              </button>
+            </div>
+            
+            {/* Node Types Filter */}
+            <div className="filter-section">
+              <h4 className="filter-title">Node Types</h4>
+              <div className="filter-checkboxes">
+                {['Principle', 'Pattern', 'Example'].map(type => (
+                  <label key={type} className="filter-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={filters.types.includes(type)}
+                      onChange={() => handleFilterChange('types', type)}
+                    />
+                    <span className="checkmark"></span>
+                    <span className="checkbox-label">{type}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            
+            {/* Relevance Score Filter */}
+            <div className="filter-section">
+              <h4 className="filter-title">Minimum Relevance</h4>
+              <div className="filter-slider">
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={filters.minScore}
+                  onChange={(e) => handleFilterChange('minScore', parseFloat(e.target.value))}
+                  className="relevance-slider"
+                />
+                <div className="slider-labels">
+                  <span>Any</span>
+                  <span className="slider-value">{Math.round(filters.minScore * 100)}%</span>
+                  <span>Perfect</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Loading State */}
         {isLoading && (
@@ -192,7 +289,7 @@ function SearchResults({
         {/* Results List */}
         {!isLoading && results.length > 0 && (
           <div className="search-results-list" ref={resultsRef}>
-            {results.map((result, index) => (
+            {filteredResults.map((result, index) => (
               <div
                 key={result.id}
                 className={`search-result-item ${selectedIndex === index ? 'selected' : ''}`}

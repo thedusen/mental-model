@@ -24,6 +24,7 @@ const brightenHexColor = (hex, percent) => {
 };
 
 const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNode, searchResults = [], filters }, ref) => {
+  console.log('GraphView render - searchResults:', searchResults);
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   // State to manage the legend's collapsed state
   const [isLegendMinimized, setIsLegendMinimized] = useState(false); 
@@ -217,6 +218,37 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
 
   const handleLayoutDone = useCallback((nodes, rels) => {
     console.log('Layout computed');
+    
+    // Debug: Log all available methods on nvlRef
+    if (nvlRef.current) {
+      console.log('=== NVL REF DEBUG ===');
+      console.log('nvlRef.current:', nvlRef.current);
+      
+      const allMethods = Object.getOwnPropertyNames(nvlRef.current).filter(name => typeof nvlRef.current[name] === 'function');
+      console.log('ALL METHODS:', allMethods);
+      
+      // Check specifically for zoom-related methods
+      const zoomMethods = allMethods.filter(name => 
+        name.toLowerCase().includes('zoom') || 
+        name.toLowerCase().includes('scale') ||
+        name.toLowerCase().includes('fit') ||
+        name.toLowerCase().includes('center') ||
+        name.toLowerCase().includes('focus')
+      );
+      console.log('ZOOM/FOCUS METHODS:', zoomMethods);
+      
+      // Try to access nested objects that might contain zoom methods
+      if (nvlRef.current.nvl) {
+        console.log('nvlRef.current.nvl methods:', Object.getOwnPropertyNames(nvlRef.current.nvl).filter(name => typeof nvlRef.current.nvl[name] === 'function'));
+      }
+      if (nvlRef.current.network) {
+        console.log('nvlRef.current.network methods:', Object.getOwnPropertyNames(nvlRef.current.network).filter(name => typeof nvlRef.current.network[name] === 'function'));
+      }
+      if (nvlRef.current.vis) {
+        console.log('nvlRef.current.vis methods:', Object.getOwnPropertyNames(nvlRef.current.vis).filter(name => typeof nvlRef.current.vis[name] === 'function'));
+      }
+      console.log('=== END DEBUG ===');
+    }
   }, []);
 
   const mouseEventCallbacks = useMemo(() => ({
@@ -239,37 +271,125 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
   }), [handleLayoutDone]);
 
   const handleZoomIn = () => {
-    if (nvlRef.current) {
-      nvlRef.current.zoomIn();
+    console.log('Zoom in button clicked');
+    if (!nvlRef.current) {
+      console.log('nvlRef.current is null');
+      return;
+    }
+    
+    try {
+      // Use the available setZoom method with getScale to get current zoom
+      if (typeof nvlRef.current.setZoom === 'function' && typeof nvlRef.current.getScale === 'function') {
+        const currentScale = nvlRef.current.getScale();
+        const newScale = currentScale * 1.3; // 30% zoom in
+        nvlRef.current.setZoom(newScale);
+        console.log('Used setZoom method:', currentScale, '->', newScale);
+      } else {
+        console.warn('setZoom or getScale not available');
+      }
+    } catch (error) {
+      console.error('Error zooming in:', error);
     }
   };
 
   const handleZoomOut = () => {
-    if (nvlRef.current) {
-      nvlRef.current.zoomOut();
+    console.log('Zoom out button clicked');
+    if (!nvlRef.current) {
+      console.log('nvlRef.current is null');
+      return;
+    }
+    
+    try {
+      // Use the available setZoom method with getScale to get current zoom
+      if (typeof nvlRef.current.setZoom === 'function' && typeof nvlRef.current.getScale === 'function') {
+        const currentScale = nvlRef.current.getScale();
+        const newScale = currentScale * 0.77; // ~30% zoom out  
+        nvlRef.current.setZoom(newScale);
+        console.log('Used setZoom method:', currentScale, '->', newScale);
+      } else {
+        console.warn('setZoom or getScale not available');
+      }
+    } catch (error) {
+      console.error('Error zooming out:', error);
     }
   };
 
-  // New function to zoom to search results
+  // Function to focus on search results
   const zoomToSearchResults = useCallback((results = searchResults) => {
-    if (nvlRef.current && results.length > 0) {
-      const nodeIds = results.map(result => result.id);
-      
-      try {
-        // Use NVL's zoomToNodes method to focus on search results
-        nvlRef.current.zoomToNodes(nodeIds);
-        console.log('Zoomed to search results:', nodeIds);
-      } catch (error) {
-        console.warn('Error zooming to search results:', error);
-        // Fallback: try to fit all nodes if zoomToNodes fails
-        try {
-          nvlRef.current.fitToScreen();
-        } catch (fallbackError) {
-          console.warn('Fallback zoom also failed:', fallbackError);
-        }
+    console.log('zoomToSearchResults called with:', results);
+    if (!nvlRef.current || !results || results.length === 0) {
+      console.log('No nvlRef or no results to focus on');
+      return;
+    }
+    
+    const nodeIds = results.map(result => result.id);
+    console.log('Trying to focus on node IDs:', nodeIds);
+    const allMethods = Object.getOwnPropertyNames(nvlRef.current).filter(name => typeof nvlRef.current[name] === 'function');
+    console.log('ALL SEARCH FOCUS METHODS:', allMethods);
+    
+    const focusMethods = allMethods.filter(name => 
+      name.toLowerCase().includes('focus') || name.toLowerCase().includes('fit') || name.toLowerCase().includes('center')
+    );
+    console.log('FOCUS-RELATED METHODS:', focusMethods);
+    
+    try {
+      // Use the available 'fit' method - this should work
+      if (typeof nvlRef.current.fit === 'function') {
+        console.log('Using fit method to focus on search results');
+        nvlRef.current.fit();
+      } else {
+        console.warn('fit method not available');
       }
+    } catch (error) {
+      console.error('Error focusing on search results:', error);
     }
   }, [searchResults]);
+
+  // Custom wheel event handler for improved zoom sensitivity
+  useEffect(() => {
+    const handleWheel = (event) => {
+      if (!nvlRef.current) return;
+      
+      // Only handle wheel events when they're over the graph
+      event.preventDefault();
+      
+      // Detect if this is a trackpad (small deltaY values) vs mouse wheel (larger deltaY values)
+      const isTrackpad = Math.abs(event.deltaY) < 50;
+      
+      // Different sensitivity for trackpad vs mouse wheel
+      const sensitivity = isTrackpad ? 5.0 : 2.0; // Much higher sensitivity for trackpad
+      const currentZoom = nvlRef.current.getScale();
+      
+      // Adjust the multiplier based on input type
+      const multiplier = isTrackpad ? -0.01 : -0.002;
+      const delta = event.deltaY * multiplier * sensitivity;
+      
+      const newZoom = Math.max(0.1, Math.min(8, currentZoom + delta));
+      
+      // Only update if there's a meaningful change
+      if (Math.abs(newZoom - currentZoom) > 0.001) {
+        nvlRef.current.setZoom(newZoom);
+        console.log(`${isTrackpad ? 'Trackpad' : 'Mouse wheel'} zoom:`, currentZoom, '->', newZoom);
+      }
+    };
+
+    // Wait for nvlRef to be ready
+    const checkAndAttach = setInterval(() => {
+      const container = nvlRef.current?.getContainer();
+      if (container) {
+        container.addEventListener('wheel', handleWheel, { passive: false });
+        clearInterval(checkAndAttach);
+      }
+    }, 100);
+    
+    return () => {
+      clearInterval(checkAndAttach);
+      const container = nvlRef.current?.getContainer();
+      if (container) {
+        container.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, []);
 
   // Expose methods to parent component via ref
   React.useImperativeHandle(ref, () => ({
@@ -295,11 +415,15 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
   // **THE FIX**: This hardcoded list is now removed.
   // The legend will be generated dynamically by the NVL component.
 
+  if (isLoading) {
+    return <LoadingSpinner message="Loading mental model..." />;
+  }
+
   if (error) {
     return (
       <div style={{ padding: '20px', color: 'red', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', margin: '20px' }}>
-        <h3>Graph Loading Error</h3>
-        <p>Failed to load graph data: {error}</p>
+        <h3>Mental Model Loading Error</h3>
+        <p>Failed to load mental model data: {error}</p>
         <button onClick={loadGraph} style={{ marginTop: '10px', padding: '8px 16px' }}>
           Retry
         </button>

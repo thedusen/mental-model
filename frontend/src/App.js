@@ -19,6 +19,30 @@ function App() {
   const [showIntroPanel, setShowIntroPanel] = useState(true);
   const [hasClickedNode, setHasClickedNode] = useState(false);
   
+  // Chat input state for passing messages from intro panel to chat
+  const [chatInput, setChatInput] = useState('');
+  
+  // Chat message handling - this will be passed to ChatPanel
+  const handleAddChatMessage = (message) => {
+    // Hide intro panel on first interaction
+    if (!hasClickedNode) {
+      setHasClickedNode(true);
+      setShowIntroPanel(false);
+    }
+    
+    // Set the message and focus chat (ChatPanel will handle this via props)
+    setChatInput(message);
+    
+    // Focus the chat input after a brief delay
+    setTimeout(() => {
+      const chatTextarea = document.querySelector('.chat-panel textarea');
+      if (chatTextarea) {
+        chatTextarea.focus();
+        chatTextarea.setSelectionRange(chatTextarea.value.length, chatTextarea.value.length);
+      }
+    }, 100);
+  };
+  
   // Search-related state
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -89,14 +113,13 @@ function App() {
       setSearchExecutionTime(data.execution_time_ms);
       
       // Auto-zoom to search results if there are any
-      // TODO: Re-enable after fixing ref issue
-      // if (data.results.length > 0) {
-      //   setTimeout(() => {
-      //     if (graphViewRef.current) {
-      //       graphViewRef.current.zoomToSearchResults(data.results);
-      //     }
-      //   }, 100);
-      // }
+      if (data.results.length > 0) {
+        setTimeout(() => {
+          if (graphViewRef.current) {
+            graphViewRef.current.zoomToSearchResults(data.results);
+          }
+        }, 100);
+      }
       
     } catch (error) {
       console.error('Search error:', error);
@@ -135,18 +158,11 @@ function App() {
     }
     
     // Optional: zoom to the specific node
-    // TODO: Re-enable after fixing ref issue
-    // if (graphViewRef.current) {
-    //   graphViewRef.current.zoomToSearchResults([result]);
-    // }
+    if (graphViewRef.current) {
+      graphViewRef.current.zoomToSearchResults([result]);
+    }
   };
 
-  const handleFocusAllResults = (results) => {
-    // TODO: Re-enable after fixing ref issue
-    // if (graphViewRef.current && results.length > 0) {
-    //   graphViewRef.current.zoomToSearchResults(results);
-    // }
-  };
 
   // Keyboard navigation for accessibility
   useEffect(() => {
@@ -220,13 +236,13 @@ function App() {
               searchExecutionTime={searchExecutionTime}
               isSearchResultsVisible={isSearchResultsVisible}
               onResultClick={handleSearchResultClick}
-              onFocusAll={handleFocusAllResults}
             />
           </div>
           
           <div className="graph-container">
             <NodeTypesPanel onFilterChange={setNodeFilters} />
             <GraphView 
+              ref={graphViewRef}
               onNodeSelect={(node) => {
                 setSelectedNode(node);
                 if (!hasClickedNode) {
@@ -236,6 +252,7 @@ function App() {
               }}
               onCanvasClick={handleDeselectNode}
               chatContextNode={chatContextNode}
+              searchResults={searchResults}
               filters={nodeFilters}
             />
             <div className={`chat-container ${isChatFullscreen ? 'fullscreen' : ''}`}>
@@ -244,6 +261,8 @@ function App() {
                 chatContextNode={chatContextNode}
                 onClearChatContext={handleClearChatContext}
                 onFullscreenChange={setIsChatFullscreen}
+                externalInput={chatInput}
+                onExternalInputReceived={() => setChatInput('')}
               />
             </div>
           </div>
@@ -253,6 +272,7 @@ function App() {
             <IntroductionPanel 
               isVisible={showIntroPanel}
               onClose={() => setShowIntroPanel(false)}
+              onAddChatMessage={handleAddChatMessage}
             />
           ) : (
             <NodeDetailsPanel
