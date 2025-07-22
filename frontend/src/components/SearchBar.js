@@ -21,11 +21,17 @@ function SearchBar({
   const [showHistory, setShowHistory] = useState(false);
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
+  const validationTimeoutRef = useRef(null);
 
   // Debounced search function
   const debouncedSearch = useCallback((searchQuery) => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
+    }
+    
+    // Clear any pending validation timeout
+    if (validationTimeoutRef.current) {
+      clearTimeout(validationTimeoutRef.current);
     }
     
     debounceRef.current = setTimeout(() => {
@@ -35,7 +41,10 @@ function SearchBar({
           onSearch(searchQuery.trim());
         }
       } else if (searchQuery.trim().length > 0) {
-        setShowValidation(true);
+        // Add delay before showing validation error
+        validationTimeoutRef.current = setTimeout(() => {
+          setShowValidation(true);
+        }, 800); // 800ms delay for validation error
       } else {
         setShowValidation(false);
         if (onClear) {
@@ -78,11 +87,14 @@ function SearchBar({
     });
   }, []);
 
-  // Cleanup debounce on unmount
+  // Cleanup debounce and validation timeouts on unmount
   useEffect(() => {
     return () => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
+      }
+      if (validationTimeoutRef.current) {
+        clearTimeout(validationTimeoutRef.current);
       }
     };
   }, []);
@@ -105,6 +117,9 @@ function SearchBar({
         setIsActive(false);
         setQuery('');
         setShowValidation(false);
+        if (validationTimeoutRef.current) {
+          clearTimeout(validationTimeoutRef.current);
+        }
         if (inputRef.current) {
           inputRef.current.blur();
         }
@@ -181,9 +196,12 @@ function SearchBar({
     setQuery('');
     setIsActive(false);
     setShowValidation(false);
-    // Cancel any pending debounced search
+    // Cancel any pending debounced search and validation timeout
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
+    }
+    if (validationTimeoutRef.current) {
+      clearTimeout(validationTimeoutRef.current);
     }
     if (inputRef.current) {
       inputRef.current.focus();
