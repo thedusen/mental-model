@@ -78,9 +78,9 @@ function SearchResults({
   };
 
   const getScoreColor = (score) => {
-    if (score >= 0.8) return '#10b981'; // Green for high relevance
-    if (score >= 0.6) return '#f59e0b'; // Yellow for medium relevance
-    return '#6b7280'; // Gray for lower relevance
+    if (score >= 0.8) return '#059669'; // Darker green for high relevance (WCAG AA compliant)
+    if (score >= 0.6) return '#d97706'; // Darker orange for medium relevance (WCAG AA compliant)  
+    return '#374151'; // Darker gray for lower relevance (WCAG AA compliant)
   };
 
   const getScoreLabel = (score) => {
@@ -93,7 +93,27 @@ function SearchResults({
 
   return (
     <div className="search-results-overlay">
-      <div className="search-results-panel">
+      {/* ARIA live region for search result announcements */}
+      <div 
+        aria-live="polite" 
+        aria-atomic="true" 
+        className="sr-only"
+        id="search-results-live-region"
+      >
+        {!isLoading && results.length > 0 && (
+          `${results.length} search result${results.length !== 1 ? 's' : ''} found for ${query}`
+        )}
+        {!isLoading && results.length === 0 && query && (
+          `No search results found for ${query}`
+        )}
+      </div>
+      
+      <div 
+        className="search-results-panel"
+        role="listbox"
+        id="search-results-listbox"
+        aria-label={`Search results for "${query}"`}
+      >
         {/* Header */}
         <div className="search-results-header">
           <div className="search-results-info">
@@ -116,8 +136,8 @@ function SearchResults({
               <button
                 onClick={handleFocusAllClick}
                 className="action-button focus-all"
-                title="Focus all results in graph"
-                aria-label="Focus all search results in graph view"
+                title="Zoom to show all search results in the graph visualization"
+                aria-label="Zoom graph to show all search results"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="3"></circle>
@@ -178,9 +198,10 @@ function SearchResults({
                 className={`search-result-item ${selectedIndex === index ? 'selected' : ''}`}
                 onClick={() => handleResultClick(result)}
                 onMouseEnter={() => setSelectedIndex(index)}
-                role="button"
-                tabIndex={0}
-                aria-label={`Search result: ${result.id}`}
+                role="option"
+                tabIndex={-1}
+                aria-selected={selectedIndex === index}
+                aria-label={`${result.id}, ${result.type}, relevance ${(result.score * 100).toFixed(0)}%`}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();

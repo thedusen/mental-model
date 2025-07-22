@@ -63,6 +63,10 @@
   min-height: 64px;
 }
 
+.search-header .search-bar {
+  position: relative;
+}
+
 .graph-container {
   flex: 1;
   position: relative;

@@ -5,7 +5,7 @@ import ChatPanel from './components/ChatPanel';
 import NodeDetailsPanel from './components/NodeDetailsPanel';
 import NodeTypesPanel from './components/NodeTypesPanel';
 import SearchBar from './components/SearchBar';
-import SearchResults from './components/SearchResults';
+import IntroductionPanel from './components/IntroductionPanel';
 
 function App() {
   console.log('App component rendering...');
@@ -15,6 +15,9 @@ function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [nodeFilters, setNodeFilters] = useState([]);
   const [isChatFullscreen, setIsChatFullscreen] = useState(false);
+  // Introduction panel state
+  const [showIntroPanel, setShowIntroPanel] = useState(true);
+  const [hasClickedNode, setHasClickedNode] = useState(false);
   
   // Search-related state
   const [searchResults, setSearchResults] = useState([]);
@@ -125,6 +128,12 @@ function App() {
       }
     });
     
+    // Hide intro panel on first interaction
+    if (!hasClickedNode) {
+      setHasClickedNode(true);
+      setShowIntroPanel(false);
+    }
+    
     // Optional: zoom to the specific node
     // TODO: Re-enable after fixing ref issue
     // if (graphViewRef.current) {
@@ -206,13 +215,25 @@ function App() {
               onSearch={handleSearch}
               onClear={handleSearchClear}
               isLoading={isSearchLoading}
+              searchResults={searchResults}
+              searchQuery={searchQuery}
+              searchExecutionTime={searchExecutionTime}
+              isSearchResultsVisible={isSearchResultsVisible}
+              onResultClick={handleSearchResultClick}
+              onFocusAll={handleFocusAllResults}
             />
           </div>
           
           <div className="graph-container">
             <NodeTypesPanel onFilterChange={setNodeFilters} />
             <GraphView 
-              onNodeSelect={setSelectedNode}
+              onNodeSelect={(node) => {
+                setSelectedNode(node);
+                if (!hasClickedNode) {
+                  setHasClickedNode(true);
+                  setShowIntroPanel(false);
+                }
+              }}
               onCanvasClick={handleDeselectNode}
               chatContextNode={chatContextNode}
               filters={nodeFilters}
@@ -226,27 +247,22 @@ function App() {
               />
             </div>
           </div>
-          
-          {/* Search Results Overlay */}
-          <SearchResults
-            results={searchResults}
-            query={searchQuery}
-            isLoading={isSearchLoading}
-            executionTime={searchExecutionTime}
-            isVisible={isSearchResultsVisible}
-            onResultClick={handleSearchResultClick}
-            onFocusAll={handleFocusAllResults}
-            onClear={handleSearchClear}
-          />
         </main>
         <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`} role="complementary" aria-label="Node details">
-          <NodeDetailsPanel
-            selectedNode={selectedNode}
-            chatContextNode={chatContextNode}
-            onSetChatContext={handleSetChatContext}
-            isCollapsed={isSidebarCollapsed}
-            onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          />
+          {showIntroPanel ? (
+            <IntroductionPanel 
+              isVisible={showIntroPanel}
+              onClose={() => setShowIntroPanel(false)}
+            />
+          ) : (
+            <NodeDetailsPanel
+              selectedNode={selectedNode}
+              chatContextNode={chatContextNode}
+              onSetChatContext={handleSetChatContext}
+              isCollapsed={isSidebarCollapsed}
+              onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            />
+          )}
         </aside>
       </div>
     );
