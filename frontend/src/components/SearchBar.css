@@ -65,6 +65,8 @@
   border-color: var(--search-color-primary);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   transform: translateY(-1px);
+  outline: var(--search-focus-outline);
+  outline-offset: var(--search-focus-offset);
 }
 
 .search-bar.loading .search-input-container {
@@ -97,9 +99,7 @@
 }
 
 .search-input:focus-visible {
-  outline: var(--search-focus-outline);
-  outline-offset: var(--search-focus-offset);
-  border-radius: var(--search-radius-sm);
+  outline: none;
 }
 
 .search-input.validation-error {
