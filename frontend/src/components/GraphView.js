@@ -40,12 +40,19 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
     loadGraph();
   }, []);
 
-  const loadGraph = async () => {
+  const loadGraph = useCallback(async () => {
     console.log('Loading graph data...');
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${API_URL}/api/graph`);
+      const response = await axios.get(`${API_URL}/api/graph`, {
+        // Add timeout and headers for better performance
+        timeout: 10000,
+        headers: {
+          'Accept-Encoding': 'gzip, deflate',
+          'Accept': 'application/json'
+        }
+      });
       console.log('API response:', response.data);
       const { nodes, edges } = response.data;
       console.log('Processing nodes:', nodes?.length, 'edges:', edges?.length);
@@ -56,30 +63,39 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [API_URL]);
+
+  // Memoize the type colors to avoid recreating on every render
+  const typeColors = useMemo(() => ({
+    'Theme': '#F4B8A2',
+    'VALUE FRAMEWORK': '#A3D9D2',
+    'COGNITIVE TENSIONS': '#A9C7E8',
+    'DECISION ARCHITECTURE': '#C3B4E5',
+    'ADAPTIVE CORE': '#F9D6B3',
+    'ENERGY PATTERNS': '#E9C3E1',
+    'Uncategorized': '#E0E0E0'
+  }), []);
+
+  // Memoize search results lookup for better performance
+  const searchResultsMap = useMemo(() => {
+    const map = new Map();
+    searchResults.forEach(result => {
+      map.set(result.id, result);
+    });
+    return map;
+  }, [searchResults]);
 
   const memoizedNodes = useMemo(() => {
     if (!graphData.nodes || graphData.nodes.length === 0) {
       return [];
     }
     
-    // Restore the original D3 pastel color palette
-    const typeColors = {
-      'Theme': '#F4B8A2',
-      'VALUE FRAMEWORK': '#A3D9D2',
-      'COGNITIVE TENSIONS': '#A9C7E8',
-      'DECISION ARCHITECTURE': '#C3B4E5',
-      'ADAPTIVE CORE': '#F9D6B3',
-      'ENERGY PATTERNS': '#E9C3E1',
-      'Uncategorized': '#E0E0E0'
-    };
-    
     return graphData.nodes.map(node => {
       const isTheme = node.type === 'Theme';
       const isChatContext = chatContextNode && node.id === chatContextNode.id;
       
-      // Check if this node is in search results
-      const searchResult = searchResults.find(result => result.id === node.id);
+      // Optimized search result lookup using Map
+      const searchResult = searchResultsMap.get(node.id);
       const isSearchResult = !!searchResult;
       
       const baseColor = typeColors[node.type] || typeColors['Uncategorized'];
@@ -159,7 +175,27 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
       
       return finalNode;
     });
-  }, [graphData.nodes, chatContextNode, searchResults]);
+  }, [graphData.nodes, chatContextNode, searchResultsMap, typeColors]);
+
+  // Memoize edge styling to avoid recreating style objects
+  const edgeStyle = useMemo(() => ({
+    color: '#94A3B8',
+    width: 2,
+    length: 150,
+    arrows: 'to',
+    arrowStrikethrough: false,
+    font: {
+      size: 10,
+      color: '#64748B',
+      strokeWidth: 0,
+      align: 'middle'
+    },
+    smooth: {
+      enabled: true,
+      type: 'continuous',
+      roundness: 0.2
+    }
+  }), []);
 
   const memoizedRels = useMemo(() => {
     if (!graphData.edges || graphData.edges.length === 0) {
@@ -170,24 +206,9 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
       from: edge.from,
       to: edge.to,
       caption: edge.label,
-      color: '#94A3B8',
-      width: 2,
-      length: 150,
-      arrows: 'to',
-      arrowStrikethrough: false,
-      font: {
-        size: 10,
-        color: '#64748B',
-        strokeWidth: 0,
-        align: 'middle'
-      },
-      smooth: {
-        enabled: true,
-        type: 'continuous',
-        roundness: 0.2
-      }
+      ...edgeStyle
     }));
-  }, [graphData.edges]);
+  }, [graphData.edges, edgeStyle]);
 
   // **THE FIX**: Wrap all callback props in `useCallback` to ensure their
   // references are stable across re-renders. This prevents the child component
@@ -416,7 +437,7 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
   // The legend will be generated dynamically by the NVL component.
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading mental model..." />;
+    return <LoadingSpinner message="Loading knowledge graph with 600+ nodes and 1,300+ relationships..." />;
   }
 
   if (error) {
@@ -536,6 +557,14 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
             allowDynamicMinZoom: true,
             minZoom: 0.1,
             maxZoom: 8,
+            // Performance optimizations
+            enableBatching: true,
+            disableWebGL: false,
+            disablePhysics: false,
+            stabilization: {
+              iterations: 150, // Reduced from default for faster initial render
+              updateInterval: 50
+            },
             // New options to control the NVL legend
             legend: {
               enabled: true,

@@ -1,18 +1,25 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 import logging
 import os
 import asyncio
 import json
+import time
+from functools import lru_cache
 from config import anthropic_client, cohere_client, get_db_session
 from keep_warm import keep_warm_service
 from prompts import SYSTEM_PROMPT
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Simple in-memory cache for graph data
+_graph_cache = {"data": None, "timestamp": 0}
+CACHE_TTL = 300  # 5 minutes in seconds
 
 app = FastAPI(
     title="Mental Model Knowledge Graph API",
@@ -28,6 +35,9 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all methods
     allow_headers=["*"],  # Allow all headers
 )
+
+# Add Gzip compression for better performance
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Simple health check for deployment platforms
 @app.get("/health")
@@ -288,12 +298,23 @@ async def chat_stream(query: ChatQuery):
 
 @app.get("/api/graph")
 async def get_graph():
+    # Check cache first
+    current_time = time.time()
+    if (_graph_cache["data"] is not None and 
+        current_time - _graph_cache["timestamp"] < CACHE_TTL):
+        logger.info("Returning cached graph data")
+        return JSONResponse(
+            content=_graph_cache["data"],
+            headers={"Cache-Control": "public, max-age=300"}
+        )
+    
+    logger.info("Cache miss - fetching fresh graph data")
     with get_db_session() as session:
-        # Get ALL nodes - both Entity nodes and standalone nodes
+        # Get ALL nodes - both Entity nodes and standalone nodes (optimized)
         nodes_result = session.run("""
             MATCH (n)
+            WHERE n:Entity OR n:Theme OR n:Pattern OR n:Example OR n:Principle OR n:Expert OR n:MentalModel
             RETURN 
-                labels(n) as node_labels,
                 CASE 
                     WHEN n:Theme THEN n.name 
                     WHEN n.id IS NOT NULL THEN n.id
@@ -302,22 +323,25 @@ async def get_graph():
                 END as id,
                 CASE 
                     WHEN n:Theme THEN 'Theme'
+                    WHEN n:Entity AND n.category IS NOT NULL THEN n.category
                     WHEN n:Pattern THEN 'Pattern'
                     WHEN n:Example THEN 'Example' 
                     WHEN n:Principle THEN 'Principle'
                     WHEN n:Expert THEN 'Expert'
                     WHEN n:MentalModel THEN 'MentalModel'
-                    ELSE COALESCE(n.category, 'Entity')
+                    ELSE 'Entity'
                 END as type,
                 COALESCE(n.description, '') as description,
                 COALESCE(n.content, '') as content,
                 COALESCE(n.theme, '') as theme
         """)
         
-        # Get ALL relationships separately - no restrictions, include both directions
+        # Get ALL relationships separately - optimized with constraints
         edges_result = session.run("""
             MATCH (a)-[r]-(b)
-            WHERE a <> b
+            WHERE a <> b 
+            AND (a:Entity OR a:Theme OR a:Pattern OR a:Example OR a:Principle OR a:Expert OR a:MentalModel)
+            AND (b:Entity OR b:Theme OR b:Pattern OR b:Example OR b:Principle OR b:Expert OR b:MentalModel)
             RETURN 
                 CASE 
                     WHEN a:Theme THEN a.name 
@@ -373,7 +397,16 @@ async def get_graph():
                     })
                     edge_set.add(edge_key)
         
-        return {"nodes": nodes, "edges": edges}
+        # Cache the result
+        graph_data = {"nodes": nodes, "edges": edges}
+        _graph_cache["data"] = graph_data
+        _graph_cache["timestamp"] = current_time
+        logger.info(f"Cached graph data: {len(nodes)} nodes, {len(edges)} edges")
+        
+        return JSONResponse(
+            content=graph_data,
+            headers={"Cache-Control": "public, max-age=300"}
+        )
 
 class SearchResult(BaseModel):
     id: str
