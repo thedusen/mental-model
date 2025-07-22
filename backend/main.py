@@ -289,43 +289,57 @@ async def chat_stream(query: ChatQuery):
 @app.get("/api/graph")
 async def get_graph():
     with get_db_session() as session:
-        # Get all Entity and Theme nodes with their relationships
-        result = session.run("""
-            // Get all Entity nodes with their categories
-            MATCH (e:Entity)
-            OPTIONAL MATCH (e)-[r1:BELONGS_TO]->(t:Theme)
-            OPTIONAL MATCH (e)-[r2]-(other:Entity)
+        # Get ALL nodes - both Entity nodes and standalone nodes
+        nodes_result = session.run("""
+            MATCH (n)
             RETURN 
-                'Entity' as node_class,
-                e.id as id, 
-                COALESCE(e.category, 'Uncategorized') as type, 
-                e.description as description,
-                e.content as content,
-                e.theme as theme,
-                collect(DISTINCT {from: e.id, to: t.name, type: 'BELONGS_TO'}) + 
-                collect(DISTINCT {from: e.id, to: other.id, type: type(r2)}) + 
-                collect(DISTINCT {from: other.id, to: e.id, type: type(r2)}) as relationships
-            
-            UNION ALL
-            
-            // Get all Theme nodes
-            MATCH (t:Theme)
+                labels(n) as node_labels,
+                CASE 
+                    WHEN n:Theme THEN n.name 
+                    WHEN n.id IS NOT NULL THEN n.id
+                    WHEN n.name IS NOT NULL THEN n.name
+                    ELSE toString(id(n))
+                END as id,
+                CASE 
+                    WHEN n:Theme THEN 'Theme'
+                    WHEN n:Pattern THEN 'Pattern'
+                    WHEN n:Example THEN 'Example' 
+                    WHEN n:Principle THEN 'Principle'
+                    WHEN n:Expert THEN 'Expert'
+                    WHEN n:MentalModel THEN 'MentalModel'
+                    ELSE COALESCE(n.category, 'Entity')
+                END as type,
+                COALESCE(n.description, '') as description,
+                COALESCE(n.content, '') as content,
+                COALESCE(n.theme, '') as theme
+        """)
+        
+        # Get ALL relationships separately - no restrictions, include both directions
+        edges_result = session.run("""
+            MATCH (a)-[r]-(b)
+            WHERE a <> b
             RETURN 
-                'Theme' as node_class,
-                t.name as id,
-                'Theme' as type,
-                t.description as description,
-                null as content,
-                null as theme,
-                [] as relationships
+                CASE 
+                    WHEN a:Theme THEN a.name 
+                    WHEN a.id IS NOT NULL THEN a.id
+                    WHEN a.name IS NOT NULL THEN a.name
+                    ELSE toString(id(a))
+                END as from_node,
+                CASE 
+                    WHEN b:Theme THEN b.name 
+                    WHEN b.id IS NOT NULL THEN b.id
+                    WHEN b.name IS NOT NULL THEN b.name
+                    ELSE toString(id(b))
+                END as to_node,
+                type(r) as rel_type,
+                startNode(r) = a as is_outgoing
         """)
         
         nodes, edges = [], []
         seen_nodes = set()
         
-        # First pass: collect all nodes
-        all_records = list(result)
-        for record in all_records:
+        # Process nodes
+        for record in nodes_result:
             if record['id'] not in seen_nodes:
                 nodes.append({
                     'id': record['id'], 
@@ -337,21 +351,27 @@ async def get_graph():
                 })
                 seen_nodes.add(record['id'])
         
-        # Second pass: collect valid relationships (only between existing nodes)
+        # Process edges - no restrictions, include all relationships
         edge_set = set()  # To avoid duplicates
-        for record in all_records:
-            for rel in record['relationships']:
-                if rel and rel.get('from') and rel.get('to'):
-                    from_node, to_node = rel['from'], rel['to']
-                    if from_node in seen_nodes and to_node in seen_nodes:
-                        edge_key = (from_node, to_node, rel.get('type', ''))
-                        if edge_key not in edge_set:
-                            edges.append({
-                                'from': from_node,
-                                'to': to_node, 
-                                'label': rel.get('type', 'RELATED')
-                            })
-                            edge_set.add(edge_key)
+        for record in edges_result:
+            from_node, to_node, rel_type, is_outgoing = record['from_node'], record['to_node'], record['rel_type'], record['is_outgoing']
+            if from_node and to_node and from_node in seen_nodes and to_node in seen_nodes:
+                # Use the actual direction from the database
+                if is_outgoing:
+                    # a->b: from_node is correct
+                    actual_from, actual_to = from_node, to_node
+                else:
+                    # b->a: swap direction
+                    actual_from, actual_to = to_node, from_node
+                
+                edge_key = (actual_from, actual_to, rel_type)
+                if edge_key not in edge_set:
+                    edges.append({
+                        'from': actual_from,
+                        'to': actual_to, 
+                        'label': rel_type
+                    })
+                    edge_set.add(edge_key)
         
         return {"nodes": nodes, "edges": edges}
 
