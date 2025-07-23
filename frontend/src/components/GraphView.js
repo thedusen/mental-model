@@ -930,20 +930,12 @@ const GraphView = React.forwardRef(({
           nodes={memoizedNodes}
           rels={memoizedRels}
           nvlOptions={{
-            layout: 'force-directed',
-            initialZoom: 1,
+            layout: 'forcedirected', // Correct NVL layout name
+            initialZoom: 0.3, // Start zoomed out to see spacing effect
             allowDynamicMinZoom: true,
             minZoom: 0.1,
             maxZoom: 8,
             renderer: 'canvas', // Explicitly set canvas renderer
-            // Performance optimizations
-            enableBatching: true,
-            disableWebGL: true, // Use Canvas renderer for proper caption display
-            disablePhysics: false,
-            stabilization: {
-              iterations: 150, // Reduced from default for faster initial render
-              updateInterval: 50
-            },
             // New options to control the NVL legend
             legend: {
               enabled: true,
@@ -951,6 +943,18 @@ const GraphView = React.forwardRef(({
               isCollapsed: isLegendMinimized, // Control collapse state
               onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
             },
+          }}
+          layoutOptions={{
+            // Reduced spacing parameters by 15% from extreme values
+            nodeSpacing: 425, // Reduced from 500 (15% decrease)
+            edgeLength: 850, // Reduced from 1000 (15% decrease)
+            repulsion: 8500, // Reduced from 10000 (15% decrease)
+            attraction: 0.001, // Keep minimal attraction
+            damping: 0.9, // Keep high damping for stability
+            springLength: 850, // Reduced from 1000 (15% decrease)
+            springConstant: 0.001, // Keep very loose springs
+            centralGravity: 0.001, // Keep minimal central gravity
+            gravitationalConstant: -850 // Reduced from -1000 (15% decrease)
           }}
           mouseEventCallbacks={mouseEventCallbacks}
           nvlCallbacks={nvlCallbacks}
