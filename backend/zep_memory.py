@@ -36,7 +36,7 @@ class ZepMemoryManager:
         if not self.enabled:
             logger.warning("Zep is disabled - ensure_user_exists returning None")
             return None
-            
+
         try:
             # Try to get existing user
             user = self.client.user.get(user_id)
@@ -73,7 +73,7 @@ class ZepMemoryManager:
         if not self.enabled:
             logger.warning("Zep is disabled - add_conversation_memory skipping")
             return
-            
+
         try:
             # Ensure user exists
             self.ensure_user_exists(user_id)
@@ -281,7 +281,7 @@ class ZepMemoryManager:
         if not self.enabled:
             logger.debug("Zep is disabled - get_business_profile returning None")
             return None
-            
+
         try:
             # Try to get from the dedicated business data session
             business_session_id = f"business_data_{user_id}"
