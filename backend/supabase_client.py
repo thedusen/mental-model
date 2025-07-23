@@ -22,7 +22,9 @@ def get_supabase_client() -> Client:
     global supabase
     if supabase is None:
         if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
-            raise Exception("Supabase configuration is missing - set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables")
+            raise Exception(
+                "Supabase configuration is missing - set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables"
+            )
         supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
     return supabase
 
