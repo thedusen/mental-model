@@ -18,6 +18,7 @@ class ZepMemoryManager:
 
     def __init__(self):
         self.client = zep_client
+        self.enabled = zep_client is not None
 
     def ensure_user_exists(
         self, user_id: str, user_metadata: Optional[Dict[str, Any]] = None
@@ -32,6 +33,10 @@ class ZepMemoryManager:
         Returns:
             User object from Zep
         """
+        if not self.enabled:
+            logger.warning("Zep is disabled - ensure_user_exists returning None")
+            return None
+            
         try:
             # Try to get existing user
             user = self.client.user.get(user_id)
@@ -65,6 +70,10 @@ class ZepMemoryManager:
             session_id: Session/conversation identifier
             messages: List of message dictionaries with 'role' and 'content'
         """
+        if not self.enabled:
+            logger.warning("Zep is disabled - add_conversation_memory skipping")
+            return
+            
         try:
             # Ensure user exists
             self.ensure_user_exists(user_id)
@@ -269,6 +278,10 @@ class ZepMemoryManager:
         Returns:
             Business profile dictionary or None if not found
         """
+        if not self.enabled:
+            logger.debug("Zep is disabled - get_business_profile returning None")
+            return None
+            
         try:
             # Try to get from the dedicated business data session
             business_session_id = f"business_data_{user_id}"
