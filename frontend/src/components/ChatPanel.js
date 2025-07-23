@@ -207,7 +207,6 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('✅ Session already exists');
     return true;
   };
-
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 

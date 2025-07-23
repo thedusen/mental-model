@@ -96,7 +96,6 @@ const GraphView = React.forwardRef(({
     });
     return map;
   }, [searchResults]);
-
   // Use filtered data if available, otherwise use full graph data
   const currentGraphData = filteredGraphData || graphData;
 
@@ -701,7 +700,6 @@ const GraphView = React.forwardRef(({
       console.error('💥 Error jumping to node:', error);
     }
   }, [currentGraphData]);
-
   // Expose methods to parent component via ref
   React.useImperativeHandle(ref, () => ({
     zoomToSearchResults,
