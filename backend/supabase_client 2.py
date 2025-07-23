@@ -93,17 +93,6 @@ class SupabaseService:
         response = self.client.table("chat_messages").insert(data).execute()
         return response.data[0] if response.data else None
 
-    async def get_session(self, session_id: str):
-        """Get a single chat session by ID"""
-        response = (
-            self.client.table("chat_sessions")
-            .select("*")
-            .eq("id", session_id)
-            .single()
-            .execute()
-        )
-        return response.data if response.data else None
-
     async def update_session(self, session_id: str, updates: dict):
         """Update a chat session"""
         response = (
@@ -140,121 +129,6 @@ class SupabaseService:
             .limit(limit)
             .execute()
         )
-
-        return response.data
-
-    # Business Profile Methods
-    async def get_business_profile_questions(self):
-        """Get all business profile questions"""
-        response = (
-            self.client.table("business_profile_questions")
-            .select("*")
-            .eq("is_active", True)
-            .order("order_index")
-            .execute()
-        )
-        return response.data
-
-    async def get_business_profile_progress(self, user_id: str):
-        """Get user's business profile progress"""
-        response = (
-            self.client.table("user_questionnaire_progress")
-            .select("*")
-            .eq("user_id", user_id)
-            .single()
-            .execute()
-        )
-        return response.data if response.data else None
-
-    async def get_business_profile_answers(self, user_id: str):
-        """Get user's business profile answers"""
-        response = (
-            self.client.table("user_business_profiles")
-            .select("*")
-            .eq("user_id", user_id)
-            .order("question_id")
-            .execute()
-        )
-        return response.data
-
-    async def save_business_profile_answer(
-        self,
-        user_id: str,
-        question_id: int,
-        answer: str,
-        answered_at: Optional[str] = None,
-        session_id: Optional[str] = None,
-    ):
-        """Save or update a business profile answer"""
-        from datetime import datetime
-
-        answered_at = answered_at or datetime.now().isoformat()
-
-        data = {
-            "user_id": user_id,
-            "question_id": question_id,
-            "answer": answer,
-            "answered_at": answered_at,
-            "session_id": session_id,
-            "is_complete": True,
-        }
-
-        # Use upsert to handle both insert and update cases
-        response = (
-            self.client.table("user_business_profiles")
-            .upsert(data, on_conflict="user_id,question_id")
-            .execute()
-        )
-        return response.data[0] if response.data else None
-
-    async def mark_answers_synced_to_zep(self, user_id: str):
-        """Mark user's business profile answers as synced to Zep"""
-        from datetime import datetime
-
-        response = (
-            self.client.table("user_business_profiles")
-            .update({"synced_to_zep": True, "zep_sync_at": datetime.now().isoformat()})
-            .eq("user_id", user_id)
-            .execute()
-        )
-        return response.data
-
-    async def record_nudge_dismissed(self, user_id: str):
-        """Record that user dismissed a nudge"""
-        from datetime import datetime
-
-        # First, get current progress
-        progress = await self.get_business_profile_progress(user_id)
-
-        if progress:
-            # Update existing progress record
-            response = (
-                self.client.table("user_questionnaire_progress")
-                .update(
-                    {
-                        "nudge_dismissed_count": progress.get(
-                            "nudge_dismissed_count", 0
-                        )
-                        + 1,
-                        "last_nudged_at": datetime.now().isoformat(),
-                    }
-                )
-                .eq("user_id", user_id)
-                .execute()
-            )
-        else:
-            # Create initial progress record
-            response = (
-                self.client.table("user_questionnaire_progress")
-                .insert(
-                    {
-                        "user_id": user_id,
-                        "nudge_dismissed_count": 1,
-                        "last_nudged_at": datetime.now().isoformat(),
-                    }
-                )
-                .execute()
-            )
 
         return response.data
 
