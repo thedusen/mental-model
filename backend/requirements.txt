@@ -10,6 +10,7 @@ psutil==5.9.8
 PyJWT==2.8.0
 supabase==2.15.1
 zep-python==2.0.0
+zep-cloud==2.21.0
 # Production performance and monitoring
 uvloop==0.21.0
 gunicorn==21.2.0
