@@ -27,7 +27,7 @@ function IntroductionPanel({ isVisible, onClose, onAddChatMessage }) {
             <div className="primary-cta">
               <h3>Get insights in 30 seconds</h3>
               <p className="cta-description">
-                Ask about your biggest business challenge and get personalized insights.
+                Ask about your biggest business challenges
               </p>
               <div className="question-suggestions">
                 <button 

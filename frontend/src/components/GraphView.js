@@ -23,7 +23,19 @@ const brightenHexColor = (hex, percent) => {
   return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
 };
 
-const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNode, searchResults = [], filters }, ref) => {
+const GraphView = React.forwardRef(({ 
+  onNodeSelect, 
+  onCanvasClick, 
+  chatContextNode, 
+  selectedNode = null,
+  searchResults = [], 
+  filters,
+  filteredGraphData = null,
+  graphFilterMode = null,
+  filteredNodeId = null,
+  onClearGraphFilter = null,
+  isLoadingSubgraph = false
+}, ref) => {
   console.log('GraphView render - searchResults:', searchResults);
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   // State to manage the legend's collapsed state
@@ -85,14 +97,18 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
     return map;
   }, [searchResults]);
 
+  // Use filtered data if available, otherwise use full graph data
+  const currentGraphData = filteredGraphData || graphData;
+
   const memoizedNodes = useMemo(() => {
-    if (!graphData.nodes || graphData.nodes.length === 0) {
+    if (!currentGraphData.nodes || currentGraphData.nodes.length === 0) {
       return [];
     }
     
-    return graphData.nodes.map(node => {
+    return currentGraphData.nodes.map(node => {
       const isTheme = node.type === 'Theme';
       const isChatContext = chatContextNode && node.id === chatContextNode.id;
+      const isSelected = selectedNode && node.id === selectedNode.id;
       
       // Optimized search result lookup using Map
       const searchResult = searchResultsMap.get(node.id);
@@ -103,16 +119,87 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
       // Simulate the gradient: bright fill, original color border
       const fillColor = brightenHexColor(baseColor, 20); // 20% brighter for the center
 
+      // Smart text handling for long labels - work within NVL's 2-line limit
+      const originalText = node.label || '';
+      const labelLength = originalText.length;
+      
+      // Simpler approach - let small fonts do the work
+      const labelText = originalText; // Use original text, rely on tiny fonts
+      
+      const baseSize = isTheme ? 40 : 25;
+      const minSize = baseSize;
+      const maxSize = isTheme ? 120 : 100; // Even larger nodes for long text
+      
+      // More aggressive sizing for longer text
+      const extraSize = Math.min(Math.max(0, labelLength - 10) * 2, maxSize - minSize);
+      const dynamicSize = minSize + extraSize;
+      
+      // Aggressive font scaling based on text length
+      const baseFontSize = isTheme ? 14 : 11;
+      
+      // Even more aggressive scaling - go smaller!
+      let fontScale = 1.0;
+      if (labelLength > 35) fontScale = 0.50;        // Very long text - super tiny font
+      else if (labelLength > 30) fontScale = 0.55;   // Long text - very small font  
+      else if (labelLength > 25) fontScale = 0.60;   // Medium-long text - small font
+      else if (labelLength > 20) fontScale = 0.70;   // Medium text - somewhat small
+      else if (labelLength > 15) fontScale = 0.80;   // Short-medium text - slightly small  
+      else if (labelLength > 10) fontScale = 0.90;   // Short text - almost normal
+      
+      const smartFontSize = Math.max(Math.round(baseFontSize * fontScale), 6); // Allow down to 6px
+      
+      console.log(`📏 Text "${originalText}" (${labelLength} chars) -> font ${smartFontSize}px (scale: ${fontScale})`);
+      
+      // Multi-line caption support using proper NVL captions format
+      const createCaptions = (text) => {
+        // Debug long labels
+        if (text.length > 15) {
+          console.log('🏷️ Long label:', text, 'Length:', text.length);
+        }
+        
+        if (text.length <= 30) {
+          // Single caption with proper NVL format
+          return [{ value: text, styles: [] }];
+        }
+        
+        // Split long text into multiple lines at word boundaries
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = '';
+        
+        for (const word of words) {
+          if ((currentLine + ' ' + word).length <= 30) {
+            currentLine = currentLine ? currentLine + ' ' + word : word;
+          } else {
+            if (currentLine) lines.push(currentLine);
+            currentLine = word;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+        
+        // Create proper NVL captions format with styles array
+        const result = lines.slice(0, 3).map(line => ({ 
+          value: line, 
+          styles: [] // Empty styles array as required by NVL
+        }));
+        console.log('📝 Multi-line captions for', text, ':', result);
+        return result;
+      };
+      
+      // Back to single caption that was working
       let finalNode = {
         id: node.id,
-        caption: node.label,
-        size: isTheme ? 40 : 25, // Slightly larger nodes
+        caption: labelText, // Use single caption that was working before
+        size: dynamicSize,
         color: fillColor,
-        fontSize: isTheme ? 14 : 11,
         font: {
-          color: '#1E293B', // Darker font for better readability on light backgrounds
+          color: '#1E293B',
           strokeWidth: 0,
-          size: isTheme ? 14 : 11
+          size: smartFontSize,
+          // Try word-break prevention properties
+          wordBreak: 'keep-all',
+          whiteSpace: 'nowrap',
+          textOverflow: 'clip'
         },
         type: 'circle',
         borderColor: baseColor, // Original pastel color as border
@@ -131,7 +218,7 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
         }
       };
 
-      // Chat context highlighting (takes precedence over search)
+      // Chat context highlighting (takes precedence over search and selection)
       if (isChatContext) {
         finalNode = {
           ...finalNode,
@@ -144,7 +231,21 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
           shadowOffsetY: 0,
         };
       }
-      // Search result highlighting (if not already chat context)
+      // Selected node highlighting (takes precedence over search)
+      else if (isSelected) {
+        finalNode = {
+          ...finalNode,
+          borderColor: '#F59E0B', // Amber/Orange border for selected
+          borderWidth: 5,
+          shadowEnabled: true,
+          shadowColor: 'rgba(245, 158, 11, 0.5)',
+          shadowBlur: 15,
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
+          size: finalNode.size + 6, // Make it noticeably larger
+        };
+      }
+      // Search result highlighting (if not already chat context or selected)
       else if (isSearchResult) {
         const searchScore = searchResult.score;
         // Different intensity based on score
@@ -173,9 +274,22 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
         };
       }
       
+      // Debug ALL nodes to see what's happening with captions
+      if (labelLength > 5) {
+        console.log('🔍 Node structure:', {
+          id: finalNode.id,
+          caption: finalNode.caption,
+          captionSize: finalNode.captionSize,
+          captionAlign: finalNode.captionAlign,
+          size: finalNode.size,
+          fontSize: finalNode.fontSize,
+          font: finalNode.font
+        });
+      }
+      
       return finalNode;
     });
-  }, [graphData.nodes, chatContextNode, searchResultsMap, typeColors]);
+  }, [currentGraphData.nodes, chatContextNode, selectedNode, searchResultsMap, typeColors]);
 
   // Memoize edge styling to avoid recreating style objects
   const edgeStyle = useMemo(() => ({
@@ -198,17 +312,17 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
   }), []);
 
   const memoizedRels = useMemo(() => {
-    if (!graphData.edges || graphData.edges.length === 0) {
+    if (!currentGraphData.edges || currentGraphData.edges.length === 0) {
       return [];
     }
-    return graphData.edges.map((edge, idx) => ({
+    return currentGraphData.edges.map((edge, idx) => ({
       id: `rel-${idx}`,
       from: edge.from,
       to: edge.to,
       caption: edge.label,
       ...edgeStyle
     }));
-  }, [graphData.edges, edgeStyle]);
+  }, [currentGraphData.edges, edgeStyle]);
 
   // **THE FIX**: Wrap all callback props in `useCallback` to ensure their
   // references are stable across re-renders. This prevents the child component
@@ -244,6 +358,20 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
     if (nvlRef.current) {
       console.log('=== NVL REF DEBUG ===');
       console.log('nvlRef.current:', nvlRef.current);
+      
+      // Check what renderer is actually being used
+      const container = nvlRef.current.getContainer();
+      if (container) {
+        const canvas = container.querySelector('canvas');
+        const svg = container.querySelector('svg');
+        console.log('🎨 Canvas element found:', !!canvas);
+        console.log('🖼️ SVG element found:', !!svg);
+        if (canvas) {
+          console.log('✅ Canvas renderer active');
+        } else if (svg) {
+          console.log('❌ SVG/WebGL renderer active - captions may not work');
+        }
+      }
       
       const allMethods = Object.getOwnPropertyNames(nvlRef.current).filter(name => typeof nvlRef.current[name] === 'function');
       console.log('ALL METHODS:', allMethods);
@@ -412,13 +540,191 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
     };
   }, []);
 
+  // Function to jump to a specific node
+  const jumpToNode = useCallback((nodeId) => {
+    console.log('🎯 jumpToNode called with:', nodeId);
+    if (!nvlRef.current || !nodeId) {
+      console.log('❌ No nvlRef or nodeId provided');
+      return;
+    }
+    
+    try {
+      // First, check if the node exists in the current graph data
+      const nodeExists = currentGraphData.nodes?.some(node => node.id === nodeId);
+      if (!nodeExists) {
+        console.warn('❌ Node not found in currentGraphData:', nodeId);
+        return;
+      }
+
+      console.log('✅ Node exists in graph data');
+      
+      // Wait a bit for layout to stabilize before getting position
+      setTimeout(() => {
+        try {
+          // Use the fit method to actually move the viewport to the node
+          if (typeof nvlRef.current.fit === 'function') {
+            console.log('🚀 Using fit() to jump to node');
+            
+            // Call fit with the specific node ID
+            nvlRef.current.fit([nodeId], {
+              maxZoom: 2.0, // Don't zoom in too much
+              animate: true, // Smooth animation
+              animationDuration: 500 // Half second animation
+            });
+            
+            console.log('✅ Called fit() on node:', nodeId);
+            
+            // After fit animation completes, show indicator
+            setTimeout(() => {
+              const nodePosition = nvlRef.current.getPositionById(nodeId);
+              if (!nodePosition || nodePosition.x === undefined || nodePosition.y === undefined) {
+                console.error('❌ Cannot get node position after fit');
+                return;
+              }
+              
+              const container = nvlRef.current.getContainer();
+              if (!container) {
+                console.error('❌ Cannot get container');
+                return;
+              }
+              
+              // Get current pan position to calculate screen coordinates
+              const currentPan = nvlRef.current.getPan();
+              const currentZoom = nvlRef.current.getScale();
+              const rect = container.getBoundingClientRect();
+              
+              console.log('📊 Current viewport state:', {
+                pan: currentPan,
+                zoom: currentZoom,
+                nodePos: nodePosition,
+                container: { width: rect.width, height: rect.height }
+              });
+              
+              // Calculate screen position from graph coordinates
+              // Screen position = (graph position - pan) * zoom + container center
+              const screenX = (nodePosition.x - currentPan.x) * currentZoom + rect.width / 2;
+              const screenY = (nodePosition.y - currentPan.y) * currentZoom + rect.height / 2;
+              
+              console.log('📍 Screen position:', screenX, screenY);
+              
+              // Remove any existing indicators
+              const existingIndicators = container.querySelectorAll('.node-jump-indicator');
+              existingIndicators.forEach(el => el.remove());
+              
+              // Create indicator at the calculated screen position
+              const wrapper = document.createElement('div');
+              wrapper.className = 'node-jump-indicator';
+              wrapper.style.cssText = `
+                position: absolute;
+                left: ${screenX}px;
+                top: ${screenY}px;
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+                z-index: 9999;
+              `;
+              
+              // Create the pulsing circle
+              const indicator = document.createElement('div');
+              indicator.style.cssText = `
+                width: 80px;
+                height: 80px;
+                border: 4px solid #F59E0B;
+                border-radius: 50%;
+                background: rgba(245, 158, 11, 0.2);
+                animation: nodeJumpPulse 1.5s ease-in-out infinite;
+              `;
+              
+              // Create the label
+              const label = document.createElement('div');
+              label.style.cssText = `
+                position: absolute;
+                top: -45px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #F59E0B;
+                color: white;
+                padding: 6px 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: bold;
+                white-space: nowrap;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+              `;
+              label.textContent = nodeId;
+              
+              // Add keyframe animation if not exists
+              if (!document.getElementById('node-jump-keyframes')) {
+                const style = document.createElement('style');
+                style.id = 'node-jump-keyframes';
+                style.textContent = `
+                  @keyframes nodeJumpPulse {
+                    0% { transform: scale(1); opacity: 1; }
+                    50% { transform: scale(1.3); opacity: 0.8; }
+                    100% { transform: scale(1); opacity: 1; }
+                  }
+                `;
+                document.head.appendChild(style);
+              }
+              
+              // Ensure container has relative positioning
+              const computedStyle = window.getComputedStyle(container);
+              if (computedStyle.position === 'static') {
+                container.style.position = 'relative';
+              }
+              
+              // Assemble and add the indicator
+              wrapper.appendChild(indicator);
+              wrapper.appendChild(label);
+              container.appendChild(wrapper);
+              
+              console.log('🎨 Created indicator at screen position');
+              
+              // Remove after 3 seconds
+              setTimeout(() => {
+                if (wrapper.parentNode) {
+                  wrapper.remove();
+                }
+              }, 3000);
+              
+            }, 600); // Wait for fit animation to complete
+            
+          } else {
+            console.error('❌ fit() method not available on nvlRef');
+          }
+          
+        } catch (innerError) {
+          console.error('💥 Error in jumpToNode:', innerError);
+        }
+      }, 200); // Initial delay for layout stability
+      
+    } catch (error) {
+      console.error('💥 Error jumping to node:', error);
+    }
+  }, [currentGraphData]);
+
   // Expose methods to parent component via ref
   React.useImperativeHandle(ref, () => ({
     zoomToSearchResults,
     zoomIn: handleZoomIn,
     zoomOut: handleZoomOut,
-    fitToScreen: () => nvlRef.current?.fitToScreen()
-  }), [zoomToSearchResults]);
+    jumpToNode,
+    fitToScreen: () => {
+      if (!nvlRef.current) return;
+      
+      // Use the working method we discovered
+      if (typeof nvlRef.current.fit === 'function') {
+        nvlRef.current.fit();
+      } else if (typeof nvlRef.current.fitToScreen === 'function') {
+        nvlRef.current.fitToScreen();
+      } else if (typeof nvlRef.current.zoomToFit === 'function') {
+        nvlRef.current.zoomToFit();
+      } else if (typeof nvlRef.current.resetZoom === 'function') {
+        nvlRef.current.resetZoom();
+      } else if (typeof nvlRef.current.setZoom === 'function') {
+        nvlRef.current.setZoom(1);
+      }
+    }
+  }), [zoomToSearchResults, jumpToNode]);
 
   const handleKeyDown = (event) => {
     // Only handle keyboard shortcuts if the focus is on the container itself, not child elements
@@ -453,6 +759,7 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
   }
 
   console.log('Rendering GraphView with data:', memoizedNodes.length, 'nodes');
+  console.log('🎨 Using canvas renderer - disableWebGL:', true);
 
   return (
     <div 
@@ -462,6 +769,89 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
       role="application"
       aria-label="Knowledge graph visualization..."
     >
+      {/* Graph Filter Status Indicator */}
+      {graphFilterMode && (
+        <div style={{
+          position: 'absolute',
+          top: '16px',
+          left: '16px',
+          zIndex: 1000,
+          backgroundColor: '#3B82F6',
+          color: 'white',
+          padding: '8px 16px',
+          borderRadius: '8px',
+          fontSize: '14px',
+          fontWeight: '500',
+          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27,6.96 12,12.01 20.73,6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span>
+            {graphFilterMode === 'node-only' ? 'Isolated Node:' : 'Node + Connections:'} {filteredNodeId}
+          </span>
+          {onClearGraphFilter && (
+            <button
+              onClick={onClearGraphFilter}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                borderRadius: '4px',
+                color: 'white',
+                padding: '4px 8px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                fontWeight: '500'
+              }}
+              title="Return to full graph (or press Escape)"
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+              }}
+            >
+              Show Full Graph
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Loading Indicator for Subgraph */}
+      {isLoadingSubgraph && (
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1001,
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          padding: '20px',
+          borderRadius: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+        }}>
+          <svg className="spinner" width="24" height="24" viewBox="0 0 24 24">
+            <circle 
+              className="spinner-circle" 
+              cx="12" 
+              cy="12" 
+              r="10" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              fill="none"
+            />
+          </svg>
+          <span>Loading subgraph...</span>
+        </div>
+      )}
       {/* Enhanced Zoom Controls */}
       <div style={{
         position: 'absolute',
@@ -478,13 +868,12 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
             width: '44px',
             height: '44px',
             backgroundColor: '#FFFFFF',
-            border: '1px solid #E2E8F0',
+            border: '1px solid #AEAEAE',
             borderRadius: '12px',
             cursor: 'pointer',
             fontSize: '18px',
             fontWeight: '500',
-            color: '#475569',
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            color: '#6c757d',
             transition: 'all 0.2s ease',
             display: 'flex',
             alignItems: 'center',
@@ -494,15 +883,11 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
           aria-label="Zoom in to the graph"
           onMouseEnter={(e) => {
             e.target.style.backgroundColor = '#F8FAFC';
-            e.target.style.borderColor = '#CBD5E1';
-            e.target.style.transform = 'translateY(-1px)';
-            e.target.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)';
+            e.target.style.borderColor = '#999999';
           }}
           onMouseLeave={(e) => {
             e.target.style.backgroundColor = '#FFFFFF';
-            e.target.style.borderColor = '#E2E8F0';
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)';
+            e.target.style.borderColor = '#AEAEAE';
           }}
         >
           ＋
@@ -513,13 +898,12 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
             width: '44px',
             height: '44px',
             backgroundColor: '#FFFFFF',
-            border: '1px solid #E2E8F0',
+            border: '1px solid #AEAEAE',
             borderRadius: '12px',
             cursor: 'pointer',
             fontSize: '18px',
             fontWeight: '500',
-            color: '#475569',
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            color: '#6c757d',
             transition: 'all 0.2s ease',
             display: 'flex',
             alignItems: 'center',
@@ -529,15 +913,11 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
           aria-label="Zoom out from the graph"
           onMouseEnter={(e) => {
             e.target.style.backgroundColor = '#F8FAFC';
-            e.target.style.borderColor = '#CBD5E1';
-            e.target.style.transform = 'translateY(-1px)';
-            e.target.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)';
+            e.target.style.borderColor = '#999999';
           }}
           onMouseLeave={(e) => {
             e.target.style.backgroundColor = '#FFFFFF';
-            e.target.style.borderColor = '#E2E8F0';
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)';
+            e.target.style.borderColor = '#AEAEAE';
           }}
         >
           －
@@ -557,9 +937,10 @@ const GraphView = React.forwardRef(({ onNodeSelect, onCanvasClick, chatContextNo
             allowDynamicMinZoom: true,
             minZoom: 0.1,
             maxZoom: 8,
+            renderer: 'canvas', // Explicitly set canvas renderer
             // Performance optimizations
             enableBatching: true,
-            disableWebGL: false,
+            disableWebGL: true, // Use Canvas renderer for proper caption display
             disablePhysics: false,
             stabilization: {
               iterations: 150, // Reduced from default for faster initial render

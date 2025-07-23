@@ -18,6 +18,16 @@ JWT_EXPIRATION_HOURS=24
 ANTHROPIC_API_KEY=your-anthropic-api-key-here
 COHERE_API_KEY=your-cohere-api-key-here
 
+# Google OAuth Configuration (for user authentication)
+GOOGLE_CLIENT_ID=your-google-client-id.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# Supabase Configuration (for user data and chat history)
+SUPABASE_URL=http://localhost:54321  # Use https://your-project-ref.supabase.co for production
+SUPABASE_SERVICE_KEY=your-supabase-service-role-key
+REACT_APP_SUPABASE_URL=http://localhost:54321  # Use https://your-project-ref.supabase.co for production  
+REACT_APP_SUPABASE_ANON_KEY=your-supabase-anon-key
+
 # =============================================================================
 # APPLICATION SECURITY
 # =============================================================================
@@ -26,7 +36,7 @@ COHERE_API_KEY=your-cohere-api-key-here
 VALID_API_KEYS=api-key-1,api-key-2,api-key-3
 
 # CORS Configuration (comma-separated list of allowed origins)
-ALLOWED_ORIGINS=https://yourdomain.com,https://app.yourdomain.com
+ALLOWED_ORIGINS=https://mental-model-frontend.vercel.app,http://localhost:3000
 
 # Trusted Hosts (comma-separated list for production)
 TRUSTED_HOSTS=yourdomain.com,app.yourdomain.com

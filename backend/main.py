@@ -13,6 +13,7 @@ from functools import lru_cache
 from config import anthropic_client, cohere_client, get_db_session
 from keep_warm import keep_warm_service
 from prompts import SYSTEM_PROMPT
+from supabase_client import supabase_service
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -99,6 +100,37 @@ class ChatResponse(BaseModel):
     context: List[Dict]
     conversation_length: int
     tokens_used: TokensUsed
+
+# Chat persistence models
+class CreateSessionRequest(BaseModel):
+    user_id: str
+    title: Optional[str] = None
+
+class AddMessageRequest(BaseModel):
+    session_id: str
+    role: str
+    content: str
+    metadata: Optional[Dict] = None
+
+class UpdateSessionRequest(BaseModel):
+    title: Optional[str] = None
+    metadata: Optional[Dict] = None
+
+class SessionResponse(BaseModel):
+    id: str
+    user_id: str
+    title: Optional[str]
+    created_at: str
+    updated_at: str
+    metadata: Dict
+
+class MessageResponse(BaseModel):
+    id: str
+    session_id: str
+    role: str
+    content: str
+    timestamp: str
+    metadata: Dict
 
 def generate_query_embedding(text):
     # CORRECTED: Specify embedding_types and access the .float attribute.
@@ -421,6 +453,160 @@ class SearchResponse(BaseModel):
     total_count: int
     execution_time_ms: int
 
+@app.get("/api/graph/subgraph/{node_id}")
+async def get_node_subgraph(node_id: str, include_connections: bool = True):
+    """
+    Get a subgraph focused on a specific node, optionally including connected nodes.
+    
+    Args:
+        node_id: The ID of the target node
+        include_connections: Whether to include directly connected nodes
+    """
+    try:
+        with get_db_session() as session:
+            if include_connections:
+                # Simpler approach - get nodes and relationships in one query
+                query = """
+                    MATCH (target)
+                    WHERE (target:Entity OR target:Theme OR target:Pattern OR target:Example OR target:Principle OR target:Expert OR target:MentalModel)
+                    AND (
+                        (target:Theme AND target.name = $node_id) OR
+                        (target.id = $node_id) OR 
+                        (target.name = $node_id)
+                    )
+                    
+                    OPTIONAL MATCH (target)-[r]-(connected)
+                    WHERE connected:Entity OR connected:Theme OR connected:Pattern OR connected:Example OR connected:Principle OR connected:Expert OR connected:MentalModel
+                    
+                    RETURN 
+                        target,
+                        collect(DISTINCT connected) as connected_nodes,
+                        collect(DISTINCT r) as relationships
+                """
+            else:
+                # Get only the target node - no relationships
+                query = """
+                    MATCH (target)
+                    WHERE (target:Entity OR target:Theme OR target:Pattern OR target:Example OR target:Principle OR target:Expert OR target:MentalModel)
+                    AND (
+                        (target:Theme AND target.name = $node_id) OR
+                        (target.id = $node_id) OR 
+                        (target.name = $node_id)
+                    )
+                    
+                    RETURN 
+                        target,
+                        [] as connected_nodes,
+                        [] as relationships
+                """
+            
+            result = session.run(query, {'node_id': node_id})
+            
+            nodes = []
+            edges = []
+            seen_nodes = set()
+            edge_set = set()
+            
+            def get_node_id(node):
+                if node is None:
+                    return None
+                if 'Theme' in node.labels and node.get('name'):
+                    return node['name']
+                elif node.get('id'):
+                    return node['id']  
+                elif node.get('name'):
+                    return node['name']
+                else:
+                    return str(node.id)
+            
+            def get_node_type(node):
+                if node is None:
+                    return 'Entity'
+                if 'Theme' in node.labels:
+                    return 'Theme'
+                elif 'Entity' in node.labels and node.get('category'):
+                    return node['category']
+                elif 'Pattern' in node.labels:
+                    return 'Pattern'
+                elif 'Example' in node.labels:
+                    return 'Example'
+                elif 'Principle' in node.labels:
+                    return 'Principle'
+                elif 'Expert' in node.labels:
+                    return 'Expert'
+                elif 'MentalModel' in node.labels:
+                    return 'MentalModel'
+                else:
+                    return 'Entity'
+            
+            for record in result:
+                target_node = record['target']
+                connected_nodes = record.get('connected_nodes', [])
+                relationships = record.get('relationships', [])
+                
+                # Add target node
+                target_id = get_node_id(target_node)
+                if target_id and target_id not in seen_nodes:
+                    nodes.append({
+                        'id': target_id,
+                        'label': target_id,
+                        'type': get_node_type(target_node),
+                        'description': target_node.get('description', ''),
+                        'content': target_node.get('content', ''),
+                        'theme': target_node.get('theme', '')
+                    })
+                    seen_nodes.add(target_id)
+                
+                if include_connections:
+                    # Add connected nodes
+                    for connected_node in connected_nodes:
+                        if connected_node is not None:
+                            connected_id = get_node_id(connected_node)
+                            if connected_id and connected_id not in seen_nodes:
+                                nodes.append({
+                                    'id': connected_id,
+                                    'label': connected_id,
+                                    'type': get_node_type(connected_node),
+                                    'description': connected_node.get('description', ''),
+                                    'content': connected_node.get('content', ''),
+                                    'theme': connected_node.get('theme', '')
+                                })
+                                seen_nodes.add(connected_id)
+                    
+                    # Add relationships
+                    for rel in relationships:
+                        if rel is not None:
+                            start_node = rel.start_node
+                            end_node = rel.end_node
+                            rel_type = rel.type
+                            
+                            start_id = get_node_id(start_node)
+                            end_id = get_node_id(end_node)
+                            
+                            if start_id and end_id and start_id in seen_nodes and end_id in seen_nodes:
+                                edge_key = (start_id, end_id, rel_type)
+                                if edge_key not in edge_set:
+                                    edges.append({
+                                        'from': start_id,
+                                        'to': end_id,
+                                        'label': rel_type
+                                    })
+                                    edge_set.add(edge_key)
+            
+            if not nodes:
+                raise HTTPException(status_code=404, detail=f"Node '{node_id}' not found")
+            
+            subgraph_data = {"nodes": nodes, "edges": edges}
+            logger.info(f"Subgraph for '{node_id}': {len(nodes)} nodes, {len(edges)} edges, include_connections={include_connections}")
+            
+            return JSONResponse(content=subgraph_data)
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in /api/graph/subgraph: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to retrieve subgraph")
+
 @app.get("/api/search", response_model=SearchResponse)
 async def search_nodes(
     q: str,
@@ -514,6 +700,165 @@ async def search_nodes(
     except Exception as e:
         logger.error(f"Error in /api/search: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Search request failed")
+
+# Chat Persistence Endpoints
+@app.post("/api/chat/sessions", response_model=SessionResponse)
+async def create_chat_session(request: CreateSessionRequest):
+    """Create a new chat session for a user"""
+    try:
+        session_data = await supabase_service.create_chat_session(
+            user_id=request.user_id,
+            title=request.title
+        )
+        if not session_data:
+            raise HTTPException(status_code=500, detail="Failed to create session")
+        
+        return SessionResponse(
+            id=session_data['id'],
+            user_id=session_data['user_id'],
+            title=session_data.get('title'),
+            created_at=session_data['created_at'],
+            updated_at=session_data['updated_at'],
+            metadata=session_data.get('metadata', {})
+        )
+    except Exception as e:
+        logger.error(f"Error creating chat session: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create chat session")
+
+@app.get("/api/chat/sessions/{user_id}")
+async def get_user_sessions(user_id: str, limit: int = 50, offset: int = 0):
+    """Get all chat sessions for a user"""
+    try:
+        sessions = await supabase_service.get_user_sessions(user_id, limit, offset)
+        return {
+            "sessions": [
+                SessionResponse(
+                    id=s['id'],
+                    user_id=s['user_id'],
+                    title=s.get('title'),
+                    created_at=s['created_at'],
+                    updated_at=s['updated_at'],
+                    metadata=s.get('metadata', {})
+                )
+                for s in sessions
+            ],
+            "total": len(sessions),
+            "limit": limit,
+            "offset": offset
+        }
+    except Exception as e:
+        logger.error(f"Error getting user sessions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get user sessions")
+
+@app.get("/api/chat/sessions/{session_id}/messages")
+async def get_session_messages(session_id: str, limit: int = 100):
+    """Get all messages for a chat session"""
+    try:
+        messages = await supabase_service.get_session_messages(session_id, limit)
+        return {
+            "messages": [
+                MessageResponse(
+                    id=m['id'],
+                    session_id=m['session_id'],
+                    role=m['role'],
+                    content=m['content'],
+                    timestamp=m['timestamp'],
+                    metadata=m.get('metadata', {})
+                )
+                for m in messages
+            ],
+            "total": len(messages),
+            "session_id": session_id
+        }
+    except Exception as e:
+        logger.error(f"Error getting session messages: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get session messages")
+
+@app.post("/api/chat/messages", response_model=MessageResponse)
+async def add_message(request: AddMessageRequest):
+    """Add a message to a chat session"""
+    try:
+        message_data = await supabase_service.add_message(
+            session_id=request.session_id,
+            role=request.role,
+            content=request.content,
+            metadata=request.metadata
+        )
+        if not message_data:
+            raise HTTPException(status_code=500, detail="Failed to add message")
+        
+        return MessageResponse(
+            id=message_data['id'],
+            session_id=message_data['session_id'],
+            role=message_data['role'],
+            content=message_data['content'],
+            timestamp=message_data['timestamp'],
+            metadata=message_data.get('metadata', {})
+        )
+    except Exception as e:
+        logger.error(f"Error adding message: {e}")
+        raise HTTPException(status_code=500, detail="Failed to add message")
+
+@app.put("/api/chat/sessions/{session_id}")
+async def update_session(session_id: str, request: UpdateSessionRequest):
+    """Update a chat session"""
+    try:
+        updates = {}
+        if request.title is not None:
+            updates['title'] = request.title
+        if request.metadata is not None:
+            updates['metadata'] = request.metadata
+        
+        if not updates:
+            raise HTTPException(status_code=400, detail="No valid updates provided")
+        
+        session_data = await supabase_service.update_session(session_id, updates)
+        if not session_data:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        return SessionResponse(
+            id=session_data['id'],
+            user_id=session_data['user_id'],
+            title=session_data.get('title'),
+            created_at=session_data['created_at'],
+            updated_at=session_data['updated_at'],
+            metadata=session_data.get('metadata', {})
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating session: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update session")
+
+@app.delete("/api/chat/sessions/{session_id}")
+async def delete_session(session_id: str):
+    """Delete a chat session and all its messages"""
+    try:
+        await supabase_service.delete_session(session_id)
+        return {"message": "Session deleted successfully", "session_id": session_id}
+    except Exception as e:
+        logger.error(f"Error deleting session: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete session")
+
+@app.get("/api/chat/search")
+async def search_messages(user_id: str, q: str, limit: int = 20):
+    """Search messages across all user sessions"""
+    try:
+        if not q or len(q.strip()) < 2:
+            raise HTTPException(status_code=400, detail="Query must be at least 2 characters long")
+        
+        results = await supabase_service.search_messages(user_id, q.strip(), limit)
+        return {
+            "results": results,
+            "query": q.strip(),
+            "user_id": user_id,
+            "total": len(results)
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error searching messages: {e}")
+        raise HTTPException(status_code=500, detail="Failed to search messages")
 
 if __name__ == "__main__":
     import uvicorn

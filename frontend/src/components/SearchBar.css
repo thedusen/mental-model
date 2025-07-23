@@ -53,20 +53,19 @@
   display: flex;
   align-items: center;
   background: white;
-  border: 2px solid var(--search-color-gray-200);
-  border-radius: var(--search-radius-lg);
-  padding: 0 var(--search-spacing-md);
+  border: 2px solid #AEAEAE;
+  border-radius: 12px;
+  padding: 0 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transform: translateY(0);
 }
 
 .search-bar.active .search-input-container {
-  border-color: var(--search-color-primary);
+  border-width: 4px;
+  border-color: #3b82f6;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   transform: translateY(-1px);
-  outline: var(--search-focus-outline);
-  outline-offset: var(--search-focus-offset);
 }
 
 .search-bar.loading .search-input-container {
@@ -90,16 +89,25 @@
   flex: 1;
   border: none;
   outline: none;
-  padding: var(--search-spacing-md) 0;
+  padding: 12px 0;
   font-size: 14px;
-  color: var(--search-color-gray-800);
+  color: var(--foreground);
   background: transparent;
   font-family: inherit;
   transition: color 0.2s ease;
+  line-height: 1.5;
 }
 
 .search-input:focus-visible {
-  outline: none;
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.search-input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .search-input.validation-error {
@@ -609,5 +617,52 @@
   
   .spinner-circle {
     animation: none;
+  }
+}
+
+/* Show All Button */
+.show-all-button {
+  display: flex;
+  align-items: center;
+  gap: var(--search-spacing-sm);
+  background: #10B981;
+  border: none;
+  border-radius: var(--search-radius-md);
+  padding: var(--search-spacing-sm) var(--search-spacing-md);
+  margin-left: var(--search-spacing-sm);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  position: relative;
+  z-index: 2;
+}
+
+.show-all-button:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.show-all-button:focus-visible {
+  outline: 2px solid #10B981;
+  outline-offset: var(--search-focus-offset);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.show-all-button svg {
+  flex-shrink: 0;
+}
+
+.show-all-button span {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .show-all-button span {
+    display: none;
   }
 }

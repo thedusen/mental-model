@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { auth, chat } from '../utils/supabase';
+import Authentication from './Authentication';
 import './ChatPanel.css';
 
-function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived }) {
+const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange }, ref) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,6 +15,12 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
   const [hasMessagesEver, setHasMessagesEver] = useState(false);
   const textareaRef = useRef(null);
 
+  // Authentication and chat history state
+  const [user, setUser] = useState(null);
+  const [currentSession, setCurrentSession] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
   // Use environment variable for API URL, fallback to localhost for development
   let API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
   
@@ -20,6 +28,38 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
   if (API_URL && !API_URL.startsWith('http://') && !API_URL.startsWith('https://')) {
     API_URL = `https://${API_URL}`;
   }
+
+  // Expose methods to parent component
+  useImperativeHandle(ref, () => ({
+    handleSessionSelect: (session, sessionMessages) => {
+      setCurrentSession(session);
+      if (onSessionChange) {
+        onSessionChange(session);
+      }
+      
+      if (sessionMessages && sessionMessages.length > 0) {
+        // Convert session messages to the format expected by the chat panel
+        const formattedMessages = sessionMessages.map(msg => ({
+          id: msg.id,
+          role: msg.role,
+          content: msg.content,
+          context: msg.metadata?.context || []
+        }));
+        setMessages(formattedMessages);
+        setHasMessagesEver(true);
+      } else {
+        setMessages([]);
+      }
+    },
+    handleNewChat: () => {
+      setCurrentSession(null);
+      setMessages([]);
+      setHasMessagesEver(false);
+      if (onSessionChange) {
+        onSessionChange(null);
+      }
+    }
+  }));
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -66,8 +106,114 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
     }
   }, [externalInput, onExternalInputReceived]);
 
+  // Check authentication status on component mount
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const currentUser = await auth.getUser();
+        console.log('🔍 Initial user check:', currentUser);
+        setUser(currentUser);
+        
+        // Listen for auth state changes
+        const { data: { subscription } } = auth.onAuthStateChange((event, session) => {
+          console.log('🔄 Auth state change:', event, session?.user);
+          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            setUser(session?.user);
+          } else if (event === 'SIGNED_OUT') {
+            setUser(null);
+            setCurrentSession(null);
+            setMessages([]);
+          }
+        });
+
+        // Cleanup subscription
+        return () => subscription.unsubscribe();
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setIsLoadingAuth(false);
+      }
+    };
+
+    initializeAuth();
+  }, []);
+
+  // Save messages to current session when they change
+  useEffect(() => {
+    const saveMessages = async () => {
+      if (!user || !currentSession || messages.length === 0) return;
+
+      try {
+        // Get the last two messages (user and assistant)
+        const recentMessages = messages.slice(-2);
+        
+        for (const message of recentMessages) {
+          // Check if message is already saved by checking if it has an id
+          if (!message.id) {
+            const { data: savedMessage } = await chat.addMessage(
+              currentSession.id,
+              message.role,
+              message.content,
+              message.context ? { context: message.context } : {}
+            );
+            
+            // Update the message with the saved ID to prevent duplicate saves
+            if (savedMessage) {
+              message.id = savedMessage.id;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error saving messages:', error);
+      }
+    };
+
+    // Only save if we have new messages and a current session
+    if (messages.length > 0 && currentSession && user) {
+      console.log('💾 Attempting to save messages:', messages.length, 'messages to session:', currentSession.id);
+      saveMessages();
+    } else {
+      console.log('⏸️ Skipping message save - messages:', messages.length, 'session:', !!currentSession, 'user:', !!user);
+    }
+  }, [messages, currentSession, user]);
+
+
+  // Create a new session when user starts typing (if not authenticated, show auth)
+  const createNewSessionIfNeeded = async () => {
+    console.log('📝 createNewSessionIfNeeded - user:', user, 'currentSession:', currentSession);
+    
+    if (!user) {
+      console.log('❌ No user - showing auth');
+      setShowAuth(true);
+      return false;
+    }
+
+    // Create session if we don't have one (regardless of message count)
+    if (!currentSession) {
+      try {
+        console.log('🆕 Creating new session...');
+        const { data: newSession, error } = await chat.createSession();
+        console.log('📊 Session creation result:', { data: newSession, error });
+        
+        if (error) throw error;
+        
+        setCurrentSession(newSession);
+        return true;
+      } catch (error) {
+        console.error('❌ Error creating session:', error);
+        return false;
+      }
+    }
+    console.log('✅ Session already exists');
+    return true;
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
+
+    // Create session if needed (will show auth if not logged in)
+    const canProceed = await createNewSessionIfNeeded();
+    if (!canProceed) return;
 
     const userMessage = { role: 'user', content: input.trim() };
     const currentInput = input.trim();
@@ -200,7 +346,7 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
   // Dynamic placeholder text based on context
   const placeholderText = chatContextNode
     ? `Ask questions about "${(chatContextNode.properties ? chatContextNode.properties.name : chatContextNode.name) || (chatContextNode.properties ? chatContextNode.properties.label : chatContextNode.label)}"...`
-    : 'Ask about concepts, patterns, and relationships in the mental model...';
+    : 'Ask about your biggest business challenges and get personalized answers';
 
   // Show selected node indicator (for currently selected node, not chat context)
   const selectedNodeInfo = selectedNode ? (
@@ -210,8 +356,24 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
     </div>
   ) : null;
 
+  // Handle authentication success
+  const handleAuthSuccess = (user) => {
+    setUser(user);
+    setShowAuth(false);
+  };
+
+
   return (
     <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
+      {/* Authentication Modal */}
+      {showAuth && (
+        <Authentication 
+          onAuthSuccess={handleAuthSuccess}
+          onClose={() => setShowAuth(false)}
+        />
+      )}
+
+
       {messages.length > 0 && (
         <div className="chat-header" onClick={() => {
           setIsCollapsed(!isCollapsed);
@@ -339,6 +501,8 @@ function ChatPanel({ selectedNode, chatContextNode, onClearChatContext, onFullsc
       )}
     </div>
   );
-}
+});
+
+ChatPanel.displayName = 'ChatPanel';
 
 export default ChatPanel;
