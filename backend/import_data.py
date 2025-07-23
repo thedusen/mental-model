@@ -1,6 +1,6 @@
 import os
 import json
-from backend.config import cohere_client, get_db_session
+from config import cohere_client, get_db_session
 from cohere.errors import TooManyRequestsError
 import time
 
