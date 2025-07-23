@@ -13,15 +13,32 @@ SUPABASE_SERVICE_KEY = os.getenv(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU",
 )
 
-# Create Supabase client with service role key for backend operations
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+# Initialize supabase client lazily to avoid CI failures
+supabase: Optional[Client] = None
+
+
+def get_supabase_client() -> Client:
+    """Get or create Supabase client"""
+    global supabase
+    if supabase is None:
+        if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
+            raise Exception("Supabase configuration is missing - set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables")
+        supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+    return supabase
 
 
 class SupabaseService:
     """Service class for Supabase operations"""
 
     def __init__(self):
-        self.client = supabase
+        self._client = None
+
+    @property
+    def client(self) -> Client:
+        """Get supabase client with lazy initialization"""
+        if self._client is None:
+            self._client = get_supabase_client()
+        return self._client
 
     async def get_user_by_id(self, user_id: str):
         """Get user profile by ID"""

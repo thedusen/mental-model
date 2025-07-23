@@ -124,14 +124,17 @@ jobs:
       - name: Check for security vulnerabilities
         run: |
           # Run audit and allow known development-only vulnerabilities
-          npm audit --audit-level=high || {
+          AUDIT_EXIT_CODE=0
+          npm audit --audit-level=high || AUDIT_EXIT_CODE=$?
+          
+          if [ $AUDIT_EXIT_CODE -ne 0 ]; then
             echo "⚠️ Security vulnerabilities detected. Checking if they are acceptable..."
             
             # Get vulnerability details
-            AUDIT_OUTPUT=$(npm audit --json)
+            AUDIT_OUTPUT=$(npm audit --json || true)
             
-            # Check for any vulnerabilities NOT in the known safe list
-            UNKNOWN_VULNS=$(echo "$AUDIT_OUTPUT" | jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "high" or .value.severity == "critical") | .key' | grep -v -E "nth-check|css-select|svgo|@svgr/plugin-svgo|@svgr/webpack|react-scripts|postcss|resolve-url-loader|webpack-dev-server")
+            # Check for any vulnerabilities NOT in the known safe list  
+            UNKNOWN_VULNS=$(echo "$AUDIT_OUTPUT" | jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "high" or .value.severity == "critical") | .key' | grep -v -E "nth-check|css-select|svgo|@svgr/plugin-svgo|@svgr/webpack|react-scripts|postcss|resolve-url-loader|webpack-dev-server" || true)
             
             if [ -n "$UNKNOWN_VULNS" ]; then
               echo "❌ Unknown high/critical vulnerabilities found that require attention:"
@@ -142,8 +145,11 @@ jobs:
               echo "✅ Only known development dependency vulnerabilities found (react-scripts ecosystem)"
               echo "These are in development tools and do not affect production builds"
               echo "Vulnerabilities: nth-check, css-select, svgo, @svgr/*, react-scripts, postcss, resolve-url-loader, webpack-dev-server"
+              echo "Continuing with build as these vulnerabilities are acceptable..."
             fi
-          }
+          else
+            echo "✅ No security vulnerabilities detected"
+          fi
           
       - name: Validate package.json dependencies
         run: |
