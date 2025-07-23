@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { auth } from '../utils/supabase';
 import ChatHistory from './ChatHistory';
 import UserProfile from './UserProfile';
+import ProfileProgressIndicator from './ProfileProgressIndicator';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import './LeftSidebar.css';
 
 const LeftSidebar = ({ 
@@ -9,13 +11,13 @@ const LeftSidebar = ({
   currentSessionId, 
   onNewChat,
   isCollapsed,
-  onToggleCollapse,
-  onHoverChange
+  onToggleCollapse
 }) => {
   const [user, setUser] = useState(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-  const [isHovering, setIsHovering] = useState(false);
-
+  const [businessProfileProgress, setBusinessProfileProgress] = useState(null);
+  
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
   // Authentication state management
   useEffect(() => {
     const initializeAuth = async () => {
@@ -44,66 +46,56 @@ const LeftSidebar = ({
     initializeAuth();
   }, []);
 
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-    if (onHoverChange) {
-      onHoverChange(true);
-    }
-  };
+  // Load business profile progress when user changes
+  useEffect(() => {
+    const loadBusinessProfileProgress = async () => {
+      if (!user) {
+        setBusinessProfileProgress(null);
+        return;
+      }
 
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-    if (onHoverChange) {
-      onHoverChange(false);
-    }
-  };
+      try {
+        const response = await fetch(`${API_URL}/api/business-profile/progress/${user.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setBusinessProfileProgress(data.progress);
+        }
+      } catch (error) {
+        console.error('Error loading business profile progress in sidebar:', error);
+      }
+    };
+
+    loadBusinessProfileProgress();
+  }, [user, API_URL]);
+
 
   return (
     <aside 
       className={`left-sidebar ${isCollapsed ? 'collapsed' : ''}`}
       role="navigation" 
       aria-label="Chat navigation and history"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       {!isCollapsed && (
         <>
-          {/* Sidebar Header with New Chat and Toggle */}
+          {/* Sidebar Header with Collapse and New Chat */}
           <div className="sidebar-header">
+            <button
+              className="sidebar-toggle-with-text"
+              onClick={onToggleCollapse}
+              aria-label="Collapse sidebar"
+              title="Collapse sidebar"
+            >
+              <ChevronLeft size={20} />
+              <span>Collapse</span>
+            </button>
+            
             <button 
               className="new-chat-button"
               onClick={onNewChat}
               aria-label="Start new conversation"
             >
-              <svg 
-                width="16" 
-                height="16" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
+              <Plus size={16} />
               <span>New Chat</span>
-            </button>
-            
-            <button
-              className="sidebar-toggle"
-              onClick={onToggleCollapse}
-              aria-label="Collapse sidebar"
-              title="Collapse sidebar"
-            >
-              <svg 
-                width="16" 
-                height="16" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2"
-              >
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
             </button>
           </div>
 
@@ -118,6 +110,29 @@ const LeftSidebar = ({
             )}
           </div>
 
+          {/* Business Profile Progress Section */}
+          {user && businessProfileProgress && (
+            <div className="business-profile-section">
+              <h3 className="section-title">Business Profile</h3>
+              <ProfileProgressIndicator
+                current={businessProfileProgress.questions_completed}
+                total={businessProfileProgress.total_questions}
+                variant="compact"
+                size="small"
+                showLabels={false}
+              />
+              <div className="profile-status">
+                {businessProfileProgress.completed_at ? (
+                  <span className="status-completed">✓ Complete</span>
+                ) : (
+                  <span className="status-progress">
+                    {businessProfileProgress.questions_completed}/{businessProfileProgress.total_questions} questions
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* User Profile Section - moved to bottom */}
           <div className="user-profile-section">
             {!isLoadingAuth && (
@@ -129,20 +144,14 @@ const LeftSidebar = ({
 
       {/* Collapsed state with icons */}
       {isCollapsed && (
-        <div 
-          className="collapsed-sidebar"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-        >
+        <div className="collapsed-sidebar">
           <button
             className="collapsed-menu-button"
             onClick={onToggleCollapse}
             aria-label="Expand sidebar"
             title="Expand sidebar"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 6h18M3 12h18M3 18h18"/>
-            </svg>
+            <ChevronRight size={20} />
           </button>
           
           <button
@@ -151,10 +160,7 @@ const LeftSidebar = ({
             aria-label="New chat"
             title="New chat"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 8v8m-4-4h8"/>
-            </svg>
+            <Plus size={20} />
           </button>
           
           <button

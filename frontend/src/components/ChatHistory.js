@@ -8,6 +8,17 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   const [error, setError] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState(null);
+  
+  // Search functionality state
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
+  
+  // Session editing state
+  const [editingSessionId, setEditingSessionId] = useState(null);
+  const [editingTitle, setEditingTitle] = useState('');
 
   // Get current user on component mount and listen for auth changes
   useEffect(() => {
@@ -167,6 +178,149 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
     return title.length > 50 ? `${title.substring(0, 47)}...` : title;
   };
 
+  // Search functionality
+  const handleSearch = async (query) => {
+    if (!user || !query || query.trim().length < 2) {
+      return;
+    }
+
+    setIsSearchLoading(true);
+    setSearchError(null);
+
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const response = await fetch(
+        `${API_URL}/api/chat/search?user_id=${encodeURIComponent(user.id)}&q=${encodeURIComponent(query.trim())}&limit=20`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setSearchResults(data.results || []);
+    } catch (err) {
+      console.error('Search error:', err);
+      setSearchError('Failed to search messages');
+      setSearchResults([]);
+    } finally {
+      setIsSearchLoading(false);
+    }
+  };
+
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    // Debounce search
+    if (query.trim().length >= 2) {
+      setTimeout(() => {
+        if (query === searchQuery) { // Only search if query hasn't changed
+          handleSearch(query);
+        }
+      }, 300);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleSearchModeToggle = () => {
+    setIsSearchMode(!isSearchMode);
+    if (isSearchMode) {
+      // Exiting search mode - clear search state
+      setSearchQuery('');
+      setSearchResults([]);
+      setSearchError(null);
+    }
+  };
+
+  const handleSearchResultClick = async (result) => {
+    try {
+      // Find the session this message belongs to
+      const sessionId = result.chat_sessions?.id || result.session_id;
+      if (!sessionId) {
+        console.error('No session ID found for search result');
+        return;
+      }
+
+      // Load the session and its messages
+      const { data: messages, error: messagesError } = await chat.getMessages(sessionId);
+      
+      if (messagesError) {
+        throw messagesError;
+      }
+
+      // Find the session data
+      const session = sessions.find(s => s.id === sessionId) || {
+        id: sessionId,
+        title: result.chat_sessions?.title || 'Search Result Session',
+        updated_at: result.timestamp
+      };
+
+      // Select the session
+      onSessionSelect(session, messages || []);
+      
+      // Exit search mode
+      setIsSearchMode(false);
+      setSearchQuery('');
+      setSearchResults([]);
+      
+    } catch (err) {
+      console.error('Error loading search result session:', err);
+      setSearchError('Failed to load conversation');
+    }
+  };
+
+  // Session editing functionality
+  const startEditingSession = (session, event) => {
+    event.stopPropagation(); // Prevent session selection
+    setEditingSessionId(session.id);
+    setEditingTitle(session.title || '');
+  };
+
+  const saveSessionTitle = async (sessionId) => {
+    if (!editingTitle.trim()) {
+      setError('Session title cannot be empty');
+      return;
+    }
+
+    try {
+      const { error: updateError } = await chat.updateSession(sessionId, { 
+        title: editingTitle.trim() 
+      });
+      
+      if (updateError) {
+        throw updateError;
+      }
+      
+      // Refresh sessions to show updated title
+      await loadSessions();
+      
+      // Exit edit mode
+      setEditingSessionId(null);
+      setEditingTitle('');
+      
+    } catch (err) {
+      console.error('Error updating session title:', err);
+      setError('Failed to update session title');
+    }
+  };
+
+  const cancelEditingSession = () => {
+    setEditingSessionId(null);
+    setEditingTitle('');
+  };
+
+  const handleEditKeyPress = (e, sessionId) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveSessionTitle(sessionId);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelEditingSession();
+    }
+  };
+
   // Hide component entirely while loading or if no user (but show loading in sidebar mode)
   if (!user && !sidebarMode) {
     return null;
@@ -190,6 +344,85 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                 </button>
               </div>
             )}
+
+            {/* Search Interface */}
+            <div className="chat-search-section">
+              <div className="search-header">
+                <button 
+                  className={`search-toggle ${isSearchMode ? 'active' : ''}`}
+                  onClick={handleSearchModeToggle}
+                  aria-label={isSearchMode ? 'Exit search mode' : 'Search conversations'}
+                >
+                  {isSearchMode ? '🔍 Searching...' : '🔍 Search'}
+                </button>
+              </div>
+              
+              {isSearchMode && (
+                <div className="search-interface">
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search your conversations..."
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    autoFocus
+                  />
+                  
+                  {searchError && (
+                    <div className="search-error" role="alert">
+                      {searchError}
+                    </div>
+                  )}
+                  
+                  {isSearchLoading && (
+                    <div className="search-loading">Searching...</div>
+                  )}
+                  
+                  {searchResults.length > 0 && (
+                    <div className="search-results">
+                      <div className="search-results-header">
+                        Found {searchResults.length} message{searchResults.length !== 1 ? 's' : ''}
+                      </div>
+                      {searchResults.map((result, index) => (
+                        <div 
+                          key={`${result.session_id}-${index}`}
+                          className="search-result-item"
+                          onClick={() => handleSearchResultClick(result)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleSearchResultClick(result);
+                            }
+                          }}
+                        >
+                          <div className="search-result-content">
+                            {result.content.length > 100 
+                              ? `${result.content.substring(0, 100)}...` 
+                              : result.content}
+                          </div>
+                          <div className="search-result-meta">
+                            <span className="search-result-session">
+                              {result.chat_sessions?.title || 'Untitled conversation'}
+                            </span>
+                            <span className="search-result-role">
+                              {result.role === 'user' ? 'You' : 'Assistant'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {searchQuery.length >= 2 && !isSearchLoading && searchResults.length === 0 && (
+                    <div className="no-search-results">
+                      No messages found for "{searchQuery}"
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {isLoading ? (
               <div className="loading-message">Loading history...</div>
@@ -217,7 +450,25 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                   >
                     <div className="session-content">
                       <div className="session-title">
-                        {truncateTitle(session.title)}
+                        {editingSessionId === session.id ? (
+                          <input
+                            type="text"
+                            className="session-title-input"
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            onKeyDown={(e) => handleEditKeyPress(e, session.id)}
+                            onBlur={() => saveSessionTitle(session.id)}
+                            autoFocus
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        ) : (
+                          <span 
+                            onDoubleClick={(e) => startEditingSession(session, e)}
+                            title="Double-click to edit"
+                          >
+                            {truncateTitle(session.title)}
+                          </span>
+                        )}
                       </div>
                       <div className="session-meta">
                         <span className="session-date">
@@ -226,14 +477,53 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                       </div>
                     </div>
                     
-                    <button
-                      className="delete-button"
-                      onClick={(e) => handleDeleteSession(session, e)}
-                      aria-label={`Delete conversation: ${session.title || 'Untitled'}`}
-                      title="Delete conversation"
-                    >
-                      🗑️
-                    </button>
+                    <div className="session-actions">
+                      {editingSessionId === session.id ? (
+                        <>
+                          <button
+                            className="save-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              saveSessionTitle(session.id);
+                            }}
+                            aria-label="Save title"
+                            title="Save title"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            className="cancel-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              cancelEditingSession();
+                            }}
+                            aria-label="Cancel editing"
+                            title="Cancel editing"
+                          >
+                            ✕
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="edit-button"
+                            onClick={(e) => startEditingSession(session, e)}
+                            aria-label={`Edit conversation title: ${session.title || 'Untitled'}`}
+                            title="Edit title"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            className="delete-button"
+                            onClick={(e) => handleDeleteSession(session, e)}
+                            aria-label={`Delete conversation: ${session.title || 'Untitled'}`}
+                            title="Delete conversation"
+                          >
+                            🗑️
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -308,7 +598,25 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                 >
                   <div className="session-content">
                     <div className="session-title">
-                      {truncateTitle(session.title)}
+                      {editingSessionId === session.id ? (
+                        <input
+                          type="text"
+                          className="session-title-input"
+                          value={editingTitle}
+                          onChange={(e) => setEditingTitle(e.target.value)}
+                          onKeyDown={(e) => handleEditKeyPress(e, session.id)}
+                          onBlur={() => saveSessionTitle(session.id)}
+                          autoFocus
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      ) : (
+                        <span 
+                          onDoubleClick={(e) => startEditingSession(session, e)}
+                          title="Double-click to edit"
+                        >
+                          {truncateTitle(session.title)}
+                        </span>
+                      )}
                     </div>
                     <div className="session-meta">
                       <span className="session-date">
@@ -317,14 +625,53 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                     </div>
                   </div>
                   
-                  <button
-                    className="delete-button"
-                    onClick={(e) => handleDeleteSession(session, e)}
-                    aria-label={`Delete conversation: ${session.title || 'Untitled'}`}
-                    title="Delete conversation"
-                  >
-                    🗑️
-                  </button>
+                  <div className="session-actions">
+                    {editingSessionId === session.id ? (
+                      <>
+                        <button
+                          className="save-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            saveSessionTitle(session.id);
+                          }}
+                          aria-label="Save title"
+                          title="Save title"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          className="cancel-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            cancelEditingSession();
+                          }}
+                          aria-label="Cancel editing"
+                          title="Cancel editing"
+                        >
+                          ✕
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          className="edit-button"
+                          onClick={(e) => startEditingSession(session, e)}
+                          aria-label={`Edit conversation title: ${session.title || 'Untitled'}`}
+                          title="Edit title"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={(e) => handleDeleteSession(session, e)}
+                          aria-label={`Delete conversation: ${session.title || 'Untitled'}`}
+                          title="Delete conversation"
+                        >
+                          🗑️
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

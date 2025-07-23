@@ -4,6 +4,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { auth, chat } from '../utils/supabase';
 import Authentication from './Authentication';
+import BusinessProfileQuestionnaire from './BusinessProfileQuestionnaire';
+import ProfileNudgeBanner from './ProfileNudgeBanner';
 import './ChatPanel.css';
 
 const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange }, ref) => {
@@ -20,6 +22,15 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   const [currentSession, setCurrentSession] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
+  // Business profile questionnaire state
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [businessProfileProgress, setBusinessProfileProgress] = useState(null);
+  const [nudgeStatus, setNudgeStatus] = useState(null);
+  const [questionnaireDismissed, setQuestionnaireDismissed] = useState(() => {
+    // Check localStorage for dismissal state
+    return localStorage.getItem('business-profile-dismissed') === 'true';
+  });
 
   // Use environment variable for API URL, fallback to localhost for development
   let API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -138,6 +149,39 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     initializeAuth();
   }, []);
 
+  // Load business profile data when user logs in
+  useEffect(() => {
+    const loadBusinessProfileData = async () => {
+      if (!user) {
+        setBusinessProfileProgress(null);
+        setNudgeStatus(null);
+        return;
+      }
+
+      try {
+        // Load business profile progress and nudge status
+        const [progressResponse, nudgeResponse] = await Promise.all([
+          fetch(`${API_URL}/api/business-profile/progress/${user.id}`),
+          fetch(`${API_URL}/api/business-profile/nudge-status/${user.id}`)
+        ]);
+
+        if (progressResponse.ok) {
+          const progressData = await progressResponse.json();
+          setBusinessProfileProgress(progressData.progress);
+        }
+
+        if (nudgeResponse.ok) {
+          const nudgeData = await nudgeResponse.json();
+          setNudgeStatus(nudgeData);
+        }
+      } catch (error) {
+        console.error('Error loading business profile data:', error);
+      }
+    };
+
+    loadBusinessProfileData();
+  }, [user, API_URL]);
+
   // Save messages to current session when they change
   useEffect(() => {
     const saveMessages = async () => {
@@ -207,6 +251,70 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('✅ Session already exists');
     return true;
   };
+
+  // Business profile questionnaire handlers
+  const handleQuestionnaireComplete = (answers, progress) => {
+    console.log('Questionnaire completed:', { answers, progress });
+    setBusinessProfileProgress(progress);
+    setShowQuestionnaire(false);
+    
+    // Update nudge status to reflect completion
+    setNudgeStatus({
+      user_type: 'completed',
+      should_show_nudge: false,
+      progress: progress
+    });
+  };
+
+  const handleQuestionnaireProgress = (progress) => {
+    console.log('Questionnaire progress updated:', progress);
+    setBusinessProfileProgress(progress);
+    
+    // Update nudge status
+    setNudgeStatus({
+      user_type: 'in_progress',
+      should_show_nudge: true,
+      progress: progress
+    });
+  };
+
+  const handleStartQuestionnaire = () => {
+    setShowQuestionnaire(true);
+  };
+
+  const handleNudgeDismiss = async () => {
+    setQuestionnaireDismissed(true);
+    localStorage.setItem('business-profile-dismissed', 'true');
+    
+    // Record dismissal on backend
+    if (user) {
+      try {
+        await fetch(`${API_URL}/api/business-profile/nudge-dismissed`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: user.id }),
+        });
+      } catch (error) {
+        console.error('Error recording nudge dismissal:', error);
+      }
+    }
+  };
+
+  const shouldShowNudge = () => {
+    if (!user || questionnaireDismissed) return false;
+    if (!nudgeStatus) return false;
+    
+    // Show nudge based on user type and settings
+    return nudgeStatus.should_show_nudge && !showQuestionnaire;
+  };
+
+  const getNudgeUserType = () => {
+    if (!user) return 'guest';
+    return nudgeStatus?.user_type || 'not_started';
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 
@@ -253,6 +361,8 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
           question: currentInput,
           conversation_history: conversationHistory,
           chat_context_node: chatContextNodeData,
+          user_id: user.id,
+          session_id: currentSession.id,
         }),
       });
 
@@ -372,6 +482,19 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         />
       )}
 
+      {/* Business Profile Questionnaire Modal */}
+      {showQuestionnaire && user && (
+        <div className="questionnaire-modal-overlay">
+          <BusinessProfileQuestionnaire
+            user={user}
+            onComplete={handleQuestionnaireComplete}
+            onProgress={handleQuestionnaireProgress}
+            onClose={() => setShowQuestionnaire(false)}
+            mode="modal"
+          />
+        </div>
+      )}
+
 
       {messages.length > 0 && (
         <div className="chat-header" onClick={() => {
@@ -446,6 +569,21 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
                 </div>
               )}
             </div>
+          )}
+
+          {/* Business Profile Nudge Banner */}
+          {shouldShowNudge() && (
+            <ProfileNudgeBanner
+              user={user}
+              progress={businessProfileProgress}
+              onStartQuestionnaire={handleStartQuestionnaire}
+              onDismiss={handleNudgeDismiss}
+              onOpenAuth={() => setShowAuth(true)}
+              userType={getNudgeUserType()}
+              variant="default"
+              isVisible={true}
+              canDismiss={true}
+            />
           )}
           
           {/* Context Pills Container - NEW */}

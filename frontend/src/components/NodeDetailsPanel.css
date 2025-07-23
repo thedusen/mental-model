@@ -27,67 +27,110 @@
 }
 
 .node-details-panel.collapsed {
-  width: 48px; /* Allow just enough space for the toggle button */
-  align-items: center;
-  padding-top: var(--spacing-4);
+  width: 60px; /* Allow space for the toggle button to match left sidebar */
+  position: relative;
 }
 
 .panel-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
-  padding: 0 var(--spacing-4);
-  height: 60px;
+  padding: 60px 16px 16px 16px; /* Top padding to mirror left sidebar */
+  height: auto;
   flex-shrink: 0;
+  position: relative;
 }
 
 .empty-panel-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
-  padding: 16px 20px;
-  height: 48px;
+  padding: 60px 20px 16px 20px; /* Top padding to mirror left sidebar */
+  height: auto;
   flex-shrink: 0;
+  position: relative;
 }
 
 .panel-toggle-with-text {
-  background: none;
-  border: none;
-  border-radius: var(--radius);
-  padding: var(--spacing-1) var(--spacing-2);
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: transparent;
+  border: 1px solid #AEAEAE;
+  border-radius: 6px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-1);
+  gap: 8px;
   cursor: pointer;
-  color: var(--gray-500);
+  color: var(--text-secondary, #6c757d);
   font-size: 0.875rem;
   font-weight: 500;
-  transition: background-color 150ms, color 150ms;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .panel-toggle-with-text:hover {
-  background-color: var(--gray-100);
-  color: var(--gray-700);
+  background: var(--background-hover, #f0f0f0);
+  color: var(--text-primary, #212529);
+  border-color: var(--border-hover, #e0e0e0);
 }
 
-.panel-toggle {
-  background: none;
-  border: none;
-  border-radius: var(--radius);
-  width: 36px;
-  height: 36px;
+.panel-toggle-with-text:focus {
+  outline: 2px solid var(--primary-color, #007bff);
+  outline-offset: 2px;
+}
+
+/* Collapsed expand button - mirrors left sidebar */
+.collapsed-expand-button {
+  position: absolute;
+  top: 16px;
+  left: 8px; /* Match left sidebar's horizontal padding */
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid #AEAEAE;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--gray-500);
-  transition: background-color 150ms, color 150ms;
+  color: var(--text-secondary, #6c757d);
+  transition: all 0.2s ease;
+}
+
+.collapsed-expand-button:hover {
+  background: var(--background-hover, #f0f0f0);
+  color: var(--text-primary, #212529);
+  border-color: var(--border-hover, #e0e0e0);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.collapsed-expand-button:focus {
+  outline: 2px solid var(--primary-color, #007bff);
+  outline-offset: 2px;
+}
+
+.panel-toggle {
+  background: transparent;
+  border: 1px solid #AEAEAE;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary, #6c757d);
+  transition: all 0.2s ease;
 }
 
 .panel-toggle:hover {
-  background-color: var(--gray-100);
-  color: var(--gray-700);
+  background: var(--background-hover, #f0f0f0);
+  color: var(--text-primary, #212529);
+  border-color: var(--border-hover, #e0e0e0);
 }
 
 .panel-content {

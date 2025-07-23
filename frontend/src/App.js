@@ -20,9 +20,8 @@ function App() {
   const [showIntroPanel, setShowIntroPanel] = useState(true);
   const [hasClickedNode, setHasClickedNode] = useState(false);
   
-  // Left sidebar state - start collapsed by default
-  const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(true);
-  const [isLeftSidebarHovered, setIsLeftSidebarHovered] = useState(false);
+  // Left sidebar state - start open by default
+  const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(false);
   const [currentChatSession, setCurrentChatSession] = useState(null);
   
   // Chat input state for passing messages from intro panel to chat
@@ -365,9 +364,8 @@ function App() {
           onSessionSelect={handleSessionSelect}
           currentSessionId={currentChatSession?.id}
           onNewChat={handleNewChat}
-          isCollapsed={isLeftSidebarCollapsed && !isLeftSidebarHovered}
+          isCollapsed={isLeftSidebarCollapsed}
           onToggleCollapse={() => setIsLeftSidebarCollapsed(!isLeftSidebarCollapsed)}
-          onHoverChange={setIsLeftSidebarHovered}
         />
         
         <main className={`main-content ${isLeftSidebarCollapsed ? 'sidebar-collapsed' : ''}`} id="main-content" role="main">
