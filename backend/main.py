@@ -25,7 +25,7 @@ CACHE_TTL = 300  # 5 minutes in seconds
 app = FastAPI(
     title="Mental Model Knowledge Graph API",
     description="A Neo4j-based knowledge graph system for building and exploring mental models",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # CORS - Allow your frontend domain
@@ -40,6 +40,7 @@ app.add_middleware(
 # Add Gzip compression for better performance
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
+
 # Simple health check for deployment platforms
 @app.get("/health")
 async def health_check():
@@ -51,17 +52,19 @@ async def health_check():
         logger.error(f"Health check failed: {e}")
         return {"status": "unhealthy", "error": str(e)}
 
+
 # Startup event to begin keep-warm service (only for Aura deployments)
 @app.on_event("startup")
 async def startup_event():
     logger.info("Mental Model API starting up...")
-    
+
     # Start keep-warm service if using Neo4j Aura
     if os.getenv("NEO4J_URI", "").startswith("neo4j+s://"):
         logger.info("Detected Neo4j Aura connection - starting keep-warm service")
         asyncio.create_task(keep_warm_service.start_keep_warm_loop())
     else:
         logger.info("Using local/Railway Neo4j - keep-warm service not needed")
+
 
 # Shutdown event to stop keep-warm service
 @app.on_event("shutdown")
@@ -70,18 +73,22 @@ async def shutdown_event():
     await keep_warm_service.stop_keep_warm_loop()
     logger.info("Application shutdown completed")
 
+
 class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
     content: str
 
+
 class ChatContextNode(BaseModel):
     """Represents a node explicitly added to chat context by the user"""
+
     id: Optional[str] = None
     name: Optional[str] = None
     type: Optional[str] = None
     description: Optional[str] = None
     theme: Optional[str] = None
     labels: List[str] = []
+
 
 class ChatQuery(BaseModel):
     question: str
@@ -91,9 +98,11 @@ class ChatQuery(BaseModel):
     # NEW: chat_context_node - only used when explicitly set by user
     chat_context_node: Optional[ChatContextNode] = None
 
+
 class TokensUsed(BaseModel):
     input: Optional[int]
     output: Optional[int]
+
 
 class ChatResponse(BaseModel):
     answer: str
@@ -101,10 +110,12 @@ class ChatResponse(BaseModel):
     conversation_length: int
     tokens_used: TokensUsed
 
+
 # Chat persistence models
 class CreateSessionRequest(BaseModel):
     user_id: str
     title: Optional[str] = None
+
 
 class AddMessageRequest(BaseModel):
     session_id: str
@@ -112,9 +123,11 @@ class AddMessageRequest(BaseModel):
     content: str
     metadata: Optional[Dict] = None
 
+
 class UpdateSessionRequest(BaseModel):
     title: Optional[str] = None
     metadata: Optional[Dict] = None
+
 
 class SessionResponse(BaseModel):
     id: str
@@ -124,6 +137,7 @@ class SessionResponse(BaseModel):
     updated_at: str
     metadata: Dict
 
+
 class MessageResponse(BaseModel):
     id: str
     session_id: str
@@ -132,22 +146,28 @@ class MessageResponse(BaseModel):
     timestamp: str
     metadata: Dict
 
+
 def generate_query_embedding(text):
     # CORRECTED: Specify embedding_types and access the .float attribute.
     response = cohere_client.embed(
-        texts=[text], model="embed-english-v3.0", input_type="search_query", embedding_types=["float"]
+        texts=[text],
+        model="embed-english-v3.0",
+        input_type="search_query",
+        embedding_types=["float"],
     )
     return response.embeddings.float[0]  # type: ignore
+
 
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(query: ChatQuery):
     try:
         # Generate embedding for the current question
         embedding = generate_query_embedding(query.question)
-        
+
         # Retrieve relevant context from knowledge graph
         with get_db_session() as session:
-            result = session.run("""
+            result = session.run(
+                """
                 CALL db.index.vector.queryNodes('entity_embeddings', 5, $embedding) YIELD node, score
                 WHERE score > 0.5
                 WITH node
@@ -157,7 +177,9 @@ async def chat(query: ChatQuery):
                            type: type(r),
                            connected: connected.id
                        }) as relationships
-            """, {'embedding': embedding})
+            """,
+                {"embedding": embedding},
+            )
             context_data = [dict(record) for record in result]
 
         # Build knowledge graph context string
@@ -170,30 +192,28 @@ async def chat(query: ChatQuery):
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
-        
+
         # Add conversation history (limit to last 15 messages)
         recent_history = query.conversation_history[-15:]
-        
+
         for msg in recent_history:
-            messages.append({
-                "role": msg.role,
-                "content": msg.content
-            })
-        
+            messages.append({"role": msg.role, "content": msg.content})
+
         # Add chat context node ONLY if explicitly provided (user clicked "Chat with this node")
         chat_context_str = ""
         if query.chat_context_node:
             chat_context_str = f"\n\nChat Context Node (User explicitly added this for focused discussion):\n- Name: {query.chat_context_node.name}\n- Type: {query.chat_context_node.type}\n- Description: {query.chat_context_node.description}\n- Theme: {query.chat_context_node.theme}\n- Labels: {', '.join(query.chat_context_node.labels) if query.chat_context_node.labels else 'None'}"
             logger.info(f"Chat context node added: {query.chat_context_node.name}")
         else:
-            logger.info("No chat context node provided - proceeding with general knowledge graph context only")
-        
+            logger.info(
+                "No chat context node provided - proceeding with general knowledge graph context only"
+            )
+
         # Add current question with knowledge graph context and optional chat context node
-        current_message = f"{context_str}{chat_context_str}\n\nQuestion: {query.question}"
-        messages.append({
-            "role": "user", 
-            "content": current_message
-        })
+        current_message = (
+            f"{context_str}{chat_context_str}\n\nQuestion: {query.question}"
+        )
+        messages.append({"role": "user", "content": current_message})
 
         # Call Claude with conversation history and prompt caching
         response = anthropic_client.messages.create(
@@ -203,32 +223,39 @@ async def chat(query: ChatQuery):
                 {
                     "type": "text",
                     "text": SYSTEM_PROMPT,
-                    "cache_control": {"type": "ephemeral"}  # Cache the long system prompt
+                    "cache_control": {
+                        "type": "ephemeral"
+                    },  # Cache the long system prompt
                 }
             ],
             messages=messages,
-            stream=False  # We'll implement streaming in a separate endpoint
+            stream=False,  # We'll implement streaming in a separate endpoint
         )
-        
+
         answer_text = ""
         for block in response.content:
-            if block.type == 'text':
+            if block.type == "text":
                 answer_text = block.text
                 break
-                
+
         return {
-            "answer": answer_text, 
+            "answer": answer_text,
             "context": context_data,
             "conversation_length": len(recent_history) + 1,  # Include current message
             "tokens_used": {
-                "input": response.usage.input_tokens if hasattr(response, 'usage') else None,
-                "output": response.usage.output_tokens if hasattr(response, 'usage') else None
-            }
+                "input": (
+                    response.usage.input_tokens if hasattr(response, "usage") else None
+                ),
+                "output": (
+                    response.usage.output_tokens if hasattr(response, "usage") else None
+                ),
+            },
         }
-        
+
     except Exception as e:
         logger.error(f"Error in /api/chat: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
 
 @app.post("/api/chat/stream")
 async def chat_stream(query: ChatQuery):
@@ -236,10 +263,11 @@ async def chat_stream(query: ChatQuery):
     try:
         # Generate embedding for the current question
         embedding = generate_query_embedding(query.question)
-        
+
         # Retrieve relevant context from knowledge graph
         with get_db_session() as session:
-            result = session.run("""
+            result = session.run(
+                """
                 CALL db.index.vector.queryNodes('entity_embeddings', 5, $embedding) YIELD node, score
                 WHERE score > 0.5
                 WITH node
@@ -249,7 +277,9 @@ async def chat_stream(query: ChatQuery):
                            type: type(r),
                            connected: connected.id
                        }) as relationships
-            """, {'embedding': embedding})
+            """,
+                {"embedding": embedding},
+            )
             context_data = [dict(record) for record in result]
 
         # Build knowledge graph context string
@@ -262,36 +292,34 @@ async def chat_stream(query: ChatQuery):
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
-        
+
         # Add conversation history (limit to last 15 messages)
         recent_history = query.conversation_history[-15:]
-        
+
         for msg in recent_history:
-            messages.append({
-                "role": msg.role,
-                "content": msg.content
-            })
-        
+            messages.append({"role": msg.role, "content": msg.content})
+
         # Add chat context node ONLY if explicitly provided
         chat_context_str = ""
         if query.chat_context_node:
             chat_context_str = f"\n\nChat Context Node (User explicitly added this for focused discussion):\n- Name: {query.chat_context_node.name}\n- Type: {query.chat_context_node.type}\n- Description: {query.chat_context_node.description}\n- Theme: {query.chat_context_node.theme}\n- Labels: {', '.join(query.chat_context_node.labels) if query.chat_context_node.labels else 'None'}"
-            logger.info(f"Streaming chat context node added: {query.chat_context_node.name}")
+            logger.info(
+                f"Streaming chat context node added: {query.chat_context_node.name}"
+            )
         else:
             logger.info("Streaming: No chat context node provided")
-        
+
         # Add current question with knowledge graph context and optional chat context node
-        current_message = f"{context_str}{chat_context_str}\n\nQuestion: {query.question}"
-        messages.append({
-            "role": "user", 
-            "content": current_message
-        })
+        current_message = (
+            f"{context_str}{chat_context_str}\n\nQuestion: {query.question}"
+        )
+        messages.append({"role": "user", "content": current_message})
 
         async def generate():
             try:
                 # Send metadata first
                 yield f"data: {json.dumps({'type': 'metadata', 'context': context_data})}\n\n"
-                
+
                 # Stream response from Claude
                 with anthropic_client.messages.stream(
                     model="claude-sonnet-4-20250514",
@@ -300,16 +328,16 @@ async def chat_stream(query: ChatQuery):
                         {
                             "type": "text",
                             "text": SYSTEM_PROMPT,
-                            "cache_control": {"type": "ephemeral"}
+                            "cache_control": {"type": "ephemeral"},
                         }
                     ],
                     messages=messages,
                 ) as stream:
                     for text in stream.text_stream:
                         yield f"data: {json.dumps({'type': 'content', 'text': text})}\n\n"
-                
+
                 yield f"data: {json.dumps({'type': 'done'})}\n\n"
-                
+
             except Exception as e:
                 logger.error(f"Error in streaming: {e}", exc_info=True)
                 yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
@@ -321,29 +349,35 @@ async def chat_stream(query: ChatQuery):
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "Content-Type": "text/event-stream",
-            }
+            },
         )
-        
+
     except Exception as e:
         logger.error(f"Error in /api/chat/stream: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail="An unexpected error occurred during streaming.")
+        raise HTTPException(
+            status_code=500, detail="An unexpected error occurred during streaming."
+        )
+
 
 @app.get("/api/graph")
 async def get_graph():
     # Check cache first
     current_time = time.time()
-    if (_graph_cache["data"] is not None and 
-        current_time - _graph_cache["timestamp"] < CACHE_TTL):
+    if (
+        _graph_cache["data"] is not None
+        and current_time - _graph_cache["timestamp"] < CACHE_TTL
+    ):
         logger.info("Returning cached graph data")
         return JSONResponse(
             content=_graph_cache["data"],
-            headers={"Cache-Control": "public, max-age=300"}
+            headers={"Cache-Control": "public, max-age=300"},
         )
-    
+
     logger.info("Cache miss - fetching fresh graph data")
     with get_db_session() as session:
         # Get ALL nodes - both Entity nodes and standalone nodes (optimized)
-        nodes_result = session.run("""
+        nodes_result = session.run(
+            """
             MATCH (n)
             WHERE n:Entity OR n:Theme OR n:Pattern OR n:Example OR n:Principle OR n:Expert OR n:MentalModel
             RETURN 
@@ -366,10 +400,12 @@ async def get_graph():
                 COALESCE(n.description, '') as description,
                 COALESCE(n.content, '') as content,
                 COALESCE(n.theme, '') as theme
-        """)
-        
+        """
+        )
+
         # Get ALL relationships separately - optimized with constraints
-        edges_result = session.run("""
+        edges_result = session.run(
+            """
             MATCH (a)-[r]-(b)
             WHERE a <> b 
             AND (a:Entity OR a:Theme OR a:Pattern OR a:Example OR a:Principle OR a:Expert OR a:MentalModel)
@@ -389,29 +425,42 @@ async def get_graph():
                 END as to_node,
                 type(r) as rel_type,
                 startNode(r) = a as is_outgoing
-        """)
-        
+        """
+        )
+
         nodes, edges = [], []
         seen_nodes = set()
-        
+
         # Process nodes
         for record in nodes_result:
-            if record['id'] not in seen_nodes:
-                nodes.append({
-                    'id': record['id'], 
-                    'label': record['id'],  # Use ID as label
-                    'type': record['type'],
-                    'description': record['description'] or '',
-                    'content': record['content'] or '',
-                    'theme': record['theme'] or ''
-                })
-                seen_nodes.add(record['id'])
-        
+            if record["id"] not in seen_nodes:
+                nodes.append(
+                    {
+                        "id": record["id"],
+                        "label": record["id"],  # Use ID as label
+                        "type": record["type"],
+                        "description": record["description"] or "",
+                        "content": record["content"] or "",
+                        "theme": record["theme"] or "",
+                    }
+                )
+                seen_nodes.add(record["id"])
+
         # Process edges - no restrictions, include all relationships
         edge_set = set()  # To avoid duplicates
         for record in edges_result:
-            from_node, to_node, rel_type, is_outgoing = record['from_node'], record['to_node'], record['rel_type'], record['is_outgoing']
-            if from_node and to_node and from_node in seen_nodes and to_node in seen_nodes:
+            from_node, to_node, rel_type, is_outgoing = (
+                record["from_node"],
+                record["to_node"],
+                record["rel_type"],
+                record["is_outgoing"],
+            )
+            if (
+                from_node
+                and to_node
+                and from_node in seen_nodes
+                and to_node in seen_nodes
+            ):
                 # Use the actual direction from the database
                 if is_outgoing:
                     # a->b: from_node is correct
@@ -419,26 +468,24 @@ async def get_graph():
                 else:
                     # b->a: swap direction
                     actual_from, actual_to = to_node, from_node
-                
+
                 edge_key = (actual_from, actual_to, rel_type)
                 if edge_key not in edge_set:
-                    edges.append({
-                        'from': actual_from,
-                        'to': actual_to, 
-                        'label': rel_type
-                    })
+                    edges.append(
+                        {"from": actual_from, "to": actual_to, "label": rel_type}
+                    )
                     edge_set.add(edge_key)
-        
+
         # Cache the result
         graph_data = {"nodes": nodes, "edges": edges}
         _graph_cache["data"] = graph_data
         _graph_cache["timestamp"] = current_time
         logger.info(f"Cached graph data: {len(nodes)} nodes, {len(edges)} edges")
-        
+
         return JSONResponse(
-            content=graph_data,
-            headers={"Cache-Control": "public, max-age=300"}
+            content=graph_data, headers={"Cache-Control": "public, max-age=300"}
         )
+
 
 class SearchResult(BaseModel):
     id: str
@@ -447,17 +494,19 @@ class SearchResult(BaseModel):
     theme: Optional[str] = None
     score: float
 
+
 class SearchResponse(BaseModel):
     results: List[SearchResult]
     query: str
     total_count: int
     execution_time_ms: int
 
+
 @app.get("/api/graph/subgraph/{node_id}")
 async def get_node_subgraph(node_id: str, include_connections: bool = True):
     """
     Get a subgraph focused on a specific node, optionally including connected nodes.
-    
+
     Args:
         node_id: The ID of the target node
         include_connections: Whether to include directly connected nodes
@@ -499,124 +548,139 @@ async def get_node_subgraph(node_id: str, include_connections: bool = True):
                         [] as connected_nodes,
                         [] as relationships
                 """
-            
-            result = session.run(query, {'node_id': node_id})
-            
+
+            result = session.run(query, {"node_id": node_id})
+
             nodes = []
             edges = []
             seen_nodes = set()
             edge_set = set()
-            
+
             def get_node_id(node):
                 if node is None:
                     return None
-                if 'Theme' in node.labels and node.get('name'):
-                    return node['name']
-                elif node.get('id'):
-                    return node['id']  
-                elif node.get('name'):
-                    return node['name']
+                if "Theme" in node.labels and node.get("name"):
+                    return node["name"]
+                elif node.get("id"):
+                    return node["id"]
+                elif node.get("name"):
+                    return node["name"]
                 else:
                     return str(node.id)
-            
+
             def get_node_type(node):
                 if node is None:
-                    return 'Entity'
-                if 'Theme' in node.labels:
-                    return 'Theme'
-                elif 'Entity' in node.labels and node.get('category'):
-                    return node['category']
-                elif 'Pattern' in node.labels:
-                    return 'Pattern'
-                elif 'Example' in node.labels:
-                    return 'Example'
-                elif 'Principle' in node.labels:
-                    return 'Principle'
-                elif 'Expert' in node.labels:
-                    return 'Expert'
-                elif 'MentalModel' in node.labels:
-                    return 'MentalModel'
+                    return "Entity"
+                if "Theme" in node.labels:
+                    return "Theme"
+                elif "Entity" in node.labels and node.get("category"):
+                    return node["category"]
+                elif "Pattern" in node.labels:
+                    return "Pattern"
+                elif "Example" in node.labels:
+                    return "Example"
+                elif "Principle" in node.labels:
+                    return "Principle"
+                elif "Expert" in node.labels:
+                    return "Expert"
+                elif "MentalModel" in node.labels:
+                    return "MentalModel"
                 else:
-                    return 'Entity'
-            
+                    return "Entity"
+
             for record in result:
-                target_node = record['target']
-                connected_nodes = record.get('connected_nodes', [])
-                relationships = record.get('relationships', [])
-                
+                target_node = record["target"]
+                connected_nodes = record.get("connected_nodes", [])
+                relationships = record.get("relationships", [])
+
                 # Add target node
                 target_id = get_node_id(target_node)
                 if target_id and target_id not in seen_nodes:
-                    nodes.append({
-                        'id': target_id,
-                        'label': target_id,
-                        'type': get_node_type(target_node),
-                        'description': target_node.get('description', ''),
-                        'content': target_node.get('content', ''),
-                        'theme': target_node.get('theme', '')
-                    })
+                    nodes.append(
+                        {
+                            "id": target_id,
+                            "label": target_id,
+                            "type": get_node_type(target_node),
+                            "description": target_node.get("description", ""),
+                            "content": target_node.get("content", ""),
+                            "theme": target_node.get("theme", ""),
+                        }
+                    )
                     seen_nodes.add(target_id)
-                
+
                 if include_connections:
                     # Add connected nodes
                     for connected_node in connected_nodes:
                         if connected_node is not None:
                             connected_id = get_node_id(connected_node)
                             if connected_id and connected_id not in seen_nodes:
-                                nodes.append({
-                                    'id': connected_id,
-                                    'label': connected_id,
-                                    'type': get_node_type(connected_node),
-                                    'description': connected_node.get('description', ''),
-                                    'content': connected_node.get('content', ''),
-                                    'theme': connected_node.get('theme', '')
-                                })
+                                nodes.append(
+                                    {
+                                        "id": connected_id,
+                                        "label": connected_id,
+                                        "type": get_node_type(connected_node),
+                                        "description": connected_node.get(
+                                            "description", ""
+                                        ),
+                                        "content": connected_node.get("content", ""),
+                                        "theme": connected_node.get("theme", ""),
+                                    }
+                                )
                                 seen_nodes.add(connected_id)
-                    
+
                     # Add relationships
                     for rel in relationships:
                         if rel is not None:
                             start_node = rel.start_node
                             end_node = rel.end_node
                             rel_type = rel.type
-                            
+
                             start_id = get_node_id(start_node)
                             end_id = get_node_id(end_node)
-                            
-                            if start_id and end_id and start_id in seen_nodes and end_id in seen_nodes:
+
+                            if (
+                                start_id
+                                and end_id
+                                and start_id in seen_nodes
+                                and end_id in seen_nodes
+                            ):
                                 edge_key = (start_id, end_id, rel_type)
                                 if edge_key not in edge_set:
-                                    edges.append({
-                                        'from': start_id,
-                                        'to': end_id,
-                                        'label': rel_type
-                                    })
+                                    edges.append(
+                                        {
+                                            "from": start_id,
+                                            "to": end_id,
+                                            "label": rel_type,
+                                        }
+                                    )
                                     edge_set.add(edge_key)
-            
+
             if not nodes:
-                raise HTTPException(status_code=404, detail=f"Node '{node_id}' not found")
-            
+                raise HTTPException(
+                    status_code=404, detail=f"Node '{node_id}' not found"
+                )
+
             subgraph_data = {"nodes": nodes, "edges": edges}
-            logger.info(f"Subgraph for '{node_id}': {len(nodes)} nodes, {len(edges)} edges, include_connections={include_connections}")
-            
+            logger.info(
+                f"Subgraph for '{node_id}': {len(nodes)} nodes, {len(edges)} edges, include_connections={include_connections}"
+            )
+
             return JSONResponse(content=subgraph_data)
-            
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error in /api/graph/subgraph: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Failed to retrieve subgraph")
 
+
 @app.get("/api/search", response_model=SearchResponse)
 async def search_nodes(
-    q: str,
-    limit: int = 10,
-    threshold: float = 0.3,
-    include_themes: bool = False
+    q: str, limit: int = 10, threshold: float = 0.3, include_themes: bool = False
 ):
     """
     Semantic search across knowledge graph nodes using vector similarity.
-    
+
     Args:
         q: Search query string
         limit: Maximum number of results (max 50)
@@ -625,18 +689,21 @@ async def search_nodes(
     """
     try:
         import time
+
         start_time = time.time()
-        
+
         # Validate parameters
         if not q or len(q.strip()) < 2:
-            raise HTTPException(status_code=400, detail="Query must be at least 2 characters long")
-        
+            raise HTTPException(
+                status_code=400, detail="Query must be at least 2 characters long"
+            )
+
         limit = min(max(1, limit), 50)  # Clamp between 1 and 50
         threshold = max(0.0, min(1.0, threshold))  # Clamp between 0 and 1
-        
+
         # Generate embedding for search query
         embedding = generate_query_embedding(q.strip())
-        
+
         # Build search query based on include_themes parameter
         if include_themes:
             # Search both Entity and Theme nodes
@@ -667,39 +734,43 @@ async def search_nodes(
                 ORDER BY score DESC
                 LIMIT $limit
             """
-        
+
         # Execute search
         with get_db_session() as session:
-            result = session.run(search_query, {
-                'embedding': embedding,
-                'limit': limit,
-                'threshold': threshold
-            })
-            
+            result = session.run(
+                search_query,
+                {"embedding": embedding, "limit": limit, "threshold": threshold},
+            )
+
             search_results = []
             for record in result:
-                search_results.append(SearchResult(
-                    id=record['id'],
-                    type=record['type'],
-                    description=record['description'] or '',
-                    theme=record.get('theme'),
-                    score=record['score']
-                ))
-        
+                search_results.append(
+                    SearchResult(
+                        id=record["id"],
+                        type=record["type"],
+                        description=record["description"] or "",
+                        theme=record.get("theme"),
+                        score=record["score"],
+                    )
+                )
+
         execution_time = int((time.time() - start_time) * 1000)
-        
-        logger.info(f"Search query '{q}' returned {len(search_results)} results in {execution_time}ms")
-        
+
+        logger.info(
+            f"Search query '{q}' returned {len(search_results)} results in {execution_time}ms"
+        )
+
         return SearchResponse(
             results=search_results,
             query=q.strip(),
             total_count=len(search_results),
-            execution_time_ms=execution_time
+            execution_time_ms=execution_time,
         )
-        
+
     except Exception as e:
         logger.error(f"Error in /api/search: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Search request failed")
+
 
 # Chat Persistence Endpoints
 @app.post("/api/chat/sessions", response_model=SessionResponse)
@@ -707,23 +778,23 @@ async def create_chat_session(request: CreateSessionRequest):
     """Create a new chat session for a user"""
     try:
         session_data = await supabase_service.create_chat_session(
-            user_id=request.user_id,
-            title=request.title
+            user_id=request.user_id, title=request.title
         )
         if not session_data:
             raise HTTPException(status_code=500, detail="Failed to create session")
-        
+
         return SessionResponse(
-            id=session_data['id'],
-            user_id=session_data['user_id'],
-            title=session_data.get('title'),
-            created_at=session_data['created_at'],
-            updated_at=session_data['updated_at'],
-            metadata=session_data.get('metadata', {})
+            id=session_data["id"],
+            user_id=session_data["user_id"],
+            title=session_data.get("title"),
+            created_at=session_data["created_at"],
+            updated_at=session_data["updated_at"],
+            metadata=session_data.get("metadata", {}),
         )
     except Exception as e:
         logger.error(f"Error creating chat session: {e}")
         raise HTTPException(status_code=500, detail="Failed to create chat session")
+
 
 @app.get("/api/chat/sessions/{user_id}")
 async def get_user_sessions(user_id: str, limit: int = 50, offset: int = 0):
@@ -733,22 +804,23 @@ async def get_user_sessions(user_id: str, limit: int = 50, offset: int = 0):
         return {
             "sessions": [
                 SessionResponse(
-                    id=s['id'],
-                    user_id=s['user_id'],
-                    title=s.get('title'),
-                    created_at=s['created_at'],
-                    updated_at=s['updated_at'],
-                    metadata=s.get('metadata', {})
+                    id=s["id"],
+                    user_id=s["user_id"],
+                    title=s.get("title"),
+                    created_at=s["created_at"],
+                    updated_at=s["updated_at"],
+                    metadata=s.get("metadata", {}),
                 )
                 for s in sessions
             ],
             "total": len(sessions),
             "limit": limit,
-            "offset": offset
+            "offset": offset,
         }
     except Exception as e:
         logger.error(f"Error getting user sessions: {e}")
         raise HTTPException(status_code=500, detail="Failed to get user sessions")
+
 
 @app.get("/api/chat/sessions/{session_id}/messages")
 async def get_session_messages(session_id: str, limit: int = 100):
@@ -758,21 +830,22 @@ async def get_session_messages(session_id: str, limit: int = 100):
         return {
             "messages": [
                 MessageResponse(
-                    id=m['id'],
-                    session_id=m['session_id'],
-                    role=m['role'],
-                    content=m['content'],
-                    timestamp=m['timestamp'],
-                    metadata=m.get('metadata', {})
+                    id=m["id"],
+                    session_id=m["session_id"],
+                    role=m["role"],
+                    content=m["content"],
+                    timestamp=m["timestamp"],
+                    metadata=m.get("metadata", {}),
                 )
                 for m in messages
             ],
             "total": len(messages),
-            "session_id": session_id
+            "session_id": session_id,
         }
     except Exception as e:
         logger.error(f"Error getting session messages: {e}")
         raise HTTPException(status_code=500, detail="Failed to get session messages")
+
 
 @app.post("/api/chat/messages", response_model=MessageResponse)
 async def add_message(request: AddMessageRequest):
@@ -782,22 +855,23 @@ async def add_message(request: AddMessageRequest):
             session_id=request.session_id,
             role=request.role,
             content=request.content,
-            metadata=request.metadata
+            metadata=request.metadata,
         )
         if not message_data:
             raise HTTPException(status_code=500, detail="Failed to add message")
-        
+
         return MessageResponse(
-            id=message_data['id'],
-            session_id=message_data['session_id'],
-            role=message_data['role'],
-            content=message_data['content'],
-            timestamp=message_data['timestamp'],
-            metadata=message_data.get('metadata', {})
+            id=message_data["id"],
+            session_id=message_data["session_id"],
+            role=message_data["role"],
+            content=message_data["content"],
+            timestamp=message_data["timestamp"],
+            metadata=message_data.get("metadata", {}),
         )
     except Exception as e:
         logger.error(f"Error adding message: {e}")
         raise HTTPException(status_code=500, detail="Failed to add message")
+
 
 @app.put("/api/chat/sessions/{session_id}")
 async def update_session(session_id: str, request: UpdateSessionRequest):
@@ -805,30 +879,31 @@ async def update_session(session_id: str, request: UpdateSessionRequest):
     try:
         updates = {}
         if request.title is not None:
-            updates['title'] = request.title
+            updates["title"] = request.title
         if request.metadata is not None:
-            updates['metadata'] = request.metadata
-        
+            updates["metadata"] = request.metadata
+
         if not updates:
             raise HTTPException(status_code=400, detail="No valid updates provided")
-        
+
         session_data = await supabase_service.update_session(session_id, updates)
         if not session_data:
             raise HTTPException(status_code=404, detail="Session not found")
-        
+
         return SessionResponse(
-            id=session_data['id'],
-            user_id=session_data['user_id'],
-            title=session_data.get('title'),
-            created_at=session_data['created_at'],
-            updated_at=session_data['updated_at'],
-            metadata=session_data.get('metadata', {})
+            id=session_data["id"],
+            user_id=session_data["user_id"],
+            title=session_data.get("title"),
+            created_at=session_data["created_at"],
+            updated_at=session_data["updated_at"],
+            metadata=session_data.get("metadata", {}),
         )
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error updating session: {e}")
         raise HTTPException(status_code=500, detail="Failed to update session")
+
 
 @app.delete("/api/chat/sessions/{session_id}")
 async def delete_session(session_id: str):
@@ -840,19 +915,22 @@ async def delete_session(session_id: str):
         logger.error(f"Error deleting session: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete session")
 
+
 @app.get("/api/chat/search")
 async def search_messages(user_id: str, q: str, limit: int = 20):
     """Search messages across all user sessions"""
     try:
         if not q or len(q.strip()) < 2:
-            raise HTTPException(status_code=400, detail="Query must be at least 2 characters long")
-        
+            raise HTTPException(
+                status_code=400, detail="Query must be at least 2 characters long"
+            )
+
         results = await supabase_service.search_messages(user_id, q.strip(), limit)
         return {
             "results": results,
             "query": q.strip(),
             "user_id": user_id,
-            "total": len(results)
+            "total": len(results),
         }
     except HTTPException:
         raise
@@ -860,6 +938,8 @@ async def search_messages(user_id: str, q: str, limit: int = 20):
         logger.error(f"Error searching messages: {e}")
         raise HTTPException(status_code=500, detail="Failed to search messages")
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

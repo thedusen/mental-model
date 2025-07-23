@@ -10,7 +10,7 @@ node_to_fix = {
     "source": "Interview Transcript",
     "timestamp": "12:46",
     "theme": "Business-First Balance and Recognition",
-    "source_chunk": "mental_model_chunk_35.json"
+    "source_chunk": "mental_model_chunk_35.json",
 }
 # This node is an 'Example', so we'll set the label manually
 NODE_TYPE_LABEL = "Example"
@@ -29,17 +29,18 @@ def generate_embedding(text):
             time.sleep(60)
             print("Retrying...")
 
+
 def fix_single_node():
     """
     Imports a single, specified node into the database, including its
     embedding and relationship to its theme.
     """
     print(f"Starting import for single node: '{node_to_fix.get('name')}'")
-    
+
     with get_db_session() as session:
-        entity_id = node_to_fix.get('name')
-        description = node_to_fix.get('description') or node_to_fix.get('content', '')
-        theme_name = node_to_fix.get('theme')
+        entity_id = node_to_fix.get("name")
+        description = node_to_fix.get("description") or node_to_fix.get("content", "")
+        theme_name = node_to_fix.get("theme")
 
         if not all([entity_id, description, theme_name]):
             print(f"Cannot process node, required data is missing: {node_to_fix}")
@@ -51,15 +52,17 @@ def fix_single_node():
 
         # 2. Generate embedding and create the Entity node
         embedding = generate_embedding(description)
-        
+
         entity_query = """
         MERGE (e:Entity {id: $id})
         SET e:%s, e += $props, e.embedding = $embedding
-        """ % (NODE_TYPE_LABEL)
-        
+        """ % (
+            NODE_TYPE_LABEL
+        )
+
         props_to_set = node_to_fix.copy()
-        props_to_set.pop('name', None)
-        
+        props_to_set.pop("name", None)
+
         session.run(entity_query, id=entity_id, props=props_to_set, embedding=embedding)
         print(f"  - Created/Updated Entity node '{entity_id}'.")
 
@@ -73,6 +76,7 @@ def fix_single_node():
         print(f"  - Linked '{entity_id}' to Theme '{theme_name}'.")
 
     print("\nSingle node import complete.")
+
 
 if __name__ == "__main__":
     fix_single_node()
