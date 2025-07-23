@@ -6,6 +6,7 @@ import NodeDetailsPanel from './components/NodeDetailsPanel';
 import NodeTypesPanel from './components/NodeTypesPanel';
 import SearchBar from './components/SearchBar';
 import IntroductionPanel from './components/IntroductionPanel';
+import LeftSidebar from './components/LeftSidebar';
 
 function App() {
   console.log('App component rendering...');
@@ -18,6 +19,11 @@ function App() {
   // Introduction panel state
   const [showIntroPanel, setShowIntroPanel] = useState(true);
   const [hasClickedNode, setHasClickedNode] = useState(false);
+  
+  // Left sidebar state - start collapsed by default
+  const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(true);
+  const [isLeftSidebarHovered, setIsLeftSidebarHovered] = useState(false);
+  const [currentChatSession, setCurrentChatSession] = useState(null);
   
   // Chat input state for passing messages from intro panel to chat
   const [chatInput, setChatInput] = useState('');
@@ -50,8 +56,15 @@ function App() {
   const [isSearchResultsVisible, setIsSearchResultsVisible] = useState(false);
   const [searchExecutionTime, setSearchExecutionTime] = useState(0);
   
+  // Graph filtering state
+  const [graphFilterMode, setGraphFilterMode] = useState(null); // null | 'node-only' | 'node-with-connections'
+  const [filteredNodeId, setFilteredNodeId] = useState(null);
+  const [filteredGraphData, setFilteredGraphData] = useState(null);
+  const [isLoadingSubgraph, setIsLoadingSubgraph] = useState(false);
+  
   // Refs
   const graphViewRef = useRef(null);
+  const chatPanelRef = useRef(null);
   
   // API URL configuration
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -85,6 +98,31 @@ function App() {
     }
     
     // Focus management: move focus to chat input for smooth workflow
+    setTimeout(() => {
+      const chatInput = document.querySelector('.chat-panel textarea');
+      if (chatInput) {
+        chatInput.focus();
+      }
+    }, 100);
+  };
+
+  // Chat session handlers for left sidebar
+  const handleSessionSelect = (session, messages) => {
+    setCurrentChatSession(session);
+    // Pass to ChatPanel via ref or prop
+    if (chatPanelRef.current && chatPanelRef.current.handleSessionSelect) {
+      chatPanelRef.current.handleSessionSelect(session, messages);
+    }
+  };
+
+  const handleNewChat = () => {
+    setCurrentChatSession(null);
+    // Clear chat panel
+    if (chatPanelRef.current && chatPanelRef.current.handleNewChat) {
+      chatPanelRef.current.handleNewChat();
+    }
+    
+    // Focus chat input
     setTimeout(() => {
       const chatInput = document.querySelector('.chat-panel textarea');
       if (chatInput) {
@@ -136,40 +174,116 @@ function App() {
     setSearchQuery('');
     setIsSearchResultsVisible(false);
     setSearchExecutionTime(0);
+    
+    // Reset graph to full view when clearing search
+    if (graphFilterMode) {
+      handleClearGraphFilter();
+    }
+  };
+
+  // Graph filtering functions
+  const handleIsolateNode = async (nodeId, includeConnections = true) => {
+    if (!nodeId) return;
+    
+    setIsLoadingSubgraph(true);
+    try {
+      const response = await fetch(
+        `${API_URL}/api/graph/subgraph/${encodeURIComponent(nodeId)}?include_connections=${includeConnections}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Failed to load subgraph: ${response.status}`);
+      }
+      
+      const subgraphData = await response.json();
+      setFilteredGraphData(subgraphData);
+      setFilteredNodeId(nodeId);
+      setGraphFilterMode(includeConnections ? 'node-with-connections' : 'node-only');
+      
+      console.log(`Isolated node ${nodeId}:`, subgraphData);
+      
+      // Zoom to the subgraph after a brief delay
+      setTimeout(() => {
+        if (graphViewRef.current) {
+          graphViewRef.current.fitToScreen();
+        }
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error isolating node:', error);
+      // Could add user notification here
+    } finally {
+      setIsLoadingSubgraph(false);
+    }
+  };
+
+  const handleClearGraphFilter = () => {
+    setGraphFilterMode(null);
+    setFilteredNodeId(null);
+    setFilteredGraphData(null);
+    
+    // Fit to full graph after a brief delay
+    setTimeout(() => {
+      if (graphViewRef.current) {
+        graphViewRef.current.fitToScreen();
+      }
+    }, 100);
   };
 
   const handleSearchResultClick = (result) => {
-    // Find the corresponding node and select it
-    setSelectedNode({
-      id: result.id,
-      properties: {
-        name: result.id,
-        description: result.description,
-        category: result.type,
-        theme: result.theme,
-        searchScore: result.score
-      }
-    });
-    
     // Hide intro panel on first interaction
     if (!hasClickedNode) {
       setHasClickedNode(true);
       setShowIntroPanel(false);
     }
     
-    // Optional: zoom to the specific node
-    if (graphViewRef.current) {
-      graphViewRef.current.zoomToSearchResults([result]);
+    // Jump to the specific node without isolating it first
+    if (graphViewRef.current && graphViewRef.current.jumpToNode) {
+      graphViewRef.current.jumpToNode(result.id);
     }
+    
+    // Clear search results to better see the node jump (but delay it more)
+    setTimeout(() => {
+      handleSearchClear();
+      
+      // Then select the node after search is cleared and jump is complete
+      setTimeout(() => {
+        setSelectedNode({
+          id: result.id,
+          properties: {
+            name: result.id,
+            description: result.description,
+            category: result.type,
+            theme: result.theme,
+            searchScore: result.score
+          }
+        });
+      }, 100);
+    }, 150);
+  };
+
+  // New function for search result isolation
+  const handleSearchResultIsolate = (result, includeConnections = true) => {
+    // Also select the node
+    handleSearchResultClick(result);
+    
+    // Then isolate it
+    handleIsolateNode(result.id, includeConnections);
   };
 
 
   // Keyboard navigation for accessibility
   useEffect(() => {
     const handleKeyDown = (event) => {
-      // Escape key to deselect node
+      // Escape key to clear graph filter, search results, or deselect node
       if (event.key === 'Escape') {
-        if (selectedNode) {
+        if (isSearchResultsVisible) {
+          event.preventDefault();
+          handleSearchClear();
+        } else if (graphFilterMode) {
+          event.preventDefault();
+          handleClearGraphFilter();
+        } else if (selectedNode) {
           event.preventDefault();
           handleDeselectNode();
         }
@@ -208,7 +322,29 @@ function App() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedNode]);
+  }, [selectedNode, isSearchResultsVisible, graphFilterMode, handleSearchClear, handleClearGraphFilter, handleDeselectNode]);
+
+  // Click outside handler for search results
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if click is outside search area
+      const searchBar = document.querySelector('.search-bar');
+      const searchResults = document.querySelector('.search-results-overlay');
+      
+      if (isSearchResultsVisible && searchBar && searchResults) {
+        const isClickInsideSearch = searchBar.contains(event.target) || searchResults.contains(event.target);
+        
+        if (!isClickInsideSearch) {
+          handleSearchClear();
+        }
+      }
+    };
+
+    if (isSearchResultsVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isSearchResultsVisible, handleSearchClear]);
 
   try {
     return (
@@ -224,7 +360,17 @@ function App() {
           aria-atomic="false"
         ></div>
         
-        <main className="main-content" id="main-content" role="main">
+        {/* Left Sidebar for Chat History and User Profile */}
+        <LeftSidebar 
+          onSessionSelect={handleSessionSelect}
+          currentSessionId={currentChatSession?.id}
+          onNewChat={handleNewChat}
+          isCollapsed={isLeftSidebarCollapsed && !isLeftSidebarHovered}
+          onToggleCollapse={() => setIsLeftSidebarCollapsed(!isLeftSidebarCollapsed)}
+          onHoverChange={setIsLeftSidebarHovered}
+        />
+        
+        <main className={`main-content ${isLeftSidebarCollapsed ? 'sidebar-collapsed' : ''}`} id="main-content" role="main">
           {/* Search Bar */}
           <div className="search-header">
             <SearchBar 
@@ -236,37 +382,51 @@ function App() {
               searchExecutionTime={searchExecutionTime}
               isSearchResultsVisible={isSearchResultsVisible}
               onResultClick={handleSearchResultClick}
+              onResultIsolate={handleSearchResultIsolate}
+              graphFilterMode={graphFilterMode}
+              onClearGraphFilter={handleClearGraphFilter}
             />
           </div>
           
           <div className="graph-container">
-            <NodeTypesPanel onFilterChange={setNodeFilters} />
-            <GraphView 
-              ref={graphViewRef}
-              onNodeSelect={(node) => {
-                setSelectedNode(node);
-                if (!hasClickedNode) {
-                  setHasClickedNode(true);
-                  setShowIntroPanel(false);
-                }
-              }}
-              onCanvasClick={handleDeselectNode}
-              chatContextNode={chatContextNode}
-              searchResults={searchResults}
-              filters={nodeFilters}
-            />
+            <div className="graph-view-area">
+              <NodeTypesPanel onFilterChange={setNodeFilters} />
+              <GraphView 
+                ref={graphViewRef}
+                onNodeSelect={(node) => {
+                  setSelectedNode(node);
+                  if (!hasClickedNode) {
+                    setHasClickedNode(true);
+                    setShowIntroPanel(false);
+                  }
+                }}
+                onCanvasClick={handleDeselectNode}
+                chatContextNode={chatContextNode}
+                selectedNode={selectedNode}
+                searchResults={searchResults}
+                filters={nodeFilters}
+                filteredGraphData={filteredGraphData}
+                graphFilterMode={graphFilterMode}
+                filteredNodeId={filteredNodeId}
+                onClearGraphFilter={handleClearGraphFilter}
+                isLoadingSubgraph={isLoadingSubgraph}
+              />
+            </div>
             <div className={`chat-container ${isChatFullscreen ? 'fullscreen' : ''}`}>
               <ChatPanel 
+                ref={chatPanelRef}
                 selectedNode={selectedNode}
                 chatContextNode={chatContextNode}
                 onClearChatContext={handleClearChatContext}
                 onFullscreenChange={setIsChatFullscreen}
                 externalInput={chatInput}
                 onExternalInputReceived={() => setChatInput('')}
+                onSessionChange={setCurrentChatSession}
               />
             </div>
           </div>
         </main>
+        
         <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`} role="complementary" aria-label="Node details">
           {showIntroPanel ? (
             <IntroductionPanel 

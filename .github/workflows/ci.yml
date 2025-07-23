@@ -7,6 +7,17 @@ on:
     branches: [ main ]
 
 jobs:
+  validate-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate docker-compose.yml
+        run: |
+          docker compose config
+          echo "✅ Docker Compose configuration is valid"
+
   test-backend:
     runs-on: ubuntu-latest
     
@@ -36,6 +47,10 @@ jobs:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
+          NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           
       - name: Run linting (advisory)
         working-directory: ./backend
@@ -43,6 +58,14 @@ jobs:
           # The flake8 command will use the configuration from backend/.flake8
           # We'll let this pass for now and address linting issues separately.
           flake8 . || true
+          
+      - name: Run black formatting check
+        working-directory: ./backend
+        run: |
+          black --check . || {
+            echo "❌ Code is not formatted with black. Run 'black .' to fix."
+            exit 1
+          }
           
       - name: Test imports
         working-directory: ./backend
@@ -52,6 +75,18 @@ jobs:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
+          NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          
+      - name: Test Supabase client
+        working-directory: ./backend
+        run: |
+          python -c "from supabase_client import supabase_service; print('✅ Supabase client imports successfully')"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           
       - name: Check FastAPI app
         working-directory: ./backend
@@ -61,6 +96,10 @@ jobs:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
+          NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
 
   test-frontend:
     runs-on: ubuntu-latest
@@ -77,25 +116,123 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
           
       - name: Install dependencies
         run: npm ci
         
+      - name: Check for security vulnerabilities
+        run: |
+          # Run audit and allow known development-only vulnerabilities
+          AUDIT_EXIT_CODE=0
+          npm audit --audit-level=high || AUDIT_EXIT_CODE=$?
+          
+          if [ $AUDIT_EXIT_CODE -ne 0 ]; then
+            echo "⚠️ Security vulnerabilities detected. Checking if they are acceptable..."
+            
+            # Get vulnerability details
+            AUDIT_OUTPUT=$(npm audit --json || true)
+            
+            # Check for any vulnerabilities NOT in the known safe list  
+            UNKNOWN_VULNS=$(echo "$AUDIT_OUTPUT" | jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "high" or .value.severity == "critical") | .key' | grep -v -E "nth-check|css-select|svgo|@svgr/plugin-svgo|@svgr/webpack|react-scripts|postcss|resolve-url-loader|webpack-dev-server" || true)
+            
+            if [ -n "$UNKNOWN_VULNS" ]; then
+              echo "❌ Unknown high/critical vulnerabilities found that require attention:"
+              echo "$UNKNOWN_VULNS"
+              npm audit --audit-level=high
+              exit 1
+            else
+              echo "✅ Only known development dependency vulnerabilities found (react-scripts ecosystem)"
+              echo "These are in development tools and do not affect production builds"
+              echo "Vulnerabilities: nth-check, css-select, svgo, @svgr/*, react-scripts, postcss, resolve-url-loader, webpack-dev-server"
+              echo "Continuing with build as these vulnerabilities are acceptable..."
+            fi
+          else
+            echo "✅ No security vulnerabilities detected"
+          fi
+          
+      - name: Validate package.json dependencies
+        run: |
+          # Check for required dependencies based on project structure
+          node -e "
+            const pkg = require('./package.json');
+            const required = ['@supabase/supabase-js', 'react-router-dom', '@neo4j-nvl/react', 'axios'];
+            const missing = required.filter(dep => !pkg.dependencies[dep]);
+            if (missing.length > 0) {
+              console.error('❌ Missing required dependencies:', missing.join(', '));
+              process.exit(1);
+            }
+            console.log('✅ All required dependencies are present');
+          "
+          
       - name: Build project
         run: npm run build
+        env:
+          # Provide build-time environment variables
+          REACT_APP_API_URL: "http://localhost:8000"
+          REACT_APP_SUPABASE_URL: "http://localhost:54321"
+          REACT_APP_SUPABASE_ANON_KEY: "dummy-key-for-build"
         
       - name: Check for build errors
         run: |
           if [ -d "build" ]; then
             echo "✅ Frontend builds successfully"
+            # Check if critical files exist
+            if [ -f "build/index.html" ] && [ -n "$(find build/static/js -name 'main.*.js' 2>/dev/null)" ]; then
+              echo "✅ Build artifacts are present"
+              echo "Found files:"
+              ls -la build/static/js/main.*.js 2>/dev/null || echo "Main JS files:"
+              find build/static/js -name 'main.*.js' -exec ls -la {} \;
+            else
+              echo "❌ Build artifacts missing"
+              echo "Contents of build directory:"
+              ls -la build/
+              echo "Contents of build/static/js directory:"
+              ls -la build/static/js/ 2>/dev/null || echo "static/js directory not found"
+              exit 1
+            fi
           else
             echo "❌ Frontend build failed"
             exit 1
           fi 
 
+  validate-env-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate environment template
+        run: |
+          if [ -f "environment.template" ]; then
+            echo "✅ Environment template exists"
+            # Check for required environment variables
+            required_vars=("NEO4J_URI" "NEO4J_USERNAME" "NEO4J_PASSWORD" "ANTHROPIC_API_KEY" "COHERE_API_KEY" "SUPABASE_URL" "SUPABASE_SERVICE_KEY")
+            for var in "${required_vars[@]}"; do
+              if grep -q "^$var=" environment.template; then
+                echo "✅ $var found in environment template"
+              else
+                echo "❌ $var missing from environment template"
+                exit 1
+              fi
+            done
+          else
+            echo "❌ environment.template not found"
+            exit 1
+          fi
+          
+      - name: Validate .env.example
+        run: |
+          if [ -f ".env.example" ]; then
+            echo "✅ .env.example exists"
+          else
+            echo "❌ .env.example not found"
+            exit 1
+          fi
+
   auto-format:
     runs-on: ubuntu-latest
-    needs: [test-backend, test-frontend] # Run after tests
+    needs: [validate-docker, test-backend, test-frontend, validate-env-config] # Run after tests
     if: github.ref == 'refs/heads/development' # Only run on the development branch
 
     steps:

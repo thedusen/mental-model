@@ -14,9 +14,9 @@ if not NEO4J_URI:
     raise ValueError("NEO4J_URI environment variable not set")
 
 neo4j_driver = GraphDatabase.driver(
-    NEO4J_URI,
-    auth=(os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD"))
+    NEO4J_URI, auth=(os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD"))
 )
+
 
 def get_db_session():
     return neo4j_driver.session()

@@ -7,6 +7,7 @@ function SearchResults({
   isLoading = false, 
   executionTime = 0,
   onResultClick,
+  onResultIsolate,
   onClear,
   isVisible = false 
 }) {
@@ -335,6 +336,69 @@ function SearchResults({
                     <span className="theme-name">{result.theme}</span>
                   </div>
                 )}
+
+                {/* Isolation Action Buttons */}
+                <div className="result-actions">
+                  <button
+                    className="result-action-btn primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleResultClick(result);
+                    }}
+                    title="Select this node"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <path d="M12 1v6"></path>
+                      <path d="M12 17v6"></path>
+                      <path d="m4.2 4.2 4.25 4.25"></path>
+                      <path d="m15.55 15.55 4.25 4.25"></path>
+                      <path d="M1 12h6"></path>
+                      <path d="M17 12h6"></path>
+                      <path d="m4.2 19.8 4.25-4.25"></path>
+                      <path d="m15.55 8.45 4.25-4.25"></path>
+                    </svg>
+                    Select
+                  </button>
+                  
+                  {onResultIsolate && (
+                    <>
+                      <button
+                        className="result-action-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onResultIsolate(result, false);
+                        }}
+                        title="Show only this node"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Isolate Node
+                      </button>
+                      
+                      <button
+                        className="result-action-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onResultIsolate(result, true);
+                        }}
+                        title="Show this node and all connected nodes"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="3"></circle>
+                          <circle cx="12" cy="6" r="1"></circle>
+                          <circle cx="12" cy="18" r="1"></circle>
+                          <circle cx="6" cy="12" r="1"></circle>
+                          <circle cx="18" cy="12" r="1"></circle>
+                          <line x1="12" y1="9" x2="12" y2="15"></line>
+                          <line x1="9" y1="12" x2="15" y2="12"></line>
+                        </svg>
+                        Show Connections
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             ))}
           </div>

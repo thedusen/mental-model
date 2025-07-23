@@ -12,7 +12,10 @@ function SearchBar({
   searchExecutionTime = 0,
   isSearchResultsVisible = false,
   onResultClick,
-  onFocusAll
+  onResultIsolate,
+  onFocusAll,
+  graphFilterMode = null,
+  onClearGraphFilter = null
 }) {
   const [query, setQuery] = useState('');
   const [isActive, setIsActive] = useState(false);
@@ -282,6 +285,30 @@ function SearchBar({
             </button>
           )}
 
+          {/* Show All Nodes Button (when graph is filtered) */}
+          {graphFilterMode && onClearGraphFilter && (
+            <button
+              type="button"
+              onClick={onClearGraphFilter}
+              className="show-all-button"
+              title="Show all nodes in the graph"
+              aria-label="Show all nodes"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <circle cx="12" cy="6" r="1"></circle>
+                <circle cx="12" cy="18" r="1"></circle>
+                <circle cx="6" cy="12" r="1"></circle>
+                <circle cx="18" cy="12" r="1"></circle>
+                <circle cx="18" cy="6" r="1"></circle>
+                <circle cx="18" cy="18" r="1"></circle>
+                <circle cx="6" cy="6" r="1"></circle>
+                <circle cx="6" cy="18" r="1"></circle>
+              </svg>
+              <span>Show All</span>
+            </button>
+          )}
+
           {/* Search Button */}
           {!isLoading && query.trim().length > 0 && (
             <button
@@ -299,7 +326,7 @@ function SearchBar({
           )}
 
           {/* Keyboard Hint */}
-          {!isActive && !query && (
+          {!isActive && !query && !graphFilterMode && (
             <div className="search-hint" id="search-hint">
               <kbd>⌘</kbd><kbd>K</kbd>
             </div>
@@ -344,6 +371,7 @@ function SearchBar({
         executionTime={searchExecutionTime}
         isVisible={isSearchResultsVisible}
         onResultClick={onResultClick}
+        onResultIsolate={onResultIsolate}
         onFocusAll={onFocusAll}
         onClear={onClear}
       />

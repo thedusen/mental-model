@@ -1,0 +1,291 @@
+/* LeftSidebar.css */
+.left-sidebar {
+  width: 280px;
+  height: 100vh;
+  background: #fafafa;
+  border-right: 1px solid #AEAEAE;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: width 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.left-sidebar.collapsed {
+  width: 60px;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 16px;
+  border-bottom: 1px solid #AEAEAE;
+  gap: 12px;
+}
+
+/* Sidebar Toggle in header */
+.sidebar-toggle {
+  width: 100%;
+  height: 32px;
+  background: transparent;
+  border: 1px solid #AEAEAE;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary, #6c757d);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  background: var(--background-hover, #f0f0f0);
+  color: var(--text-primary, #212529);
+  border-color: var(--border-hover, #e0e0e0);
+}
+
+.sidebar-toggle:focus {
+  outline: 2px solid var(--primary-color, #007bff);
+  outline-offset: 2px;
+}
+
+.new-chat-button {
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--background-primary, #ffffff);
+  color: var(--text-primary, #212529);
+  border: 1px solid #AEAEAE;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.new-chat-button:hover {
+  background: var(--background-hover, #f0f0f0);
+  border-color: var(--border-hover, #e0e0e0);
+}
+
+.new-chat-button:focus {
+  outline: 2px solid var(--primary-color, #007bff);
+  outline-offset: 2px;
+}
+
+.new-chat-button:active {
+  transform: translateY(1px);
+}
+
+/* Chat History Section */
+.chat-history-section {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* User Profile Section - at bottom */
+.user-profile-section {
+  margin-top: auto;
+  border-top: 1px solid #AEAEAE;
+}
+
+.chat-history-section .chat-history {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Override ChatHistory styles for sidebar mode */
+.left-sidebar .chat-history {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.left-sidebar .chat-history-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color, #e1e5e9);
+  background: var(--background-tertiary, #f1f3f5);
+}
+
+.left-sidebar .chat-history-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.left-sidebar .sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.left-sidebar .session-item {
+  padding: 12px;
+  margin: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.left-sidebar .session-item:hover {
+  background: var(--background-hover, #f0f0f0);
+  border-color: var(--border-hover, #d6d9dc);
+}
+
+.left-sidebar .session-item.active {
+  background: var(--primary-light, #e3f2fd);
+  border-color: var(--primary-color, #007bff);
+  color: var(--primary-color, #007bff);
+}
+
+.left-sidebar .session-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.left-sidebar .session-date {
+  font-size: 12px;
+  color: var(--text-secondary, #6c757d);
+}
+
+.left-sidebar .delete-button {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.left-sidebar .session-item:hover .delete-button {
+  opacity: 1;
+}
+
+/* Collapsed State */
+.collapsed-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px;
+  gap: 12px;
+  height: 100%;
+}
+
+.collapsed-menu-button,
+.collapsed-new-chat-button,
+.collapsed-history-button {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid #AEAEAE;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary, #6c757d);
+  transition: all 0.2s ease;
+}
+
+.collapsed-menu-button:hover,
+.collapsed-new-chat-button:hover,
+.collapsed-history-button:hover {
+  background: var(--background-hover, #f0f0f0);
+  color: var(--text-primary, #212529);
+  border-color: var(--border-hover, #e0e0e0);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.collapsed-new-chat-button {
+  margin-top: 8px;
+}
+
+.collapsed-menu-button:focus,
+.collapsed-new-chat-button:focus,
+.collapsed-history-button:focus {
+  outline: 2px solid var(--primary-color, #007bff);
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .left-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .left-sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+  
+  .left-sidebar.collapsed {
+    transform: translateX(-100%);
+    width: 280px; /* Full width when hidden on mobile */
+  }
+}
+
+/* Loading States */
+.sidebar-loading {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #6c757d);
+}
+
+/* Empty States */
+.sidebar-empty-state {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-secondary, #6c757d);
+}
+
+.sidebar-empty-state h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar-empty-state p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Focus Management */
+.left-sidebar:focus-within .sidebar-toggle {
+  opacity: 1;
+}
+
+/* Scrollbar Styling */
+.chat-history-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-history-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-history-section::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, #c1c1c1);
+  border-radius: 3px;
+}
+
+.chat-history-section::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, #a8a8a8);
+}
