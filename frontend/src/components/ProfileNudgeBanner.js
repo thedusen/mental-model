@@ -11,10 +11,12 @@ const ProfileNudgeBanner = ({
   userType = 'guest', // 'guest', 'not_started', 'in_progress', 'completed'
   variant = 'default', // 'default', 'compact', 'prominent'
   isVisible = true,
-  canDismiss = true
+  canDismiss = true,
+  preferredMode = 'chat' // 'chat' or 'modal'
 }) => {
   const [isDismissed, setIsDismissed] = useState(false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Don't show if explicitly not visible or dismissed
   if (!isVisible || isDismissed) {
@@ -31,11 +33,26 @@ const ProfileNudgeBanner = ({
     }, 300); // Match CSS animation duration
   };
 
-  const handleCTAClick = () => {
+  const handleCTAClick = async () => {
+    console.log('🔥 ProfileNudgeBanner CTA clicked - userType:', userType, 'preferredMode:', preferredMode);
+    
     if (userType === 'guest') {
+      console.log('👤 Guest user - opening auth');
       onOpenAuth?.();
     } else {
-      onStartQuestionnaire?.();
+      console.log('🎯 Authenticated user - starting questionnaire with mode:', preferredMode);
+      setIsLoading(true);
+      
+      try {
+        await onStartQuestionnaire?.(preferredMode);
+      } catch (error) {
+        console.error('Error starting questionnaire:', error);
+      } finally {
+        // Keep loading state for a moment to show user that action was taken
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+      }
     }
   };
 
@@ -54,8 +71,10 @@ const ProfileNudgeBanner = ({
         return {
           icon: '💡',
           title: 'Get Better Answers Tailored to Your Business',
-          message: 'Complete your 3-minute business profile to receive personalized insights and recommendations.',
-          ctaText: 'Start Profile',
+          message: preferredMode === 'chat' 
+            ? 'I\'ll ask you some quick questions here in chat to understand your business better and provide personalized insights.'
+            : 'Complete your 3-minute business profile to receive personalized insights and recommendations.',
+          ctaText: preferredMode === 'chat' ? 'Let\'s Chat!' : 'Start Profile',
           ctaClass: 'cta-primary'
         };
 
@@ -64,8 +83,10 @@ const ProfileNudgeBanner = ({
         return {
           icon: '⏳',
           title: `You Have ${questionsLeft} Questions Left`,
-          message: 'Complete your profile to unlock personalized business insights and recommendations.',
-          ctaText: 'Continue Profile',
+          message: preferredMode === 'chat'
+            ? 'Let\'s continue building your business profile right here in our conversation.'
+            : 'Complete your profile to unlock personalized business insights and recommendations.',
+          ctaText: preferredMode === 'chat' ? 'Continue in Chat' : 'Continue Profile',
           ctaClass: 'cta-secondary'
         };
 
@@ -101,8 +122,13 @@ const ProfileNudgeBanner = ({
             onClick={handleCTAClick}
             className={`nudge-cta compact ${content.ctaClass}`}
             aria-label={content.ctaText}
+            disabled={isLoading}
           >
-            {content.ctaText}
+            {isLoading ? (
+              <span className="loading-spinner-inline" />
+            ) : (
+              content.ctaText
+            )}
           </button>
           {canDismiss && (
             <button 
@@ -154,8 +180,13 @@ const ProfileNudgeBanner = ({
             <button 
               onClick={handleCTAClick}
               className={`nudge-cta prominent ${content.ctaClass}`}
+              disabled={isLoading}
             >
-              {content.ctaText}
+              {isLoading ? (
+                <span className="loading-spinner-inline" />
+              ) : (
+                content.ctaText
+              )}
             </button>
             
             {userType === 'not_started' && (
@@ -174,6 +205,15 @@ const ProfileNudgeBanner = ({
   // Default variant
   return (
     <div className={`profile-nudge-banner default ${userType} ${isAnimatingOut ? 'animating-out' : ''}`}>
+      {canDismiss && (
+        <button 
+          onClick={handleDismiss}
+          className="dismiss-button"
+          aria-label="Dismiss this notification"
+        >
+          ✕
+        </button>
+      )}
       <div className="nudge-content">
         <div className="nudge-main">
           <span className="nudge-icon">{content.icon}</span>
@@ -199,18 +239,14 @@ const ProfileNudgeBanner = ({
           <button 
             onClick={handleCTAClick}
             className={`nudge-cta ${content.ctaClass}`}
+            disabled={isLoading}
           >
-            {content.ctaText}
+            {isLoading ? (
+              <span className="loading-spinner-inline" />
+            ) : (
+              content.ctaText
+            )}
           </button>
-          {canDismiss && (
-            <button 
-              onClick={handleDismiss}
-              className="dismiss-button"
-              aria-label="Dismiss this notification"
-            >
-              ✕
-            </button>
-          )}
         </div>
       </div>
     </div>

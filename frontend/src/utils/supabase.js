@@ -90,14 +90,20 @@ export const chat = {
     console.log('🎯 createSession user:', user);
     if (!user) throw new Error('User not authenticated');
 
-    const { data, error } = await supabase
-      .from('chat_sessions')
-      .insert({ user_id: user.id, title })
-      .select()
-      .single();
+    try {
+      console.log('🔍 About to call supabase.from...');
+      const { data, error } = await supabase
+        .from('chat_sessions')
+        .insert({ user_id: user.id, title })
+        .select()
+        .single();
 
-    console.log('🎯 createSession result:', { data, error });
-    return { data, error };
+      console.log('🎯 createSession result:', { data, error });
+      return { data, error };
+    } catch (err) {
+      console.error('❌ createSession caught error:', err);
+      return { data: null, error: err };
+    }
   },
 
   // Get user's chat sessions
@@ -130,8 +136,41 @@ export const chat = {
     return { data, error };
   },
 
-  // Add a message to a session
+  // Add a message to a session via backend API (enables auto-title generation)
   addMessage: async (sessionId, role, content, metadata = {}) => {
+    const user = await auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_URL}/api/chat/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          role,
+          content,
+          metadata,
+          user_id: user.id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return { data, error: null };
+    } catch (err) {
+      console.error('Error adding message via API:', err);
+      return { data: null, error: err };
+    }
+  },
+
+  // Legacy method for direct Supabase access (if needed)
+  addMessageDirect: async (sessionId, role, content, metadata = {}) => {
     const { data, error } = await supabase
       .from('chat_messages')
       .insert({

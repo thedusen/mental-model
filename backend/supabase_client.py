@@ -10,7 +10,8 @@ from typing import Optional
 SUPABASE_URL = os.getenv("SUPABASE_URL", "http://127.0.0.1:54321")
 SUPABASE_SERVICE_KEY = os.getenv(
     "SUPABASE_SERVICE_KEY",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU",
+    # Fallback to anon key for development if service key not available
+    os.getenv("SUPABASE_ANON_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOuoJN_mz4WnKu11FU3gZoD6p8LTOgXhHO6M")
 )
 
 # Initialize supabase client lazily to avoid CI failures
@@ -91,6 +92,11 @@ class SupabaseService:
             "metadata": metadata or {},
         }
         response = self.client.table("chat_messages").insert(data).execute()
+        
+        # Update the session's updated_at timestamp to maintain proper ordering
+        if response.data:
+            self.client.table("chat_sessions").update({"updated_at": "now()"}).eq("id", session_id).execute()
+        
         return response.data[0] if response.data else None
 
     async def get_session(self, session_id: str):
@@ -157,14 +163,18 @@ class SupabaseService:
 
     async def get_business_profile_progress(self, user_id: str):
         """Get user's business profile progress"""
-        response = (
-            self.client.table("user_questionnaire_progress")
-            .select("*")
-            .eq("user_id", user_id)
-            .single()
-            .execute()
-        )
-        return response.data if response.data else None
+        try:
+            response = (
+                self.client.table("user_questionnaire_progress")
+                .select("*")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            # Return first result if exists, None otherwise
+            return response.data[0] if response.data else None
+        except Exception as e:
+            print(f"Error getting business profile progress for user {user_id}: {e}")
+            return None
 
     async def get_business_profile_answers(self, user_id: str):
         """Get user's business profile answers"""
@@ -190,10 +200,26 @@ class SupabaseService:
 
         answered_at = answered_at or datetime.now().isoformat()
 
+        # Get the question text from the questions table
+        question_response = (
+            self.client.table("business_profile_questions")
+            .select("question_text, answer_type")
+            .eq("id", question_id)
+            .single()
+            .execute()
+        )
+        
+        if not question_response.data:
+            raise Exception(f"Question with id {question_id} not found")
+        
+        question_data = question_response.data
+
         data = {
             "user_id": user_id,
             "question_id": question_id,
+            "question_text": question_data["question_text"],
             "answer": answer,
+            "answer_type": question_data["answer_type"],
             "answered_at": answered_at,
             "session_id": session_id,
             "is_complete": True,
@@ -224,7 +250,11 @@ class SupabaseService:
         from datetime import datetime
 
         # First, get current progress
-        progress = await self.get_business_profile_progress(user_id)
+        try:
+            progress = await self.get_business_profile_progress(user_id)
+        except Exception as e:
+            print(f"Error getting progress during nudge dismissal for user {user_id}: {e}")
+            progress = None
 
         if progress:
             # Update existing progress record

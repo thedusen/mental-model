@@ -11,7 +11,8 @@ const LeftSidebar = ({
   currentSessionId, 
   onNewChat,
   isCollapsed,
-  onToggleCollapse
+  onToggleCollapse,
+  onAuthTrigger
 }) => {
   const [user, setUser] = useState(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -136,7 +137,7 @@ const LeftSidebar = ({
           {/* User Profile Section - moved to bottom */}
           <div className="user-profile-section">
             {!isLoadingAuth && (
-              <UserProfile user={user} />
+              <UserProfile user={user} onAuthTrigger={onAuthTrigger} />
             )}
           </div>
         </>

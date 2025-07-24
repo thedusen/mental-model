@@ -269,7 +269,7 @@ const PreferencesModal = ({ user, onClose }) => {
   );
 };
 
-const UserProfile = ({ user }) => {
+const UserProfile = ({ user, onAuthTrigger }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
@@ -302,6 +302,14 @@ const UserProfile = ({ user }) => {
       return () => document.removeEventListener('keydown', handleKeyDown);
     }
   }, [showDropdown]);
+
+  // Expose auth trigger to parent component
+  useEffect(() => {
+    if (onAuthTrigger) {
+      // Pass the function reference, don't call it immediately
+      onAuthTrigger(() => setShowAuth(true));
+    }
+  }, [onAuthTrigger]);
 
   const handleSignOut = async () => {
     try {

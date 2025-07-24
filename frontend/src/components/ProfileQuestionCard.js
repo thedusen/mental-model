@@ -60,7 +60,20 @@ const ProfileQuestionCard = ({
         );
 
       case 'select':
-        const options = JSON.parse(question.options || '[]');
+        let options = [];
+        try {
+          // Check if options is already an array (parsed) or a string (needs parsing)
+          if (Array.isArray(question.options)) {
+            options = question.options;
+          } else if (typeof question.options === 'string') {
+            options = JSON.parse(question.options || '[]');
+          } else {
+            options = question.options ? [question.options] : [];
+          }
+        } catch (error) {
+          console.error('Error parsing select options for question', question.id, error);
+          options = [];
+        }
         return (
           <div className="profile-question-select-group">
             {options.map((option, index) => (
@@ -80,7 +93,20 @@ const ProfileQuestionCard = ({
         );
 
       case 'scale':
-        const scaleOptions = JSON.parse(question.options || '{}');
+        let scaleOptions = {};
+        try {
+          // Check if options is already an object (parsed) or a string (needs parsing)
+          if (typeof question.options === 'object' && question.options !== null) {
+            scaleOptions = question.options;
+          } else if (typeof question.options === 'string') {
+            scaleOptions = JSON.parse(question.options || '{}');
+          } else {
+            scaleOptions = {};
+          }
+        } catch (error) {
+          console.error('Error parsing scale options for question', question.id, error);
+          scaleOptions = {};
+        }
         const { min = 1, max = 5, labels = [] } = scaleOptions;
         return (
           <div className="profile-question-scale">
@@ -127,24 +153,6 @@ const ProfileQuestionCard = ({
       role="form"
       aria-labelledby={`question-${question.id}-title`}
     >
-      <div className="profile-question-header">
-        <div className="question-progress">
-          <span className="question-number">
-            Question {questionNumber} of {totalQuestions}
-          </span>
-          <div className="progress-bar">
-            <div 
-              className="progress-fill" 
-              style={{ width: `${(questionNumber / totalQuestions) * 100}%` }}
-              role="progressbar" 
-              aria-valuenow={questionNumber}
-              aria-valuemin={0}
-              aria-valuemax={totalQuestions}
-              aria-label={`Question ${questionNumber} of ${totalQuestions}`}
-            />
-          </div>
-        </div>
-      </div>
 
       <div className="profile-question-content">
         <h3 

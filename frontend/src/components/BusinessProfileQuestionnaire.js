@@ -298,14 +298,6 @@ const BusinessProfileQuestionnaire = ({
           </button>
         )}
         
-        <div className="nav-info">
-          <span className="question-counter">
-            {currentQuestionIndex + 1} of {questions.length}
-          </span>
-          <span className="completion-info">
-            {Object.keys(answers).length} answered ({completionPercentage}% complete)
-          </span>
-        </div>
 
         {mode === 'modal' && (
           <button 

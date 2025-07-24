@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { auth, chat } from '../utils/supabase';
 import './ChatHistory.css';
 
@@ -8,6 +8,12 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   const [error, setError] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [user, setUser] = useState(null);
+  const [showRefreshButton, setShowRefreshButton] = useState(false);
+
+  // Debug: Log when user state changes
+  useEffect(() => {
+    console.log('👤 User state changed:', user);
+  }, [user]);
   
   // Search functionality state
   const [isSearchMode, setIsSearchMode] = useState(false);
@@ -19,39 +25,152 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   // Session editing state
   const [editingSessionId, setEditingSessionId] = useState(null);
   const [editingTitle, setEditingTitle] = useState('');
+  
+  // Ref to track if component is mounted to prevent stuck loading
+  const isMountedRef = useRef(true);
+  
+  // Debug: Log when component mounts
+  useEffect(() => {
+    console.log('🎬 ChatHistory component mounted');
+    return () => {
+      console.log('🎬 ChatHistory component unmounting');
+    };
+  }, []);
+
+  // Timer for showing refresh button after loading timeout
+  useEffect(() => {
+    let timer;
+    if (isLoading) {
+      setShowRefreshButton(false);
+      timer = setTimeout(() => {
+        if (isLoading) {
+          setShowRefreshButton(true);
+        }
+      }, 5000); // Show refresh button after 5 seconds of loading
+    } else {
+      setShowRefreshButton(false);
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isLoading]);
+
+  // Memoized loadSessions function to prevent recreation on every render
+  const loadSessions = useCallback(async (userToCheck = null) => {
+    const currentUser = userToCheck || user;
+    console.log('🔍 loadSessions called - user:', currentUser);
+    if (!currentUser) {
+      setIsLoading(false);
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    setShowRefreshButton(false); // Restore proper state management
+    
+    try {
+      console.log('📞 Calling chat.getSessions()...');
+      
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 10000);
+      });
+      
+      const sessionPromise = chat.getSessions();
+      const { data, error: sessionError } = await Promise.race([sessionPromise, timeoutPromise]);
+      
+      console.log('📊 getSessions result:', { data, error: sessionError });
+      
+      if (sessionError) {
+        console.error('❌ Session error from Supabase:', sessionError);
+        throw new Error(sessionError.message || 'Failed to load sessions');
+      }
+      
+      console.log('✅ Setting sessions:', data || []);
+      
+      // Always set sessions - React state management is safe
+      setSessions(data || []);
+      console.log('✅ Sessions set successfully, about to set isLoading to false');
+    } catch (err) {
+      console.error('❌ Error loading sessions:', err);
+      
+      // Only update state if component is still mounted
+      if (isMountedRef.current) {
+        // More specific error handling
+        if (err.message && err.message.includes('JWT')) {
+          setError('Authentication expired - please sign in again');
+        } else if (err.message && err.message.includes('network')) {
+          setError('Network error - check your connection');
+        } else if (err.message && err.message.includes('timeout')) {
+          setError('Connection timeout - slow network detected');
+        } else {
+          setError('Failed to load chat history - please try again');
+        }
+        
+        // Set empty sessions on error to prevent infinite loading
+        setSessions([]);
+      }
+    } finally {
+      console.log('🏁 Finally block reached - isMountedRef.current:', isMountedRef.current);
+      // Always set loading to false - React state updates are safe
+      console.log('🏁 Setting isLoading to false');
+      setIsLoading(false);
+    }
+  }, [user]); // Dependencies: user state
 
   // Get current user on component mount and listen for auth changes
   useEffect(() => {
+    console.log('🚀 ChatHistory useEffect triggered - Initial setup starting');
+    
     const getCurrentUser = async () => {
       try {
         console.log('🔍 ChatHistory getCurrentUser starting...');
+        console.log('🔍 ChatHistory mounted status:', isMountedRef.current);
+        
         const currentUser = await auth.getUser();
         console.log('🔍 ChatHistory getCurrentUser result:', currentUser);
+        console.log('🔍 User exists check:', !!currentUser);
+        console.log('🔍 User ID:', currentUser?.id);
+        
+        console.log('🔍 About to check mounted status...');
+        console.log('🔍 isMountedRef.current:', isMountedRef.current);
+        
+        // Always try to set the user state - the component re-rendering is normal
+        console.log('✅ Setting user state to:', currentUser);
         setUser(currentUser);
         
         if (currentUser) {
-          console.log('✅ ChatHistory found user, loading sessions...');
+          console.log('✅ ChatHistory found user, calling loadSessions...');
+          // Always call loadSessions - React state management is safe
           await loadSessions(currentUser);
+          console.log('✅ ChatHistory loadSessions completed');
         } else {
           console.log('❌ ChatHistory no user found, setting loading false');
           setIsLoading(false);
         }
       } catch (err) {
         console.error('❌ ChatHistory error getting user:', err);
-        setError('Failed to get user information');
-        setIsLoading(false);
+        console.error('❌ Full error details:', err);
+        if (isMountedRef.current) {
+          setError('Failed to get user information');
+          setIsLoading(false);
+        }
       }
     };
     
     // Listen for auth state changes to catch when user signs in
     const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
       console.log('🔍 ChatHistory auth state change:', event, session?.user);
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+        console.log('🔑 Auth event - setting user and loading sessions');
+        // Always set user state for auth events
         setUser(session?.user);
         if (session?.user) {
           await loadSessions(session.user);
         }
       } else if (event === 'SIGNED_OUT') {
+        console.log('🚪 User signed out - clearing data');
         setUser(null);
         setSessions([]);
       }
@@ -62,35 +181,26 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
     // Cleanup subscription
     return () => {
       subscription.unsubscribe();
+      isMountedRef.current = false;
     };
   }, []);
 
-  const loadSessions = async (userToCheck = null) => {
-    const currentUser = userToCheck || user;
-    console.log('🔍 loadSessions called - user:', currentUser);
-    if (!currentUser) return;
-    
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      console.log('📞 Calling chat.getSessions()...');
-      const { data, error: sessionError } = await chat.getSessions();
-      console.log('📊 getSessions result:', { data, error: sessionError });
-      
-      if (sessionError) {
-        throw sessionError;
+  // Handle page visibility changes to refresh data when user returns
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user) {
+        // User returned to the page and we have a user - refresh sessions
+        console.log('🔄 Page became visible, refreshing sessions...');
+        loadSessions();
       }
-      
-      console.log('✅ Setting sessions:', data || []);
-      setSessions(data || []);
-    } catch (err) {
-      console.error('❌ Error loading sessions:', err);
-      setError('Failed to load chat history');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [user, loadSessions]); // Fixed: removed isLoading to prevent infinite loops
 
   const handleSessionClick = async (session) => {
     try {
@@ -328,11 +438,15 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
 
   // Sidebar mode always shows content (no expand/collapse)
   if (sidebarMode) {
+    console.log('🎯 Rendering sidebar mode - user:', user, 'isLoading:', isLoading, 'sessions.length:', sessions.length);
     return (
       <div className="chat-history sidebar-mode">
         {!user ? (
           <div className="guest-state">
             <p className="guest-message">Sign in to save chat history</p>
+            <div style={{ fontSize: '10px', color: '#999', marginTop: '5px' }}>
+              Debug: user={user ? 'exists' : 'null'}, isLoading={isLoading ? 'true' : 'false'}
+            </div>
           </div>
         ) : (
           <>
@@ -425,7 +539,25 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
             </div>
 
             {isLoading ? (
-              <div className="loading-message">Loading history...</div>
+              <div className="loading-message">
+                Loading conversations...
+                {showRefreshButton && (
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowRefreshButton(false);
+                      setError(null);
+                      loadSessions();
+                    }} 
+                    className="loading-refresh-button"
+                    style={{ marginTop: '30px', display: 'block', margin: '30px auto 0' }}
+                    type="button"
+                  >
+                    ↻ Refresh
+                  </button>
+                )}
+              </div>
             ) : sessions.length === 0 ? (
               <div className="empty-state">
                 <p>No conversations yet.</p>
@@ -511,7 +643,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                             aria-label={`Edit conversation title: ${session.title || 'Untitled'}`}
                             title="Edit title"
                           >
-                            ✏️
+                            ✎
                           </button>
                           <button
                             className="delete-button"
@@ -519,7 +651,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                             aria-label={`Delete conversation: ${session.title || 'Untitled'}`}
                             title="Delete conversation"
                           >
-                            🗑️
+                            ×
                           </button>
                         </>
                       )}
@@ -573,7 +705,25 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
           )}
 
           {isLoading ? (
-            <div className="loading-message">Loading history...</div>
+            <div className="loading-message">
+              Loading conversations...
+              {showRefreshButton && (
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowRefreshButton(false);
+                    setError(null);
+                    loadSessions();
+                  }} 
+                  className="loading-refresh-button"
+                  style={{ marginTop: '30px', display: 'block', margin: '30px auto 0' }}
+                  type="button"
+                >
+                  ↻ Refresh
+                </button>
+              )}
+            </div>
           ) : sessions.length === 0 ? (
             <div className="empty-state">
               <p>No conversations yet.</p>
@@ -659,7 +809,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                           aria-label={`Edit conversation title: ${session.title || 'Untitled'}`}
                           title="Edit title"
                         >
-                          ✏️
+                          ✎
                         </button>
                         <button
                           className="delete-button"
@@ -667,7 +817,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                           aria-label={`Delete conversation: ${session.title || 'Untitled'}`}
                           title="Delete conversation"
                         >
-                          🗑️
+                          ×
                         </button>
                       </>
                     )}
