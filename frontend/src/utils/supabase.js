@@ -1,7 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get Supabase configuration from environment variables
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'http://localhost:54321';
+// Get Supabase configuration from environment variables with validation
+const supabaseUrl = (() => {
+  const envUrl = process.env.REACT_APP_SUPABASE_URL;
+  console.log('Environment SUPABASE_URL:', envUrl);
+  
+  if (!envUrl || envUrl.trim() === '') {
+    console.warn('REACT_APP_SUPABASE_URL not set, using localhost fallback');
+    return 'http://localhost:54321';
+  }
+  
+  try {
+    new URL(envUrl);
+    return envUrl;
+  } catch (error) {
+    console.error('Invalid REACT_APP_SUPABASE_URL:', envUrl, error);
+    throw new Error(`Invalid Supabase URL configuration: ${envUrl}`);
+  }
+})();
+
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
 
