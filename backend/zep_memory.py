@@ -512,17 +512,19 @@ class ZepMemoryService:
     Extended Zep service specifically for questionnaire integration
     Handles progressive saving and upsert of business profile questions
     """
-    
+
     def __init__(self):
         self.manager = ZepMemoryManager()
         self.client = self.manager.client
         self.enabled = self.manager.enabled
-    
-    async def add_or_update_business_context(self, user_id: str, entity_data: Dict[str, Any]) -> None:
+
+    async def add_or_update_business_context(
+        self, user_id: str, entity_data: Dict[str, Any]
+    ) -> None:
         """
         Add or update a business profile question entity in Zep
         Uses proper upsert logic: delete existing entity then add new one
-        
+
         Args:
             user_id: User identifier
             entity_data: Dictionary containing entity information with entity_id, question, answer, etc.
@@ -530,62 +532,63 @@ class ZepMemoryService:
         if not self.enabled:
             logger.warning("Zep is disabled - add_or_update_business_context skipping")
             return
-            
+
         try:
             # Ensure user exists
             self.manager.ensure_user_exists(user_id)
-            
-            entity_id = entity_data.get('entity_id')
+
+            entity_id = entity_data.get("entity_id")
             if not entity_id:
                 logger.error("No entity_id provided in entity_data")
                 return
-            
+
             # Step 1: Delete existing entity if it exists (proper upsert)
             await self._delete_questionnaire_entity(user_id, entity_id)
-            
+
             # Step 2: Add new/updated entity
             business_context = self._format_business_context(entity_data)
-            
+
             # Add to Zep graph for knowledge extraction
             import json
+
             self.client.graph.add(
                 user_id=user_id,
                 data=json.dumps(entity_data),
-                type="json"  # Use standard Zep data type instead of custom type
+                type="json",  # Use standard Zep data type instead of custom type
             )
-            
+
             # Also add as conversation context using a consistent session pattern
             session_id = f"business_profile_{user_id}"
-            
+
             # Create message with structured context
             context_message = Message(
-                role="system",
-                content=f"Business Profile Context: {business_context}"
+                role="system", content=f"Business Profile Context: {business_context}"
             )
-            
+
             # Add to memory - this will automatically extract entities and facts
-            self.client.memory.add(
-                session_id=session_id,
-                messages=[context_message]
+            self.client.memory.add(session_id=session_id, messages=[context_message])
+
+            logger.info(
+                f"Upserted business context in Zep for user {user_id}: {entity_id}"
             )
-            
-            logger.info(f"Upserted business context in Zep for user {user_id}: {entity_id}")
-            
+
         except Exception as e:
-            logger.error(f"Error upserting business context in Zep for user {user_id}: {e}")
+            logger.error(
+                f"Error upserting business context in Zep for user {user_id}: {e}"
+            )
             # Don't raise - we don't want questionnaire flow to fail due to Zep issues
-    
+
     def _format_business_context(self, entity_data: Dict[str, Any]) -> str:
         """
         Format entity data into human-readable context for better knowledge extraction
         """
-        question = entity_data.get('question', 'Unknown question')
-        answer = entity_data.get('answer', 'No answer provided')
-        category = entity_data.get('category', 'general')
-        question_num = entity_data.get('question_number', 0)
-        
+        question = entity_data.get("question", "Unknown question")
+        answer = entity_data.get("answer", "No answer provided")
+        category = entity_data.get("category", "general")
+        question_num = entity_data.get("question_number", 0)
+
         return f"Q{question_num} ({category}): {question} Answer: {answer}"
-    
+
     async def get_business_profile_context(self, user_id: str) -> Optional[str]:
         """
         Get all business profile context for this user as a formatted string
@@ -593,35 +596,37 @@ class ZepMemoryService:
         """
         if not self.enabled:
             return None
-            
+
         try:
             session_id = f"business_profile_{user_id}"
             memory = self.client.memory.get(session_id=session_id)
-            
+
             if hasattr(memory, "context") and memory.context:
                 return memory.context
-            
+
             # Fallback to extracting from facts
             if hasattr(memory, "facts") and memory.facts:
                 facts = [str(fact) for fact in memory.facts]
                 return "\n".join(facts)
-                
+
             return None
-            
+
         except Exception as e:
-            logger.error(f"Error getting business profile context for user {user_id}: {e}")
+            logger.error(
+                f"Error getting business profile context for user {user_id}: {e}"
+            )
             return None
-    
+
     async def _delete_questionnaire_entity(self, user_id: str, entity_id: str) -> bool:
         """
         Delete a specific questionnaire entity by updating the memory session
         Since we're using memory sessions, we don't delete individual entities but rely on
         the latest message containing the most up-to-date context
-        
+
         Args:
             user_id: User identifier
             entity_id: Consistent entity ID like 'business_profile_q1'
-            
+
         Returns:
             True (deletion is handled by message replacement)
         """
@@ -629,192 +634,220 @@ class ZepMemoryService:
             # For memory session approach, "deletion" is handled by the fact that
             # each new message with the same entity_id will effectively replace the old one
             # when we generate context. The latest message with that entity_id takes precedence.
-            logger.debug(f"Entity deletion handled by message replacement for {entity_id} (user {user_id})")
+            logger.debug(
+                f"Entity deletion handled by message replacement for {entity_id} (user {user_id})"
+            )
             return True
-            
+
         except Exception as e:
-            logger.warning(f"Error in questionnaire entity deletion for {entity_id} (user {user_id}): {e}")
+            logger.warning(
+                f"Error in questionnaire entity deletion for {entity_id} (user {user_id}): {e}"
+            )
             return False
-    
+
     async def get_questionnaire_entities(self, user_id: str) -> List[Dict[str, Any]]:
         """
         Get all questionnaire entities for a user using memory session approach
         This is more reliable than the graph API for our structured data
-        
+
         Args:
             user_id: User identifier
-            
+
         Returns:
             List of questionnaire entity dictionaries
         """
         if not self.enabled:
             return []
-            
+
         try:
             questionnaire_entities = []
             session_id = f"business_profile_{user_id}"
-            
+
             # Get memory from the business profile session
             try:
                 memory = self.client.memory.get(session_id=session_id)
             except Exception as session_error:
-                logger.debug(f"Memory session not found for {session_id}: {session_error}")
+                logger.debug(
+                    f"Memory session not found for {session_id}: {session_error}"
+                )
                 return []
-            
+
             if hasattr(memory, "messages") and memory.messages:
                 # Parse questionnaire data from messages
                 for message in memory.messages:
                     if hasattr(message, "content") and message.content:
                         content = message.content
-                        
+
                         # Look for our business profile context messages
                         if "Business Profile Context:" in content:
                             # Parse the structured context - handle both single line and multi-line formats
                             import re
-                            
+
                             # Pattern to match: "Q1 (category): question text Answer: answer text"
-                            pattern = r'Q(\d+) \(([^)]+)\): ([^A]+) Answer: (.+?)(?=\s+Q\d+|$)'
+                            pattern = r"Q(\d+) \(([^)]+)\): ([^A]+) Answer: (.+?)(?=\s+Q\d+|$)"
                             matches = re.findall(pattern, content)
-                            
+
                             for match in matches:
                                 try:
                                     question_num = int(match[0])
                                     category = match[1].strip()
                                     question = match[2].strip()
                                     answer = match[3].strip()
-                                    
+
                                     entity_info = {
-                                        'entity_id': f'business_profile_q{question_num}',
-                                        'question_number': question_num,
-                                        'question': question,
-                                        'answer': answer,
-                                        'category': category,
-                                        'answered_at': getattr(message, 'created_at', None)
+                                        "entity_id": f"business_profile_q{question_num}",
+                                        "question_number": question_num,
+                                        "question": question,
+                                        "answer": answer,
+                                        "category": category,
+                                        "answered_at": getattr(
+                                            message, "created_at", None
+                                        ),
                                     }
                                     questionnaire_entities.append(entity_info)
-                                    
+
                                 except (ValueError, IndexError):
                                     continue
-            
+
             # Remove duplicates, keeping the latest by timestamp
             seen_entities = {}
             for entity in questionnaire_entities:
-                entity_id = entity.get('entity_id')
+                entity_id = entity.get("entity_id")
                 if entity_id:
                     # If we haven't seen this entity, or this one is newer, keep it
-                    if (entity_id not in seen_entities or 
-                        self._is_entity_newer(entity, seen_entities[entity_id])):
+                    if entity_id not in seen_entities or self._is_entity_newer(
+                        entity, seen_entities[entity_id]
+                    ):
                         seen_entities[entity_id] = entity
-            
+
             final_entities = list(seen_entities.values())
-            final_entities.sort(key=lambda x: x.get('question_number', 0))
-            
-            logger.debug(f"Retrieved {len(final_entities)} questionnaire entities for user {user_id}")
+            final_entities.sort(key=lambda x: x.get("question_number", 0))
+
+            logger.debug(
+                f"Retrieved {len(final_entities)} questionnaire entities for user {user_id}"
+            )
             return final_entities
-            
+
         except Exception as e:
-            logger.error(f"Error getting questionnaire entities for user {user_id}: {e}")
+            logger.error(
+                f"Error getting questionnaire entities for user {user_id}: {e}"
+            )
             return []
-    
-    async def get_questionnaire_context_direct(self, user_id: str, query: Optional[str] = None) -> Optional[str]:
+
+    async def get_questionnaire_context_direct(
+        self, user_id: str, query: Optional[str] = None
+    ) -> Optional[str]:
         """
         Get questionnaire context using direct entity access instead of regex pattern matching
         This replaces the unreliable regex-based context retrieval
-        
+
         Args:
             user_id: User identifier
             query: Optional query to filter relevant questionnaire answers
-            
+
         Returns:
             Formatted questionnaire context string
         """
         if not self.enabled:
             return None
-            
+
         try:
             questionnaire_entities = await self.get_questionnaire_entities(user_id)
-            
+
             if not questionnaire_entities:
                 return None
-            
+
             # If query provided, filter for relevant entities
             if query and len(query.strip()) > 0:
                 query_lower = query.lower()
                 relevant_entities = []
-                
+
                 for entity in questionnaire_entities:
-                    question = entity.get('question', '').lower()
-                    answer = entity.get('answer', '').lower()
-                    category = entity.get('category', '').lower()
-                    
+                    question = entity.get("question", "").lower()
+                    answer = entity.get("answer", "").lower()
+                    category = entity.get("category", "").lower()
+
                     # Check if query keywords match question, answer, or category
-                    if any(keyword in question or keyword in answer or keyword in category
-                           for keyword in query_lower.split() if len(keyword) > 3):
+                    if any(
+                        keyword in question or keyword in answer or keyword in category
+                        for keyword in query_lower.split()
+                        if len(keyword) > 3
+                    ):
                         relevant_entities.append(entity)
-                
+
                 # Use relevant entities if found, otherwise fall back to all
-                entities_to_use = relevant_entities if relevant_entities else questionnaire_entities[:5]
+                entities_to_use = (
+                    relevant_entities
+                    if relevant_entities
+                    else questionnaire_entities[:5]
+                )
             else:
                 # Use all entities, limited to avoid token bloat
                 entities_to_use = questionnaire_entities
-            
+
             # Format into context string
             context_parts = ["Business Profile Context:"]
-            
+
             for entity in entities_to_use:
-                question_num = entity.get('question_number', '?')
-                category = entity.get('category', 'general')
-                question = entity.get('question', 'Unknown question')
-                answer = entity.get('answer', 'No answer')
-                
+                question_num = entity.get("question_number", "?")
+                category = entity.get("category", "general")
+                question = entity.get("question", "Unknown question")
+                answer = entity.get("answer", "No answer")
+
                 context_parts.append(f"Q{question_num} ({category}): {question}")
                 context_parts.append(f"Answer: {answer}")
                 context_parts.append("")  # Empty line for readability
-            
+
             context_string = "\n".join(context_parts)
-            logger.debug(f"Generated direct questionnaire context for user {user_id}: {len(context_string)} chars")
-            
+            logger.debug(
+                f"Generated direct questionnaire context for user {user_id}: {len(context_string)} chars"
+            )
+
             return context_string
-            
+
         except Exception as e:
-            logger.error(f"Error getting direct questionnaire context for user {user_id}: {e}")
+            logger.error(
+                f"Error getting direct questionnaire context for user {user_id}: {e}"
+            )
             return None
-    
-    def _is_entity_newer(self, entity1: Dict[str, Any], entity2: Dict[str, Any]) -> bool:
+
+    def _is_entity_newer(
+        self, entity1: Dict[str, Any], entity2: Dict[str, Any]
+    ) -> bool:
         """
         Compare two entities to determine which is newer based on timestamp
-        
+
         Args:
             entity1: First entity to compare
             entity2: Second entity to compare
-            
+
         Returns:
             True if entity1 is newer than entity2
         """
         try:
-            timestamp1 = entity1.get('answered_at')
-            timestamp2 = entity2.get('answered_at')
-            
+            timestamp1 = entity1.get("answered_at")
+            timestamp2 = entity2.get("answered_at")
+
             # If either timestamp is missing, prefer the one with a timestamp
             if not timestamp1 and not timestamp2:
                 return False  # Neither has timestamp, keep existing
             if not timestamp1:
                 return False  # entity2 has timestamp, keep it
             if not timestamp2:
-                return True   # entity1 has timestamp, use it
-            
+                return True  # entity1 has timestamp, use it
+
             # Both have timestamps, compare them
             # Convert to comparable format if they're strings
             if isinstance(timestamp1, str) and isinstance(timestamp2, str):
                 return timestamp1 > timestamp2
-            
+
             # For other timestamp objects, try direct comparison
             return timestamp1 > timestamp2
-            
+
         except Exception:
             # If comparison fails, prefer entity1 (newer in processing order)
             return True
-    
+
     async def delete_business_profile_data(self, user_id: str) -> bool:
         """
         Delete business profile specific data from Zep
@@ -824,12 +857,14 @@ class ZepMemoryService:
             session_id = f"business_profile_{user_id}"
             # Note: Zep doesn't have direct session deletion, but memory will be cleaned up
             # when user data is deleted via the main delete_user_data method
-            
+
             logger.info(f"Marked business profile data for cleanup for user {user_id}")
             return True
-            
+
         except Exception as e:
-            logger.error(f"Error deleting business profile data for user {user_id}: {e}")
+            logger.error(
+                f"Error deleting business profile data for user {user_id}: {e}"
+            )
             return False
 
 

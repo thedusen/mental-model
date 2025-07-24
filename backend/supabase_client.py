@@ -11,7 +11,10 @@ SUPABASE_URL = os.getenv("SUPABASE_URL", "http://127.0.0.1:54321")
 SUPABASE_SERVICE_KEY = os.getenv(
     "SUPABASE_SERVICE_KEY",
     # Fallback to anon key for development if service key not available
-    os.getenv("SUPABASE_ANON_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOuoJN_mz4WnKu11FU3gZoD6p8LTOgXhHO6M")
+    os.getenv(
+        "SUPABASE_ANON_KEY",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOuoJN_mz4WnKu11FU3gZoD6p8LTOgXhHO6M",
+    ),
 )
 
 # Initialize supabase client lazily to avoid CI failures
@@ -92,11 +95,13 @@ class SupabaseService:
             "metadata": metadata or {},
         }
         response = self.client.table("chat_messages").insert(data).execute()
-        
+
         # Update the session's updated_at timestamp to maintain proper ordering
         if response.data:
-            self.client.table("chat_sessions").update({"updated_at": "now()"}).eq("id", session_id).execute()
-        
+            self.client.table("chat_sessions").update({"updated_at": "now()"}).eq(
+                "id", session_id
+            ).execute()
+
         return response.data[0] if response.data else None
 
     async def get_session(self, session_id: str):
@@ -208,10 +213,10 @@ class SupabaseService:
             .single()
             .execute()
         )
-        
+
         if not question_response.data:
             raise Exception(f"Question with id {question_id} not found")
-        
+
         question_data = question_response.data
 
         data = {
@@ -253,7 +258,9 @@ class SupabaseService:
         try:
             progress = await self.get_business_profile_progress(user_id)
         except Exception as e:
-            print(f"Error getting progress during nudge dismissal for user {user_id}: {e}")
+            print(
+                f"Error getting progress during nudge dismissal for user {user_id}: {e}"
+            )
             progress = None
 
         if progress:

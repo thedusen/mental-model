@@ -199,16 +199,22 @@ async def get_optimized_user_context(user_id: str, session_id: str, query: str) 
     try:
         # Get business profile context using direct entity access (more reliable)
         from zep_memory import zep_service
-        
-        questionnaire_context = await zep_service.get_questionnaire_context_direct(user_id, query)
+
+        questionnaire_context = await zep_service.get_questionnaire_context_direct(
+            user_id, query
+        )
         if questionnaire_context:
             context_parts.append(questionnaire_context)
-            logger.debug(f"Added direct questionnaire context ({len(questionnaire_context)} chars)")
+            logger.debug(
+                f"Added direct questionnaire context ({len(questionnaire_context)} chars)"
+            )
         else:
             # Fallback to old regex-based method if direct access fails
             business_profile = await get_cached_business_profile(user_id)
             if business_profile:
-                relevant_elements = get_relevant_business_elements(query, business_profile)
+                relevant_elements = get_relevant_business_elements(
+                    query, business_profile
+                )
 
                 if relevant_elements:
                     business_context = "Business Profile Context:\n"
@@ -1773,17 +1779,21 @@ async def delete_user_data(user_id: str):
 
 # ===== CHAT-INTEGRATED QUESTIONNAIRE ENDPOINTS =====
 
+
 class QuestionnaireStartRequest(BaseModel):
     user_id: str
+
 
 class QuestionnaireAnswerRequest(BaseModel):
     user_id: str
     question_id: int
     answer_text: str
 
+
 class QuestionnaireCommandRequest(BaseModel):
     user_id: str
     command: str
+
 
 class QuestionnaireEditRequest(BaseModel):
     user_id: str
@@ -1793,6 +1803,7 @@ class QuestionnaireEditRequest(BaseModel):
 
 # Import questionnaire service
 from questionnaire_service import questionnaire_service
+
 
 @app.post("/api/questionnaire/start")
 async def start_questionnaire(request: QuestionnaireStartRequest):
@@ -1822,14 +1833,14 @@ async def get_current_question(user_id: str):
 async def submit_answer(request: QuestionnaireAnswerRequest):
     """Submit answer for a question, save to DB and Zep, return next question"""
     try:
-        logger.info(f"🔍 Received questionnaire answer: user_id={request.user_id[:8]}..., question_id={request.question_id}, answer_text='{request.answer_text[:50]}...'")
-        
-        result = await questionnaire_service.submit_answer(
-            request.user_id, 
-            request.question_id, 
-            request.answer_text
+        logger.info(
+            f"🔍 Received questionnaire answer: user_id={request.user_id[:8]}..., question_id={request.question_id}, answer_text='{request.answer_text[:50]}...'"
         )
-        
+
+        result = await questionnaire_service.submit_answer(
+            request.user_id, request.question_id, request.answer_text
+        )
+
         logger.info(f"✅ Questionnaire answer result: {result}")
         return result
     except Exception as e:
@@ -1842,8 +1853,7 @@ async def handle_command(request: QuestionnaireCommandRequest):
     """Handle special commands: skip, pause, previous, resume"""
     try:
         result = await questionnaire_service.handle_command(
-            request.user_id, 
-            request.command
+            request.user_id, request.command
         )
         return result
     except Exception as e:
@@ -1867,9 +1877,7 @@ async def edit_response(request: QuestionnaireEditRequest):
     """Update a specific question response and sync to Zep"""
     try:
         success = await questionnaire_service.update_response(
-            request.user_id,
-            request.question_id,
-            request.new_answer
+            request.user_id, request.question_id, request.new_answer
         )
         if success:
             return {"message": "Response updated successfully"}
