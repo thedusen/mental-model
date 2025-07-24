@@ -10,12 +10,19 @@ const supabaseUrl = (() => {
     return 'http://localhost:54321';
   }
   
+  // Auto-add https:// protocol if missing (common Supabase deployment issue)
+  let finalUrl = envUrl.trim();
+  if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+    finalUrl = `https://${finalUrl}`;
+    console.log('Added https:// protocol to Supabase URL:', finalUrl);
+  }
+  
   try {
-    new URL(envUrl);
-    return envUrl;
+    new URL(finalUrl);
+    return finalUrl;
   } catch (error) {
-    console.error('Invalid REACT_APP_SUPABASE_URL:', envUrl, error);
-    throw new Error(`Invalid Supabase URL configuration: ${envUrl}`);
+    console.error('Invalid REACT_APP_SUPABASE_URL:', finalUrl, error);
+    throw new Error(`Invalid Supabase URL configuration: ${finalUrl}`);
   }
 })();
 
