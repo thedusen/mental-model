@@ -68,8 +68,24 @@ function App() {
   const graphViewRef = useRef(null);
   const chatPanelRef = useRef(null);
   
-  // API URL configuration
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  // API URL configuration with validation
+  const API_URL = (() => {
+    const envUrl = process.env.REACT_APP_API_URL;
+    console.log('Environment API_URL:', envUrl);
+    
+    if (!envUrl || envUrl.trim() === '') {
+      console.warn('REACT_APP_API_URL not set, using localhost fallback');
+      return 'http://localhost:8000';
+    }
+    
+    try {
+      new URL(envUrl);
+      return envUrl;
+    } catch (error) {
+      console.error('Invalid REACT_APP_API_URL:', envUrl, error);
+      throw new Error(`Invalid API URL configuration: ${envUrl}`);
+    }
+  })();
 
 
   // Handler to deselect the currently selected node (triggered by canvas clicks)
