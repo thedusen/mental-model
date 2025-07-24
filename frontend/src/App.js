@@ -20,13 +20,15 @@ function App() {
   const [showIntroPanel, setShowIntroPanel] = useState(true);
   const [hasClickedNode, setHasClickedNode] = useState(false);
   
-  // Left sidebar state - start collapsed by default
-  const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(true);
-  const [isLeftSidebarHovered, setIsLeftSidebarHovered] = useState(false);
+  // Left sidebar state - start open by default
+  const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(false);
   const [currentChatSession, setCurrentChatSession] = useState(null);
   
   // Chat input state for passing messages from intro panel to chat
   const [chatInput, setChatInput] = useState('');
+  
+  // Authentication trigger ref - function to trigger auth sidebar
+  const authTriggerRef = useRef(null);
   
   // Chat message handling - this will be passed to ChatPanel
   const handleAddChatMessage = (message) => {
@@ -365,9 +367,9 @@ function App() {
           onSessionSelect={handleSessionSelect}
           currentSessionId={currentChatSession?.id}
           onNewChat={handleNewChat}
-          isCollapsed={isLeftSidebarCollapsed && !isLeftSidebarHovered}
+          isCollapsed={isLeftSidebarCollapsed}
           onToggleCollapse={() => setIsLeftSidebarCollapsed(!isLeftSidebarCollapsed)}
-          onHoverChange={setIsLeftSidebarHovered}
+          onAuthTrigger={(triggerFn) => { authTriggerRef.current = triggerFn; }}
         />
         
         <main className={`main-content ${isLeftSidebarCollapsed ? 'sidebar-collapsed' : ''}`} id="main-content" role="main">
@@ -422,6 +424,7 @@ function App() {
                 externalInput={chatInput}
                 onExternalInputReceived={() => setChatInput('')}
                 onSessionChange={setCurrentChatSession}
+                onOpenSidebarAuth={() => authTriggerRef.current && authTriggerRef.current()}
               />
             </div>
           </div>

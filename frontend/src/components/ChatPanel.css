@@ -5,13 +5,72 @@
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), 
-              border-radius 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+              border-radius 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+              border-color 0.3s ease;
   overflow: hidden;
   height: auto;
   min-height: auto;
   max-height: 100%;
   max-width: 40rem;
   margin: 0 auto;
+}
+
+/* Questionnaire mode styling */
+.chat-panel.questionnaire-active {
+  border: 2px solid var(--accent-color, #007AFF);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+}
+
+/* Chat-integrated questionnaire progress indicator */
+.questionnaire-progress-indicator {
+  background: var(--accent-color, #007AFF);
+  color: white;
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px 12px 0 0;
+  flex-shrink: 0;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.questionnaire-progress-indicator .progress-bar {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  height: 4px;
+  margin: 8px 0;
+  overflow: hidden;
+}
+
+.questionnaire-progress-indicator .progress-fill {
+  background: white;
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.questionnaire-progress-indicator .questionnaire-commands {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+/* Animation for progress indicator */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ensure progress indicator doesn't interfere with collapsed state */
+.chat-panel.collapsed .questionnaire-progress-indicator {
+  display: none;
 }
 
 .chat-panel.no-messages {
@@ -587,5 +646,204 @@
   @keyframes pillSlideOut {
     from { opacity: 1; }
     to { opacity: 0; }
+  }
+}
+
+/* Business Profile Questionnaire Modal Styles */
+.questionnaire-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+
+.questionnaire-modal-overlay .business-profile-questionnaire {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile styles for questionnaire modal */
+@media (max-width: 768px) {
+  .questionnaire-modal-overlay {
+    padding: 10px;
+  }
+  
+  .questionnaire-modal-overlay .business-profile-questionnaire {
+    max-height: calc(100vh - 20px);
+    border-radius: 12px;
+  }
+}
+
+/* Ensure the modal questionnaire doesn't conflict with existing components */
+.questionnaire-modal-overlay .profile-nudge-banner {
+  display: none;
+}
+
+/* Questionnaire Focus Mode Styles */
+.questionnaire-focus-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1500;
+  animation: overlayFadeIn 0.4s ease-out;
+}
+
+/* Hide sidebars when questionnaire is in focus mode */
+.questionnaire-focus-overlay ~ * .sidebar,
+.questionnaire-focus-overlay ~ * .main-content .left-sidebar {
+  display: none;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+.chat-panel.questionnaire-focus-mode {
+  width: 900px;
+  max-width: calc(100vw - 40px);
+  height: 80vh;
+  max-height: calc(100vh - 40px);
+  min-height: 500px;
+  z-index: 1600;
+  transition: width 0.4s ease, height 0.4s ease, max-width 0.4s ease;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Hide chat header in focus mode */
+.chat-panel.questionnaire-focus-mode .chat-header {
+  display: none;
+}
+
+/* Adjust messages area in focus mode */
+.chat-panel.questionnaire-focus-mode .messages {
+  flex: 1;
+  max-height: none;
+  overflow-y: auto;
+  padding: 0 24px 16px 24px;
+}
+
+/* Hide context pills in focus mode */
+.chat-panel.questionnaire-focus-mode .context-pills-container {
+  display: none;
+}
+
+/* Adjust input area in focus mode */
+.chat-panel.questionnaire-focus-mode .input-area {
+  margin: 0 24px 0 24px;
+  border-radius: 12px;
+}
+
+/* Style questionnaire messages differently in focus mode */
+.chat-panel.questionnaire-focus-mode .message-wrapper.assistant .message {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+}
+
+/* Enhanced typography for questionnaire messages */
+.chat-panel.questionnaire-focus-mode .message-wrapper.assistant .message h3,
+.chat-panel.questionnaire-focus-mode .message-wrapper.assistant .message h4 {
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.chat-panel.questionnaire-focus-mode .message-wrapper.assistant .message strong {
+  color: var(--primary);
+}
+
+/* Mobile responsive for focus mode */
+@media (max-width: 768px) {
+  .chat-panel.questionnaire-focus-mode {
+    width: calc(100vw - 20px);
+    height: 90vh;
+    max-height: calc(100vh - 20px);
+    min-height: 400px;
+  }
+  
+  .chat-panel.questionnaire-focus-mode .messages {
+    padding: 0 16px 12px 16px;
+  }
+  
+  .chat-panel.questionnaire-focus-mode .input-area {
+    margin: 0 16px 0 16px;
+  }
+}
+
+/* Exit animation for overlay */
+.questionnaire-focus-overlay.exiting {
+  animation: overlayFadeOut 0.3s ease-in forwards;
+}
+
+@keyframes overlayFadeOut {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+/* Reduced motion support for focus mode */
+@media (prefers-reduced-motion: reduce) {
+  .chat-panel.questionnaire-focus-mode {
+    animation: none;
+    transform: translate(-50%, -50%);
+  }
+  
+  .questionnaire-focus-overlay {
+    animation: none;
+  }
+  
+  .chat-panel.questionnaire-focus-mode.exiting {
+    animation: none;
+    opacity: 0;
+  }
+  
+  .questionnaire-focus-overlay.exiting {
+    animation: none;
+    opacity: 0;
   }
 }

@@ -10,6 +10,7 @@ const Authentication = ({ onAuthSuccess, onClose, mode = 'modal' }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,6 +80,13 @@ const Authentication = ({ onAuthSuccess, onClose, mode = 'modal' }) => {
     setFullName('');
   };
 
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300); // Match animation duration
+  };
+
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError(null);
@@ -103,18 +111,19 @@ const Authentication = ({ onAuthSuccess, onClose, mode = 'modal' }) => {
   const isSlideMode = mode === 'slide';
   
   return (
-    <div className={`auth-overlay ${isSlideMode ? 'slide-mode' : 'modal-mode'}`}>
-      <div className={`auth-container ${isSlideMode ? 'auth-slide-panel' : 'auth-modal'}`} 
+    <div className={`auth-overlay ${isSlideMode ? 'slide-mode' : 'modal-mode'} ${isClosing ? 'closing' : ''}`} onClick={handleClose}>
+      <div className={`auth-container ${isSlideMode ? 'auth-slide-panel' : 'auth-modal'} ${isClosing ? 'closing' : ''}`} 
            role="dialog" 
            aria-labelledby="auth-title" 
-           aria-modal="true">
+           aria-modal="true"
+           onClick={(e) => e.stopPropagation()}>
         <div className="auth-header">
           <h2 id="auth-title">
             {isSignUp ? 'Create Account' : 'Sign In'}
           </h2>
           <button 
             className="close-button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close authentication dialog"
           >
             {isSlideMode ? (
@@ -236,17 +245,20 @@ const Authentication = ({ onAuthSuccess, onClose, mode = 'modal' }) => {
           </div>
         </form>
 
-        <div className="auth-info">
-          <p>
-            <strong>Why create an account?</strong>
-          </p>
-          <ul>
-            <li>💬 Save and access your conversation history</li>
-            <li>🔄 Resume conversations across sessions</li>
-            <li>🔍 Search through your past interactions</li>
-            <li>⚙️ Personalize your experience</li>
-          </ul>
-        </div>
+        {isSignUp && (
+          <div className="auth-info">
+            <h3>Why create an account?</h3>
+            <p className="info-description">
+              Get the most out of your conversations with the Profit Architect mental model.
+            </p>
+            <ul>
+              <li>💬 Save and access your conversation history</li>
+              <li>🔄 Resume conversations across sessions</li>
+              <li>🔍 Search through your past interactions</li>
+              <li>⚙️ Personalize your experience with Dan's insights</li>
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,17 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any, Union
 import logging
 import os
 import asyncio
 import json
 import time
+import numpy as np
 from functools import lru_cache
 from config import anthropic_client, cohere_client, get_db_session
 from keep_warm import keep_warm_service
 from prompts import SYSTEM_PROMPT
 from supabase_client import supabase_service
+from zep_memory import zep_memory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,6 +23,363 @@ logger = logging.getLogger(__name__)
 # Simple in-memory cache for graph data
 _graph_cache = {"data": None, "timestamp": 0}
 CACHE_TTL = 300  # 5 minutes in seconds
+
+# Business profile cache - 24 hour TTL since profiles change infrequently
+_business_profile_cache = {}
+BUSINESS_PROFILE_CACHE_TTL = 86400  # 24 hours in seconds
+
+
+def cosine_similarity(vec1, vec2):
+    """Calculate cosine similarity between two vectors"""
+    try:
+        vec1 = np.array(vec1)
+        vec2 = np.array(vec2)
+        return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+    except Exception:
+        return 0.0
+
+
+async def get_cached_business_profile(user_id: str) -> Optional[Dict[str, Any]]:
+    """Get business profile from cache or fetch from Zep using business data session"""
+    current_time = time.time()
+    cache_key = f"business_profile_{user_id}"
+
+    # Check cache first
+    if cache_key in _business_profile_cache:
+        cached_data = _business_profile_cache[cache_key]
+        if current_time - cached_data["timestamp"] < BUSINESS_PROFILE_CACHE_TTL:
+            logger.debug(f"Using cached business profile for user {user_id}")
+            return cached_data["data"]
+
+    # Fetch from Zep using the dedicated business profile method
+    try:
+        business_profile = zep_memory.get_business_profile(user_id)
+
+        if business_profile:
+            # Cache the result
+            _business_profile_cache[cache_key] = {
+                "data": business_profile,
+                "timestamp": current_time,
+            }
+            logger.debug(f"Cached business profile for user {user_id}")
+            return business_profile
+
+    except Exception as e:
+        logger.warning(f"Failed to fetch business profile for user {user_id}: {e}")
+
+    return None
+
+
+def get_relevant_business_elements(
+    query: str, business_profile: Dict[str, Any], max_elements: int = 5
+) -> Dict[str, Any]:
+    """Select most relevant business profile elements based on query similarity"""
+    if not business_profile:
+        return {}
+
+    try:
+        # Generate embedding for the query
+        query_embedding = generate_query_embedding(query)
+
+        relevant_elements = {}
+
+        # Define business context categories for smarter matching
+        strategic_keywords = [
+            "challenge",
+            "goal",
+            "strategy",
+            "growth",
+            "vision",
+            "mission",
+            "success",
+            "objectives",
+        ]
+        operational_keywords = [
+            "team",
+            "employees",
+            "operations",
+            "process",
+            "workflow",
+            "capacity",
+            "efficiency",
+        ]
+        financial_keywords = [
+            "revenue",
+            "profit",
+            "cost",
+            "budget",
+            "financial",
+            "money",
+            "sales",
+            "pricing",
+        ]
+        industry_keywords = [
+            "industry",
+            "market",
+            "competition",
+            "customer",
+            "client",
+            "service",
+            "product",
+        ]
+
+        query_lower = query.lower()
+
+        for key, value in business_profile.items():
+            if not value or not isinstance(value, str):
+                continue
+
+            # Calculate semantic similarity
+            element_text = f"{key.replace('_', ' ')}: {value}"
+            try:
+                element_embedding = generate_query_embedding(element_text)
+                similarity = cosine_similarity(query_embedding, element_embedding)
+            except Exception:
+                similarity = 0.0
+
+            # Boost relevance based on keyword matching
+            relevance_boost = 0.0
+            if any(keyword in query_lower for keyword in strategic_keywords):
+                if key in [
+                    "biggest_challenge",
+                    "main_business_goal",
+                    "success_metrics",
+                    "primary_goals",
+                ]:
+                    relevance_boost = 0.2
+            elif any(keyword in query_lower for keyword in operational_keywords):
+                if key in [
+                    "employee_count",
+                    "team_capacity_for_growth",
+                    "business_operations_when_away",
+                    "work_similarity_to_team",
+                ]:
+                    relevance_boost = 0.2
+            elif any(keyword in query_lower for keyword in financial_keywords):
+                if key in ["revenue_range", "profitability_confidence"]:
+                    relevance_boost = 0.2
+            elif any(keyword in query_lower for keyword in industry_keywords):
+                if key in ["industry"]:
+                    relevance_boost = 0.2
+
+            final_score = similarity + relevance_boost
+
+            # Only include elements above relevance threshold
+            if final_score > 0.25:  # Lowered threshold to be more inclusive
+                relevant_elements[key] = {
+                    "value": value,
+                    "relevance_score": final_score,
+                    "similarity": similarity,
+                    "boost": relevance_boost,
+                }
+
+        # Return top elements sorted by relevance
+        sorted_elements = dict(
+            sorted(
+                relevant_elements.items(),
+                key=lambda x: x[1]["relevance_score"],
+                reverse=True,
+            )[:max_elements]
+        )
+
+        logger.debug(
+            f"Selected {len(sorted_elements)} relevant business elements for query: {query[:50]}..."
+        )
+        return sorted_elements
+
+    except Exception as e:
+        logger.warning(f"Error in business element selection: {e}")
+        return {}
+
+
+async def get_optimized_user_context(user_id: str, session_id: str, query: str) -> str:
+    """Get optimized user context combining business profile and conversational memory"""
+    context_parts = []
+
+    try:
+        # Get business profile context using direct entity access (more reliable)
+        from zep_memory import zep_service
+
+        questionnaire_context = await zep_service.get_questionnaire_context_direct(
+            user_id, query
+        )
+        if questionnaire_context:
+            context_parts.append(questionnaire_context)
+            logger.debug(
+                f"Added direct questionnaire context ({len(questionnaire_context)} chars)"
+            )
+        else:
+            # Fallback to old regex-based method if direct access fails
+            business_profile = await get_cached_business_profile(user_id)
+            if business_profile:
+                relevant_elements = get_relevant_business_elements(
+                    query, business_profile
+                )
+
+                if relevant_elements:
+                    business_context = "Business Profile Context:\n"
+                    for key, data in relevant_elements.items():
+                        readable_key = key.replace("_", " ").title()
+                        business_context += f"- {readable_key}: {data['value']}\n"
+                    context_parts.append(business_context.strip())
+                    logger.debug(
+                        f"Added fallback business context with {len(relevant_elements)} elements"
+                    )
+
+        # Get conversational memory context using optimized Zep approach
+        try:
+            zep_memory.ensure_user_exists(user_id)
+            memory = zep_memory.client.memory.get(session_id=session_id)
+
+            if hasattr(memory, "context") and memory.context:
+                conversational_context = (
+                    f"Conversation Context:\n{memory.context[:800]}"  # Limit length
+                )
+                context_parts.append(conversational_context)
+                logger.debug("Added conversational context from Zep memory.context")
+
+        except Exception as memory_error:
+            logger.debug(f"Zep memory context not available: {memory_error}")
+            # Fallback to basic recent facts if memory.context fails
+            try:
+                user_memory = zep_memory.get_relevant_memory(session_id, query, limit=3)
+                if user_memory and user_memory.get("facts"):
+                    facts_context = "Recent Facts:\n" + "\n".join(
+                        [f"- {fact}" for fact in user_memory["facts"][:3]]
+                    )
+                    context_parts.append(facts_context)
+                    logger.debug("Used fallback facts context")
+            except Exception:
+                pass  # No conversational context available
+
+    except Exception as e:
+        logger.warning(f"Error getting optimized user context: {e}")
+
+    # Combine all context parts
+    if context_parts:
+        combined_context = "\n\n".join(context_parts)
+        # Ensure context doesn't exceed token limits (approximately 1000 tokens = 4000 chars)
+        if len(combined_context) > 3500:
+            combined_context = combined_context[:3500] + "..."
+        return f"\n\nPersonalized Context:\n{combined_context}"
+
+    return ""
+
+
+def estimate_token_count(text: str) -> int:
+    """Rough estimation of token count (approximately 4 characters per token)"""
+    return len(text) // 4
+
+
+def manage_context_length(
+    expert_context: str, user_context: str, max_tokens: int = 2000
+) -> tuple[str, str]:
+    """
+    Manage context length to fit within token limits with intelligent prioritization
+
+    Args:
+        expert_context: Expert knowledge graph context
+        user_context: User's business profile and conversational context
+        max_tokens: Maximum token budget for context
+
+    Returns:
+        Tuple of (managed_expert_context, managed_user_context)
+    """
+    expert_tokens = estimate_token_count(expert_context)
+    user_tokens = estimate_token_count(user_context)
+    total_tokens = expert_tokens + user_tokens
+
+    if total_tokens <= max_tokens:
+        return expert_context, user_context
+
+    # Allocate token budget: 40% expert, 60% user (since user context is more personalized)
+    expert_budget = int(max_tokens * 0.4)
+    user_budget = int(max_tokens * 0.6)
+
+    # Truncate expert context if needed
+    managed_expert = expert_context
+    if expert_tokens > expert_budget:
+        # Keep the most important parts (first few entries)
+        lines = expert_context.split("\n")
+        truncated_lines = []
+        current_tokens = 0
+
+        for line in lines:
+            line_tokens = estimate_token_count(line)
+            if current_tokens + line_tokens > expert_budget:
+                if len(truncated_lines) == 0:  # Always keep at least one line
+                    truncated_lines.append(line[: expert_budget * 4] + "...")
+                break
+            truncated_lines.append(line)
+            current_tokens += line_tokens
+
+        managed_expert = "\n".join(truncated_lines)
+        if len(truncated_lines) < len(lines):
+            managed_expert += f"\n... ({len(lines) - len(truncated_lines)} more expert insights available)"
+
+    # Truncate user context if needed (prioritize business profile over conversation)
+    managed_user = user_context
+    if user_tokens > user_budget:
+        # Split user context into business profile and conversation parts
+        parts = user_context.split("\n\n")
+        business_part = ""
+        conversation_part = ""
+
+        for part in parts:
+            if "Business Profile Context:" in part:
+                business_part = part
+            elif "Conversation Context:" in part:
+                conversation_part = part
+
+        # Prioritize business profile (70% of user budget)
+        business_budget = int(user_budget * 0.7)
+        conversation_budget = user_budget - business_budget
+
+        managed_parts = []
+
+        # Handle business profile
+        if business_part:
+            business_tokens = estimate_token_count(business_part)
+            if business_tokens > business_budget:
+                # Keep most relevant business elements
+                lines = business_part.split("\n")
+                truncated_business = []
+                current_tokens = 0
+
+                for line in lines:
+                    line_tokens = estimate_token_count(line)
+                    if current_tokens + line_tokens > business_budget:
+                        break
+                    truncated_business.append(line)
+                    current_tokens += line_tokens
+
+                managed_parts.append("\n".join(truncated_business))
+            else:
+                managed_parts.append(business_part)
+
+        # Handle conversation context
+        if conversation_part:
+            conversation_tokens = estimate_token_count(conversation_part)
+            if conversation_tokens > conversation_budget:
+                # Keep the most recent/relevant parts
+                truncated_conversation = (
+                    conversation_part[: conversation_budget * 4] + "..."
+                )
+                managed_parts.append(truncated_conversation)
+            else:
+                managed_parts.append(conversation_part)
+
+        managed_user = "\n\n".join(managed_parts)
+
+    # Log context management statistics
+    final_expert_tokens = estimate_token_count(managed_expert)
+    final_user_tokens = estimate_token_count(managed_user)
+    logger.debug(
+        f"Context management: {expert_tokens}→{final_expert_tokens} expert, {user_tokens}→{final_user_tokens} user tokens"
+    )
+
+    return managed_expert, managed_user
+
 
 app = FastAPI(
     title="Mental Model Knowledge Graph API",
@@ -97,6 +456,9 @@ class ChatQuery(BaseModel):
     selected_node: Optional[ChatContextNode] = None
     # NEW: chat_context_node - only used when explicitly set by user
     chat_context_node: Optional[ChatContextNode] = None
+    # NEW: Zep integration fields
+    user_id: Optional[str] = None
+    session_id: Optional[str] = None
 
 
 class TokensUsed(BaseModel):
@@ -164,7 +526,7 @@ async def chat(query: ChatQuery):
         # Generate embedding for the current question
         embedding = generate_query_embedding(query.question)
 
-        # Retrieve relevant context from knowledge graph
+        # Retrieve relevant context from expert knowledge graph
         with get_db_session() as session:
             result = session.run(
                 """
@@ -182,13 +544,30 @@ async def chat(query: ChatQuery):
             )
             context_data = [dict(record) for record in result]
 
-        # Build knowledge graph context string
+        # Build expert knowledge graph context string
         if context_data:
-            context_str = "Knowledge Graph Context:\n" + "\n".join(
+            expert_context_str = "Expert Knowledge Graph Context:\n" + "\n".join(
                 [f"- {item['entity']}: {item['description']}" for item in context_data]
             )
         else:
-            context_str = "No specific knowledge graph context found for this question."
+            expert_context_str = (
+                "No specific expert knowledge graph context found for this question."
+            )
+
+        # Get optimized user context from Zep (business profile + conversational memory)
+        user_context_str = ""
+        if query.session_id and query.user_id:
+            user_context_str = await get_optimized_user_context(
+                user_id=query.user_id, session_id=query.session_id, query=query.question
+            )
+
+        # Apply intelligent context length management
+        managed_expert_context, managed_user_context = manage_context_length(
+            expert_context_str, user_context_str, max_tokens=2000
+        )
+
+        # Combine managed contexts
+        context_str = managed_expert_context + managed_user_context
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
@@ -282,13 +661,30 @@ async def chat_stream(query: ChatQuery):
             )
             context_data = [dict(record) for record in result]
 
-        # Build knowledge graph context string
+        # Build expert knowledge graph context string
         if context_data:
-            context_str = "Knowledge Graph Context:\n" + "\n".join(
+            expert_context_str = "Expert Knowledge Graph Context:\n" + "\n".join(
                 [f"- {item['entity']}: {item['description']}" for item in context_data]
             )
         else:
-            context_str = "No specific knowledge graph context found for this question."
+            expert_context_str = (
+                "No specific expert knowledge graph context found for this question."
+            )
+
+        # Get optimized user context from Zep (business profile + conversational memory)
+        user_context_str = ""
+        if query.session_id and query.user_id:
+            user_context_str = await get_optimized_user_context(
+                user_id=query.user_id, session_id=query.session_id, query=query.question
+            )
+
+        # Apply intelligent context length management for streaming
+        managed_expert_context, managed_user_context = manage_context_length(
+            expert_context_str, user_context_str, max_tokens=2000
+        )
+
+        # Combine managed contexts
+        context_str = managed_expert_context + managed_user_context
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
@@ -860,6 +1256,63 @@ async def add_message(request: AddMessageRequest):
         if not message_data:
             raise HTTPException(status_code=500, detail="Failed to add message")
 
+        # Add message to Zep for knowledge extraction
+        try:
+            # Get session to determine user_id
+            session_data = await supabase_service.get_session(request.session_id)
+            if session_data and session_data.get("user_id"):
+                user_id = session_data["user_id"]
+
+                # Add this message to Zep memory
+                zep_memory.add_conversation_memory(
+                    user_id=user_id,
+                    session_id=request.session_id,
+                    messages=[{"role": request.role, "content": request.content}],
+                )
+                logger.info(
+                    f"Added message to Zep memory for user {user_id}, session {request.session_id}"
+                )
+        except Exception as zep_error:
+            logger.warning(f"Failed to add message to Zep memory: {zep_error}")
+            # Continue without failing the message addition
+
+        # Auto-generate title if this is an assistant message and session doesn't have a title
+        if request.role == "assistant":
+            try:
+                # Get session data to check if it already has a title
+                session_data = await supabase_service.get_session(request.session_id)
+
+                # Only generate title if session exists and doesn't have a meaningful title
+                if session_data and (
+                    not session_data.get("title")
+                    or session_data.get("title") == "Untitled conversation"
+                ):
+                    # Check if we have enough messages for title generation
+                    messages = await supabase_service.get_session_messages(
+                        request.session_id, limit=10
+                    )
+
+                    if len(messages) >= 2:  # Need at least user + assistant message
+                        try:
+                            title = await generate_session_title(request.session_id)
+                            if title:
+                                await supabase_service.update_session(
+                                    request.session_id, {"title": title}
+                                )
+                                logger.info(
+                                    f"Auto-generated title for session {request.session_id}: {title}"
+                                )
+                        except Exception as title_error:
+                            logger.warning(
+                                f"Failed to auto-generate title for session {request.session_id}: {title_error}"
+                            )
+                            # Continue without failing the message addition
+            except Exception as auto_title_error:
+                logger.warning(
+                    f"Auto-title generation failed for session {request.session_id}: {auto_title_error}"
+                )
+                # Continue without failing the message addition
+
         return MessageResponse(
             id=message_data["id"],
             session_id=message_data["session_id"],
@@ -916,6 +1369,103 @@ async def delete_session(session_id: str):
         raise HTTPException(status_code=500, detail="Failed to delete session")
 
 
+async def generate_session_title(session_id: str) -> str:
+    """Generate a title for a session based on initial messages."""
+    try:
+        # Get the first few messages from the session
+        messages = await supabase_service.get_session_messages(session_id, limit=4)
+
+        if not messages or len(messages) < 2:
+            return None  # Not enough messages to generate a title
+
+        # Find the first user message and assistant response
+        user_message = None
+        assistant_message = None
+
+        for msg in messages:
+            if msg["role"] == "user" and user_message is None:
+                user_message = msg["content"]
+            elif (
+                msg["role"] == "assistant"
+                and assistant_message is None
+                and user_message is not None
+            ):
+                assistant_message = msg["content"]
+                break
+
+        if not user_message:
+            return None
+
+        # Create a prompt for title generation
+        title_prompt = f"""Generate a concise, descriptive title (maximum 6 words) for this conversation based on the initial exchange:
+
+User: {user_message[:300]}...
+{f'Assistant: {assistant_message[:200]}...' if assistant_message else ''}
+
+Return only the title, no additional text or punctuation. Make it specific to the topic discussed.
+
+Title:"""
+
+        # Use Anthropic to generate the title
+        response = anthropic_client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=20,
+            temperature=0.3,  # Lower temperature for more consistent titles
+            messages=[{"role": "user", "content": title_prompt}],
+        )
+
+        title = ""
+        for block in response.content:
+            if block.type == "text":
+                title = block.text.strip()
+                break
+
+        # Clean up the title (remove quotes, ensure reasonable length)
+        title = title.strip("\"'").strip()
+        if len(title) > 50:
+            title = title[:47] + "..."
+
+        return title if title else None
+
+    except Exception as e:
+        logger.error(f"Error generating session title: {e}")
+        return None
+
+
+@app.post("/api/chat/sessions/{session_id}/generate-title")
+async def generate_title_endpoint(session_id: str):
+    """Generate and update session title based on conversation content"""
+    try:
+        # Generate the title
+        title = await generate_session_title(session_id)
+
+        if not title:
+            raise HTTPException(
+                status_code=400,
+                detail="Unable to generate title - session may not have enough messages",
+            )
+
+        # Update the session with the new title
+        session_data = await supabase_service.update_session(
+            session_id, {"title": title}
+        )
+
+        if not session_data:
+            raise HTTPException(status_code=404, detail="Session not found")
+
+        return {
+            "session_id": session_id,
+            "title": title,
+            "message": "Title generated successfully",
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in generate title endpoint: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate session title")
+
+
 @app.get("/api/chat/search")
 async def search_messages(user_id: str, q: str, limit: int = 20):
     """Search messages across all user sessions"""
@@ -937,6 +1487,416 @@ async def search_messages(user_id: str, q: str, limit: int = 20):
     except Exception as e:
         logger.error(f"Error searching messages: {e}")
         raise HTTPException(status_code=500, detail="Failed to search messages")
+
+
+# Business Profile Questionnaire Endpoints
+class BusinessProfileAnswer(BaseModel):
+    user_id: str
+    question_id: int
+    answer: str
+    answered_at: Optional[str] = None
+    session_id: Optional[str] = None
+
+
+class BusinessProfileProgressResponse(BaseModel):
+    user_id: str
+    questions_completed: int
+    total_questions: int
+    started_at: Optional[str]
+    completed_at: Optional[str]
+    last_question_at: Optional[str]
+    current_question_id: Optional[int]
+
+
+class BusinessProfileQuestionResponse(BaseModel):
+    id: int
+    question_text: str
+    answer_type: str
+    options: Optional[Union[List[str], Dict[str, Any]]]
+    order_index: int
+
+
+@app.get("/api/business-profile/questions")
+async def get_business_profile_questions():
+    """Get all business profile questions"""
+    try:
+        questions = await supabase_service.get_business_profile_questions()
+        return {
+            "questions": [
+                BusinessProfileQuestionResponse(
+                    id=q["id"],
+                    question_text=q["question_text"],
+                    answer_type=q["answer_type"],
+                    options=q.get("options"),
+                    order_index=q["order_index"],
+                )
+                for q in questions
+            ],
+            "total": len(questions),
+        }
+    except Exception as e:
+        logger.error(f"Error getting business profile questions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get questions")
+
+
+@app.get("/api/business-profile/progress/{user_id}")
+async def get_business_profile_progress(user_id: str):
+    """Get user's business profile progress and existing answers"""
+    try:
+        progress = await supabase_service.get_business_profile_progress(user_id)
+        answers = await supabase_service.get_business_profile_answers(user_id)
+
+        return {
+            "progress": (
+                BusinessProfileProgressResponse(
+                    user_id=progress["user_id"],
+                    questions_completed=progress["questions_completed"],
+                    total_questions=progress["total_questions"],
+                    started_at=progress.get("started_at"),
+                    completed_at=progress.get("completed_at"),
+                    last_question_at=progress.get("last_question_at"),
+                    current_question_id=progress.get("current_question_id"),
+                )
+                if progress
+                else None
+            ),
+            "answers": answers or [],
+        }
+    except Exception as e:
+        logger.error(f"Error getting business profile progress: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get progress")
+
+
+@app.post("/api/business-profile/answer")
+async def save_business_profile_answer(request: BusinessProfileAnswer):
+    """Save a business profile answer and update progress"""
+    try:
+        # Save the answer
+        answer_data = await supabase_service.save_business_profile_answer(
+            user_id=request.user_id,
+            question_id=request.question_id,
+            answer=request.answer,
+            answered_at=request.answered_at,
+            session_id=request.session_id,
+        )
+
+        if not answer_data:
+            raise HTTPException(status_code=500, detail="Failed to save answer")
+
+        # Get updated progress
+        progress = await supabase_service.get_business_profile_progress(request.user_id)
+
+        # Sync to Zep if profile is getting close to completion or completed
+        if (
+            progress and progress["questions_completed"] >= 8
+        ):  # Sync when 8+ questions answered
+            try:
+                # Get all answers to create comprehensive business profile for Zep
+                all_answers = await supabase_service.get_business_profile_answers(
+                    request.user_id
+                )
+
+                if all_answers:
+                    # Create structured business profile data for Zep
+                    business_profile = {}
+                    question_map = {
+                        1: "biggest_challenge",
+                        2: "employee_count",
+                        3: "revenue_range",
+                        4: "industry",
+                        5: "success_metrics",
+                        6: "work_similarity_to_team",
+                        7: "main_business_goal",
+                        8: "business_operations_when_away",
+                        9: "critical_decisions_only_owner",
+                        10: "team_capacity_for_growth",
+                        11: "profitability_confidence",
+                    }
+
+                    for answer in all_answers:
+                        key = question_map.get(answer["question_id"])
+                        if key:
+                            business_profile[key] = answer["answer"]
+
+                    # Add to Zep knowledge graph
+                    zep_memory.add_business_data(
+                        user_id=request.user_id,
+                        data={"business_profile": business_profile},
+                        data_type="json",
+                    )
+
+                    # Mark answers as synced to Zep
+                    await supabase_service.mark_answers_synced_to_zep(request.user_id)
+
+                    logger.info(
+                        f"Synced business profile to Zep for user {request.user_id}"
+                    )
+
+            except Exception as zep_error:
+                logger.warning(f"Failed to sync business profile to Zep: {zep_error}")
+                # Continue without failing the answer save
+
+        return {
+            "answer": answer_data,
+            "progress": (
+                BusinessProfileProgressResponse(
+                    user_id=progress["user_id"],
+                    questions_completed=progress["questions_completed"],
+                    total_questions=progress["total_questions"],
+                    started_at=progress.get("started_at"),
+                    completed_at=progress.get("completed_at"),
+                    last_question_at=progress.get("last_question_at"),
+                    current_question_id=progress.get("current_question_id"),
+                )
+                if progress
+                else None
+            ),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving business profile answer: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save answer")
+
+
+@app.get("/api/business-profile/nudge-status/{user_id}")
+async def get_nudge_status(user_id: str):
+    """Get nudging status and determine what type of nudge to show"""
+    try:
+        progress = await supabase_service.get_business_profile_progress(user_id)
+
+        if not progress:
+            # User hasn't started
+            return {
+                "user_type": "not_started",
+                "should_show_nudge": True,
+                "progress": None,
+            }
+        elif progress["completed_at"]:
+            # User completed
+            return {
+                "user_type": "completed",
+                "should_show_nudge": False,
+                "progress": progress,
+            }
+        else:
+            # User started but not finished
+            return {
+                "user_type": "in_progress",
+                "should_show_nudge": True,
+                "progress": progress,
+            }
+
+    except Exception as e:
+        logger.error(f"Error getting nudge status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get nudge status")
+
+
+@app.post("/api/business-profile/nudge-dismissed")
+async def record_nudge_dismissed(user_id: str = None):
+    """Record that user dismissed a nudge (for analytics/frequency control)"""
+    try:
+        if user_id:
+            await supabase_service.record_nudge_dismissed(user_id)
+        return {"message": "Nudge dismissal recorded"}
+    except Exception as e:
+        logger.error(f"Error recording nudge dismissal: {e}")
+        # Don't fail the request for this
+        return {"message": "Nudge dismissal recording failed"}
+
+
+# Zep Knowledge Graph Endpoints
+class BusinessDataRequest(BaseModel):
+    user_id: str
+    data: Dict[str, Any]
+    data_type: str = "json"
+
+
+@app.post("/api/user/business-data")
+async def add_business_data(request: BusinessDataRequest):
+    """Add structured business data to user's knowledge graph"""
+    try:
+        zep_memory.add_business_data(
+            user_id=request.user_id, data=request.data, data_type=request.data_type
+        )
+        return {
+            "message": "Business data added successfully",
+            "user_id": request.user_id,
+            "data_type": request.data_type,
+        }
+    except Exception as e:
+        logger.error(f"Error adding business data: {e}")
+        raise HTTPException(status_code=500, detail="Failed to add business data")
+
+
+@app.get("/api/user/{user_id}/knowledge-graph")
+async def get_user_knowledge_graph(user_id: str):
+    """Get user's personal knowledge graph for visualization"""
+    try:
+        knowledge_graph = zep_memory.get_user_knowledge_graph(user_id)
+        return knowledge_graph
+    except Exception as e:
+        logger.error(f"Error retrieving user knowledge graph: {e}")
+        raise HTTPException(
+            status_code=500, detail="Failed to retrieve knowledge graph"
+        )
+
+
+@app.get("/api/user/{user_id}/memory/{session_id}")
+async def get_session_memory(
+    user_id: str, session_id: str, query: Optional[str] = None
+):
+    """Get relevant memory context for a session"""
+    try:
+        memory_context = zep_memory.get_relevant_memory(
+            session_id=session_id, query=query, limit=10
+        )
+        return {
+            "user_id": user_id,
+            "session_id": session_id,
+            "memory_context": memory_context,
+            "query": query,
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving session memory: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve session memory")
+
+
+@app.delete("/api/user/{user_id}/data")
+async def delete_user_data(user_id: str):
+    """Delete all user data from Zep (for privacy compliance)"""
+    try:
+        success = zep_memory.delete_user_data(user_id)
+        if success:
+            return {"message": "User data deleted successfully", "user_id": user_id}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to delete user data")
+    except Exception as e:
+        logger.error(f"Error deleting user data: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete user data")
+
+
+# ===== CHAT-INTEGRATED QUESTIONNAIRE ENDPOINTS =====
+
+
+class QuestionnaireStartRequest(BaseModel):
+    user_id: str
+
+
+class QuestionnaireAnswerRequest(BaseModel):
+    user_id: str
+    question_id: int
+    answer_text: str
+
+
+class QuestionnaireCommandRequest(BaseModel):
+    user_id: str
+    command: str
+
+
+class QuestionnaireEditRequest(BaseModel):
+    user_id: str
+    question_id: int
+    new_answer: str
+
+
+# Import questionnaire service
+from questionnaire_service import questionnaire_service
+
+
+@app.post("/api/questionnaire/start")
+async def start_questionnaire(request: QuestionnaireStartRequest):
+    """Initialize questionnaire session for user"""
+    try:
+        result = await questionnaire_service.start_questionnaire(request.user_id)
+        return result
+    except Exception as e:
+        logger.error(f"Error starting questionnaire: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/questionnaire/current/{user_id}")
+async def get_current_question(user_id: str):
+    """Get current question and progress for user"""
+    try:
+        result = await questionnaire_service.get_current_question(user_id)
+        if result is None:
+            return {"status": "not_started", "message": "No active questionnaire found"}
+        return result
+    except Exception as e:
+        logger.error(f"Error getting current question: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/questionnaire/answer")
+async def submit_answer(request: QuestionnaireAnswerRequest):
+    """Submit answer for a question, save to DB and Zep, return next question"""
+    try:
+        logger.info(
+            f"🔍 Received questionnaire answer: user_id={request.user_id[:8]}..., question_id={request.question_id}, answer_text='{request.answer_text[:50]}...'"
+        )
+
+        result = await questionnaire_service.submit_answer(
+            request.user_id, request.question_id, request.answer_text
+        )
+
+        logger.info(f"✅ Questionnaire answer result: {result}")
+        return result
+    except Exception as e:
+        logger.error(f"❌ Error submitting answer: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/questionnaire/command")
+async def handle_command(request: QuestionnaireCommandRequest):
+    """Handle special commands: skip, pause, previous, resume"""
+    try:
+        result = await questionnaire_service.handle_command(
+            request.user_id, request.command
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Error handling command: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/questionnaire/all-responses/{user_id}")
+async def get_all_responses(user_id: str):
+    """Get all user responses for edit form"""
+    try:
+        responses = await questionnaire_service.get_all_responses(user_id)
+        return {"responses": responses}
+    except Exception as e:
+        logger.error(f"Error getting all responses: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/api/questionnaire/edit")
+async def edit_response(request: QuestionnaireEditRequest):
+    """Update a specific question response and sync to Zep"""
+    try:
+        success = await questionnaire_service.update_response(
+            request.user_id, request.question_id, request.new_answer
+        )
+        if success:
+            return {"message": "Response updated successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to update response")
+    except Exception as e:
+        logger.error(f"Error editing response: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/questionnaire/status/{user_id}")
+async def get_questionnaire_status(user_id: str):
+    """Get comprehensive questionnaire status for user"""
+    try:
+        status = await questionnaire_service.get_questionnaire_status(user_id)
+        return status
+    except Exception as e:
+        logger.error(f"Error getting questionnaire status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":

@@ -4,9 +4,11 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { auth, chat } from '../utils/supabase';
 import Authentication from './Authentication';
+import BusinessProfileQuestionnaire from './BusinessProfileQuestionnaire';
+import ProfileNudgeBanner from './ProfileNudgeBanner';
 import './ChatPanel.css';
 
-const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange }, ref) => {
+const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange, onOpenSidebarAuth }, ref) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,6 +22,299 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   const [currentSession, setCurrentSession] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
+  // Business profile questionnaire state
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [businessProfileProgress, setBusinessProfileProgress] = useState(null);
+  const [nudgeStatus, setNudgeStatus] = useState(null);
+  
+  // New chat-integrated questionnaire state
+  const [questionnaireActive, setQuestionnaireActive] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [questionnaireProgress, setQuestionnaireProgress] = useState({ current: 0, total: 11 });
+  const [tempQuestionnaireMessages, setTempQuestionnaireMessages] = useState([]);
+  const [preQuestionnaireState, setPreQuestionnaireState] = useState(null);
+  const messagesEndRef = useRef(null);
+
+  // Auto-scroll to bottom when messages change
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Chat-integrated questionnaire functions
+  const startChatQuestionnaire = async () => {
+    console.log('🎯 startChatQuestionnaire called, user:', user);
+    if (!user) {
+      console.error('❌ No user found, cannot start questionnaire');
+      // Show error message to user
+      const errorMessage = {
+        id: Date.now(),
+        role: 'assistant',
+        content: 'Please sign in to start your business profile questionnaire.',
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
+    
+    try {
+      console.log('📡 Making API request to start questionnaire...');
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/api/questionnaire/start`, {
+        user_id: user.id
+      });
+      
+      console.log('✅ Questionnaire start response:', response.data);
+      
+      if (response.data.question) {
+        console.log('📝 Setting questionnaire active with question:', response.data.question);
+        
+        // Store current chat state before starting questionnaire
+        setPreQuestionnaireState({
+          messages: messages.filter(msg => !msg.isQuestionnaire),
+          session: currentSession
+        });
+        
+        setQuestionnaireActive(true);
+        setCurrentQuestion(response.data.question);
+        setQuestionnaireProgress(response.data.progress);
+        
+        // Add AI question to temporary messages
+        const aiMessage = {
+          id: Date.now(),
+          role: 'assistant',
+          content: response.data.message,
+          isQuestionnaire: true
+        };
+        setTempQuestionnaireMessages([aiMessage]);
+        setMessages(prev => [...prev, aiMessage]);
+        console.log('💬 Added questionnaire message to chat');
+      } else {
+        console.warn('⚠️ No question found in response');
+        // Show error message to user
+        const errorMessage = {
+          id: Date.now(),
+          role: 'assistant', 
+          content: 'Sorry, I had trouble loading your business profile questions. Please try again.',
+          isError: true
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
+    } catch (error) {
+      console.error('❌ Error starting questionnaire:', error);
+      console.error('Error details:', error.response?.data || error.message);
+      
+      // Show user-friendly error message
+      const errorMessage = {
+        id: Date.now(),
+        role: 'assistant',
+        content: 'Sorry, I encountered an error starting your business profile questionnaire. Please try again in a moment.',
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitQuestionnaireAnswer = async (answerText) => {
+    if (!user || !currentQuestion) return;
+    
+    try {
+      setLoading(true);
+      
+      // Add user message to temporary messages
+      const userMessage = {
+        id: Date.now(),
+        role: 'user',
+        content: answerText,
+        isQuestionnaire: true
+      };
+      setTempQuestionnaireMessages(prev => [...prev, userMessage]);
+      setMessages(prev => [...prev, userMessage]);
+      
+      console.log('🔍 Submitting questionnaire answer:', {
+        user_id: user.id,
+        question_id: currentQuestion.id,
+        answer_text: answerText,
+        currentQuestion: currentQuestion
+      });
+      
+      const response = await axios.post(`${API_URL}/api/questionnaire/answer`, {
+        user_id: user.id,
+        question_id: currentQuestion.id,
+        answer_text: answerText
+      });
+      
+      console.log('✅ Questionnaire answer response:', response.data);
+      
+      if (response.data.completed) {
+        // Questionnaire completed
+        setQuestionnaireActive(false);
+        setCurrentQuestion(null);
+        setTempQuestionnaireMessages([]);
+        
+        // Update business profile progress to reflect completion
+        setBusinessProfileProgress({
+          status: 'completed',
+          current_question: 11,
+          total_questions: 11,
+          questions_completed: 11,
+          should_show_nudge: false
+        });
+        
+        // Update nudge status to reflect completion
+        setNudgeStatus({
+          user_type: 'completed',
+          should_show_nudge: false,
+          progress: {
+            status: 'completed',
+            current_question: 11,
+            total_questions: 11
+          }
+        });
+        
+        const completionMessage = {
+          id: Date.now() + 1,
+          role: 'assistant',
+          content: response.data.message,
+          isQuestionnaire: true
+        };
+        setMessages(prev => [...prev, completionMessage]);
+        
+        // Restore previous chat state after showing completion message briefly
+        setTimeout(() => {
+          if (preQuestionnaireState) {
+            // Restore previous messages and session
+            setMessages(preQuestionnaireState.messages);
+            setCurrentSession(preQuestionnaireState.session);
+            console.log('🔄 Restored previous chat state');
+          } else {
+            // No previous state, start fresh
+            setMessages([]);
+            setCurrentSession(null);
+            console.log('🆕 Started fresh chat after questionnaire');
+          }
+          setPreQuestionnaireState(null);
+        }, 3000); // Show completion message for 3 seconds
+        
+        // Reload business profile data to ensure nudge state is correct
+        setTimeout(async () => {
+          try {
+            const [progressResponse, nudgeResponse] = await Promise.all([
+              fetch(`${API_URL}/api/questionnaire/status/${user.id}`),
+              fetch(`${API_URL}/api/business-profile/nudge-status/${user.id}`)
+            ]);
+            
+            if (progressResponse.ok) {
+              const progressData = await progressResponse.json();
+              setBusinessProfileProgress(progressData);
+            }
+            
+            if (nudgeResponse.ok) {
+              const nudgeData = await nudgeResponse.json();
+              setNudgeStatus(nudgeData);
+            }
+          } catch (error) {
+            console.error('Error reloading business profile data after completion:', error);
+          }
+        }, 1000);
+        
+      } else if (response.data.question) {
+        // Next question
+        setCurrentQuestion(response.data.question);
+        setQuestionnaireProgress(response.data.progress);
+        
+        const nextQuestionMessage = {
+          id: Date.now() + 1,
+          role: 'assistant',  
+          content: response.data.message,
+          isQuestionnaire: true
+        };
+        setTempQuestionnaireMessages(prev => [...prev, nextQuestionMessage]);
+        setMessages(prev => [...prev, nextQuestionMessage]);
+      }
+    } catch (error) {
+      console.error('❌ Error submitting questionnaire answer:', error);
+      console.error('❌ Error details:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuestionnaireCommand = async (command) => {
+    if (!user) return;
+    
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/api/questionnaire/command`, {
+        user_id: user.id,
+        command: command
+      });
+      
+      if (response.data.paused) {
+        // Questionnaire paused
+        setQuestionnaireActive(false);
+        setCurrentQuestion(null);
+        setTempQuestionnaireMessages([]);
+        
+      } else if (response.data.completed) {
+        // Questionnaire completed
+        setQuestionnaireActive(false);
+        setCurrentQuestion(null);  
+        setTempQuestionnaireMessages([]);
+        
+      } else if (response.data.question) {
+        // Continue with next/previous question
+        setCurrentQuestion(response.data.question);
+        setQuestionnaireProgress(response.data.progress);
+      }
+      
+      // Add response message
+      const responseMessage = {
+        id: Date.now(),
+        role: 'assistant',
+        content: response.data.message,
+        isQuestionnaire: true
+      };
+      setMessages(prev => [...prev, responseMessage]);
+      
+    } catch (error) {
+      console.error('Error handling questionnaire command:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // Nudge dismissal state management
+  const [nudgeDismissalData, setNudgeDismissalData] = useState(() => {
+    try {
+      const stored = localStorage.getItem('nudge-dismissal-data');
+      if (stored) {
+        return JSON.parse(stored);
+      }
+      
+      // Migration: check for old dismissal key
+      const oldDismissed = localStorage.getItem('business-profile-dismissed') === 'true';
+      const initialData = {
+        guest: { count: oldDismissed ? 1 : 0, lastDismissed: oldDismissed ? Date.now() : null },
+        authenticated: { dismissed: false }
+      };
+      
+      // Clean up old key
+      if (oldDismissed) {
+        localStorage.removeItem('business-profile-dismissed');
+        localStorage.setItem('nudge-dismissal-data', JSON.stringify(initialData));
+      }
+      
+      return initialData;
+    } catch {
+      return {
+        guest: { count: 0, lastDismissed: null },
+        authenticated: { dismissed: false }
+      };
+    }
+  });
 
   // Use environment variable for API URL, fallback to localhost for development
   let API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -82,6 +377,11 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
   }, [messages, hasMessagesEver]);
 
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   // Notify parent component when fullscreen state changes
   useEffect(() => {
     if (onFullscreenChange) {
@@ -138,6 +438,75 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     initializeAuth();
   }, []);
 
+  // Load business profile data when user logs in
+  useEffect(() => {
+    const loadBusinessProfileData = async () => {
+      if (!user) {
+        setBusinessProfileProgress(null);
+        setNudgeStatus(null);
+        return;
+      }
+
+      try {
+        console.log('🔍 Loading business profile data for user:', user.id);
+        
+        // Load questionnaire status and nudge status
+        const [progressResponse, nudgeResponse] = await Promise.all([
+          fetch(`${API_URL}/api/questionnaire/status/${user.id}`),
+          fetch(`${API_URL}/api/business-profile/nudge-status/${user.id}`)
+        ]);
+
+        console.log('📊 Progress response status:', progressResponse.status);
+        console.log('📊 Nudge response status:', nudgeResponse.status);
+
+        if (progressResponse.ok) {
+          const progressData = await progressResponse.json();
+          console.log('📊 Progress data:', progressData);
+          setBusinessProfileProgress(progressData);
+        } else {
+          console.error('❌ Progress response not ok:', progressResponse.status, progressResponse.statusText);
+          setBusinessProfileProgress(null);
+        }
+
+        if (nudgeResponse.ok) {
+          const nudgeData = await nudgeResponse.json();
+          console.log('📊 Nudge data:', nudgeData);
+          setNudgeStatus(nudgeData);
+        } else {
+          console.error('❌ Nudge response not ok:', nudgeResponse.status, nudgeResponse.statusText);
+          // Set default nudge status for new users
+          setNudgeStatus({
+            user_type: 'not_started',
+            should_show_nudge: true,
+            progress: null
+          });
+        }
+      } catch (error) {
+        console.error('❌ Error loading business profile data:', error);
+        // Set fallback status for new users
+        setNudgeStatus({
+          user_type: 'not_started',
+          should_show_nudge: true,
+          progress: null
+        });
+      }
+    };
+
+    loadBusinessProfileData();
+  }, [user, API_URL]);
+
+  // Reset authenticated dismissal when user logs in (show nudge even if dismissed as guest)
+  useEffect(() => {
+    if (user && nudgeDismissalData.authenticated.dismissed) {
+      const newDismissalData = {
+        ...nudgeDismissalData,
+        authenticated: { dismissed: false }
+      };
+      setNudgeDismissalData(newDismissalData);
+      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+    }
+  }, [user?.id]); // Only run when user ID changes (login/logout)
+
   // Save messages to current session when they change
   useEffect(() => {
     const saveMessages = async () => {
@@ -147,20 +516,33 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         // Get the last two messages (user and assistant)
         const recentMessages = messages.slice(-2);
         
-        for (const message of recentMessages) {
-          // Check if message is already saved by checking if it has an id
-          if (!message.id) {
-            const { data: savedMessage } = await chat.addMessage(
-              currentSession.id,
-              message.role,
-              message.content,
-              message.context ? { context: message.context } : {}
+        // Filter out messages that already have IDs (already saved)
+        const unsavedMessages = recentMessages.filter(msg => !msg.id);
+        
+        console.log('💾 Save check - total messages:', messages.length, 'recent:', recentMessages.length, 'unsaved:', unsavedMessages.length);
+        console.log('💾 Recent message IDs:', recentMessages.map(m => ({ role: m.role, id: m.id })));
+        
+        if (unsavedMessages.length === 0) {
+          console.log('⏸️ No unsaved messages to save');
+          return;
+        }
+        
+        for (const message of unsavedMessages) {
+          console.log('💾 Saving message:', message.role, 'content length:', message.content.length);
+          const { data: savedMessage } = await chat.addMessage(
+            currentSession.id,
+            message.role,
+            message.content,
+            message.context ? { context: message.context } : {}
+          );
+          
+          // Update state immutably instead of mutating the object
+          if (savedMessage) {
+            setMessages(prevMessages => 
+              prevMessages.map(msg => 
+                msg === message ? { ...msg, id: savedMessage.id } : msg
+              )
             );
-            
-            // Update the message with the saved ID to prevent duplicate saves
-            if (savedMessage) {
-              message.id = savedMessage.id;
-            }
           }
         }
       } catch (error) {
@@ -195,8 +577,17 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         const { data: newSession, error } = await chat.createSession();
         console.log('📊 Session creation result:', { data: newSession, error });
         
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Session creation error:', error);
+          throw error;
+        }
         
+        if (!newSession) {
+          console.error('❌ No session returned from chat.createSession');
+          return false;
+        }
+        
+        console.log('✅ New session created:', newSession.id);
         setCurrentSession(newSession);
         return true;
       } catch (error) {
@@ -204,21 +595,344 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         return false;
       }
     }
-    console.log('✅ Session already exists');
+    console.log('✅ Session already exists:', currentSession.id);
     return true;
   };
+
+  // Business profile questionnaire handlers
+  const handleQuestionnaireComplete = (answers, progress) => {
+    console.log('Questionnaire completed:', { answers, progress });
+    setBusinessProfileProgress(progress);
+    setShowQuestionnaire(false);
+    
+    // Update nudge status to reflect completion
+    setNudgeStatus({
+      user_type: 'completed',
+      should_show_nudge: false,
+      progress: progress
+    });
+  };
+
+  const handleQuestionnaireProgress = (progress) => {
+    console.log('Questionnaire progress updated:', progress);
+    setBusinessProfileProgress(progress);
+    
+    // Update nudge status
+    setNudgeStatus({
+      user_type: 'in_progress',
+      should_show_nudge: true,
+      progress: progress
+    });
+  };
+
+  const handleStartQuestionnaire = async (mode = 'chat') => {
+    console.log('🚀 handleStartQuestionnaire called with mode:', mode, 'user:', user);
+    console.log('🔍 Current businessProfileProgress:', businessProfileProgress);
+    
+    if (mode === 'modal') {
+      setShowQuestionnaire(true);
+      return;
+    } 
+    
+    if (mode === 'chat') {
+      console.log('📋 Starting chat-integrated questionnaire...');
+      
+      // Check if we need to resume or start fresh
+      if (businessProfileProgress && businessProfileProgress.status === 'in_progress') {
+        console.log('🔄 Resuming existing questionnaire...');
+        try {
+          const success = await createNewSessionIfNeeded();
+          console.log('🔗 Session creation result for resume:', success);
+          if (success) {
+            await resumeQuestionnaire();
+          } else {
+            console.error('❌ Failed to create session for resume');
+            // Show error message to user
+            const errorMessage = {
+              id: Date.now(),
+              role: 'assistant',
+              content: 'I had trouble setting up the chat session. Please try refreshing the page and clicking "Continue in Chat" again.',
+              isError: true
+            };
+            setMessages(prev => [...prev, errorMessage]);
+          }
+        } catch (error) {
+          console.error('❌ Session creation promise rejected:', error);
+          const errorMessage = {
+            id: Date.now(),
+            role: 'assistant',
+            content: 'I had trouble setting up the chat session. Please try refreshing the page and clicking "Continue in Chat" again.',
+            isError: true
+          };
+          setMessages(prev => [...prev, errorMessage]);
+        }
+      } else {
+        console.log('🎯 Starting new questionnaire...');
+        console.log('🎯 businessProfileProgress status:', businessProfileProgress?.status);
+        // Start the new chat-integrated questionnaire
+        try {
+          const success = await createNewSessionIfNeeded();
+          console.log('🔗 Session creation result:', success);
+          if (success) {
+            console.log('🎯 About to call startChatQuestionnaire...');
+            await startChatQuestionnaire();
+          } else {
+            console.error('❌ Failed to create session, cannot start questionnaire');
+            // Show error message to user
+            const errorMessage = {
+              id: Date.now(),
+              role: 'assistant',
+              content: 'I had trouble setting up the chat session. Please try refreshing the page and clicking "Let\'s Chat!" again.',
+              isError: true
+            };
+            setMessages(prev => [...prev, errorMessage]);
+          }
+        } catch (error) {
+          console.error('❌ Session creation promise rejected:', error);
+          const errorMessage = {
+            id: Date.now(),
+            role: 'assistant',
+            content: 'I had trouble setting up the chat session. Please try refreshing the page and clicking "Let\'s Chat!" again.',
+            isError: true
+          };
+          setMessages(prev => [...prev, errorMessage]);
+        }
+      }
+    }
+  };
+
+  const resumeQuestionnaire = async () => {
+    if (!user) return;
+    
+    try {
+      setLoading(true);
+      console.log('🔄 Resuming questionnaire...');
+      
+      // Get current question
+      const response = await axios.get(`${API_URL}/api/questionnaire/current/${user.id}`);
+      console.log('📋 Current question response:', response.data);
+      
+      if (response.data.question) {
+        setQuestionnaireActive(true);
+        setCurrentQuestion(response.data.question);
+        setQuestionnaireProgress(response.data.progress);
+        
+        // Add AI message to show current question
+        const aiMessage = {
+          id: Date.now(),
+          role: 'assistant',
+          content: `Resuming your business profile. ${response.data.question.question_text}`,
+          isQuestionnaire: true
+        };
+        setTempQuestionnaireMessages([aiMessage]);
+        setMessages(prev => [...prev, aiMessage]);
+      }
+    } catch (error) {
+      console.error('❌ Error resuming questionnaire:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleNudgeDismiss = async () => {
+    const now = Date.now();
+    let newDismissalData;
+    
+    if (user) {
+      // Authenticated user dismissal - only dismiss until they complete profile
+      newDismissalData = {
+        ...nudgeDismissalData,
+        authenticated: { dismissed: true, lastDismissed: now }
+      };
+      
+      // Record dismissal on backend
+      try {
+        await fetch(`${API_URL}/api/business-profile/nudge-dismissed`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: user.id }),
+        });
+      } catch (error) {
+        console.error('Error recording nudge dismissal:', error);
+      }
+    } else {
+      // Guest user dismissal - track count and implement 3-strike rule
+      const newCount = nudgeDismissalData.guest.count + 1;
+      newDismissalData = {
+        ...nudgeDismissalData,
+        guest: { 
+          count: newCount, 
+          lastDismissed: now 
+        }
+      };
+    }
+    
+    setNudgeDismissalData(newDismissalData);
+    localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+  };
+
+  const shouldShowNudge = () => {
+    if (showQuestionnaire || questionnaireActive) return false;
+    
+    if (!user) {
+      // Guest user logic - implement 3-strike rule with cooldown
+      const guestData = nudgeDismissalData.guest;
+      
+      console.log('🎯 Guest nudge check:', { 
+        count: guestData.count, 
+        lastDismissed: guestData.lastDismissed,
+        shouldShow: guestData.count < 3 || (guestData.count >= 3 && 
+          (Date.now() - guestData.lastDismissed) / (1000 * 60 * 60) >= 24)
+      });
+      
+      // If dismissed 3+ times, check cooldown (24 hours)
+      if (guestData.count >= 3) {
+        const hoursSinceLastDismissal = (Date.now() - guestData.lastDismissed) / (1000 * 60 * 60);
+        return hoursSinceLastDismissal >= 24; // Show again after 24 hours
+      }
+      
+      // Show nudge if less than 3 dismissals
+      return true;
+    }
+    
+    // Authenticated user logic
+    const authData = nudgeDismissalData.authenticated;
+    
+    console.log('🔐 Auth nudge check:', { 
+      dismissed: authData.dismissed,
+      userType: nudgeStatus?.user_type,
+      shouldShowFromStatus: nudgeStatus?.should_show_nudge
+    });
+    
+    // Use the new questionnaire progress status
+    if (businessProfileProgress) {
+      // Never show for completed profiles
+      if (businessProfileProgress.status === 'completed') {
+        return false;
+      }
+      
+      // Always show for in-progress or paused questionnaires (unless dismissed)
+      if (businessProfileProgress.status === 'in_progress' || businessProfileProgress.status === 'paused') {
+        return !authData.dismissed;
+      }
+      
+      // Show for not_started if not dismissed
+      if (businessProfileProgress.status === 'not_started') {
+        return !authData.dismissed;
+      }
+      
+      // Default: don't show
+      return false;
+    }
+    
+    // Fallback to old nudge status
+    if (nudgeStatus?.user_type === 'completed') {
+      return false;
+    }
+    
+    if (!authData.dismissed) return nudgeStatus?.should_show_nudge || false;
+    
+    if (nudgeStatus?.user_type === 'in_progress') {
+      return nudgeStatus.should_show_nudge;
+    }
+    
+    return nudgeStatus?.should_show_nudge || false;
+  };
+
+  const getNudgeUserType = () => {
+    if (!user) return 'guest';
+    
+    // Use the new questionnaire progress status
+    if (businessProfileProgress) {
+      return businessProfileProgress.status === 'completed' ? 'completed' :
+             businessProfileProgress.status === 'in_progress' ? 'in_progress' :
+             businessProfileProgress.status === 'paused' ? 'in_progress' :
+             'not_started';
+    }
+    
+    return nudgeStatus?.user_type || 'not_started';
+  };
+
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
+
+    const currentInput = input.trim();
+    
+    // Check if we're in questionnaire mode
+    if (questionnaireActive) {
+      // Handle questionnaire commands
+      if (currentInput.toLowerCase() === 'skip') {
+        setInput('');
+        await handleQuestionnaireCommand('skip');
+        setTimeout(() => textareaRef.current?.focus(), 100);
+        return;
+      }
+      if (currentInput.toLowerCase() === 'pause') {
+        setInput('');
+        await handleQuestionnaireCommand('pause');
+        setTimeout(() => textareaRef.current?.focus(), 100);
+        return;
+      }
+      if (currentInput.toLowerCase() === 'previous') {
+        setInput('');
+        await handleQuestionnaireCommand('previous');
+        setTimeout(() => textareaRef.current?.focus(), 100);
+        return;
+      }
+      
+      // Submit answer to questionnaire
+      setInput('');
+      await submitQuestionnaireAnswer(currentInput);
+      // Restore focus after submission
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+        }
+      }, 100);
+      return;
+    }
+    
+    // Check for questionnaire resume command
+    if (currentInput.toLowerCase() === 'resume') {
+      setInput('');
+      await handleQuestionnaireCommand('resume');
+      return;
+    }
 
     // Create session if needed (will show auth if not logged in)
     const canProceed = await createNewSessionIfNeeded();
     if (!canProceed) return;
 
-    const userMessage = { role: 'user', content: input.trim() };
-    const currentInput = input.trim();
+    const userMessage = { role: 'user', content: currentInput };
     setInput('');
     setMessages(prev => [...prev, userMessage]);
     setLoading(true);
+
+    // Hide nudge when user starts regular chatting
+    if (user) {
+      // For authenticated users, mark nudge as dismissed
+      const newDismissalData = {
+        ...nudgeDismissalData,
+        authenticated: { dismissed: true, lastDismissed: Date.now() }
+      };
+      setNudgeDismissalData(newDismissalData);
+      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+    } else {
+      // For guest users, increment dismissal count
+      const newCount = nudgeDismissalData.guest.count + 1;
+      const newDismissalData = {
+        ...nudgeDismissalData,
+        guest: { 
+          count: newCount, 
+          lastDismissed: Date.now() 
+        }
+      };
+      setNudgeDismissalData(newDismissalData);
+      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+    }
 
     try {
       // Prepare conversation history
@@ -253,6 +967,8 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
           question: currentInput,
           conversation_history: conversationHistory,
           chat_context_node: chatContextNodeData,
+          user_id: user.id,
+          session_id: currentSession.id,
         }),
       });
 
@@ -335,7 +1051,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -343,9 +1059,11 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   };
 
   // Dynamic placeholder text based on context
-  const placeholderText = chatContextNode
-    ? `Ask questions about "${(chatContextNode.properties ? chatContextNode.properties.name : chatContextNode.name) || (chatContextNode.properties ? chatContextNode.properties.label : chatContextNode.label)}"...`
-    : 'Ask about your biggest business challenges and get personalized answers';
+  const placeholderText = questionnaireActive
+    ? 'Write your answer here.'
+    : chatContextNode
+      ? `Ask questions about "${(chatContextNode.properties ? chatContextNode.properties.name : chatContextNode.name) || (chatContextNode.properties ? chatContextNode.properties.label : chatContextNode.label)}"...`
+      : 'Ask about your biggest business challenges and get personalized answers';
 
   // Show selected node indicator (for currently selected node, not chat context)
   const selectedNodeInfo = selectedNode ? (
@@ -363,7 +1081,10 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
 
 
   return (
-    <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
+    <>
+      {/* Focus Mode Overlay */}
+      
+      <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
       {/* Authentication Modal */}
       {showAuth && (
         <Authentication 
@@ -372,6 +1093,34 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         />
       )}
 
+      {/* Business Profile Questionnaire Modal */}
+      {showQuestionnaire && user && (
+        <div className="questionnaire-modal-overlay">
+          <BusinessProfileQuestionnaire
+            user={user}
+            onComplete={handleQuestionnaireComplete}
+            onProgress={handleQuestionnaireProgress}
+            onClose={() => setShowQuestionnaire(false)}
+            mode="modal"
+          />
+        </div>
+      )}
+
+      {/* Chat-integrated questionnaire progress indicator */}
+      {questionnaireActive && !isCollapsed && (
+        <div className="questionnaire-progress-indicator">
+          <span>Business Profile Question {questionnaireProgress.current} of {questionnaireProgress.total}</span>
+          <div className="progress-bar">
+            <div 
+              className="progress-fill" 
+              style={{ width: `${(questionnaireProgress.current / questionnaireProgress.total) * 100}%` }}
+            />
+          </div>
+          <div className="questionnaire-commands">
+            <span>Type "skip" or "previous" to navigate. Type "pause" to exit and finish later.</span>
+          </div>
+        </div>
+      )}
 
       {messages.length > 0 && (
         <div className="chat-header" onClick={() => {
@@ -445,7 +1194,24 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
                   </div>
                 </div>
               )}
+              <div ref={messagesEndRef} />
             </div>
+          )}
+
+          {/* Business Profile Nudge Banner */}
+          {shouldShowNudge() && (
+            <ProfileNudgeBanner
+              user={user}
+              progress={businessProfileProgress}
+              onStartQuestionnaire={handleStartQuestionnaire}
+              onDismiss={handleNudgeDismiss}
+              onOpenAuth={onOpenSidebarAuth || (() => setShowAuth(true))}
+              userType={getNudgeUserType()}
+              variant="default"
+              isVisible={true}
+              canDismiss={true}
+              preferredMode="chat"
+            />
           )}
           
           {/* Context Pills Container - NEW */}
@@ -471,6 +1237,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
                 </button>
               </div>
             )}
+            
           </div>
           
           <div className="input-area">
@@ -478,7 +1245,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder={placeholderText}
               disabled={loading}
               rows={1}
@@ -496,9 +1263,11 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               </svg>
             </button>
           </div>
+
         </>
       )}
     </div>
+    </>
   );
 });
 

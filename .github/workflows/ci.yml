@@ -51,6 +51,8 @@ jobs:
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ZEP_API_KEY: ${{ secrets.ZEP_API_KEY }}
+          ZEP_API_URL: ${{ secrets.ZEP_API_URL }}
           
       - name: Run linting (advisory)
         working-directory: ./backend
@@ -79,6 +81,8 @@ jobs:
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ZEP_API_KEY: ${{ secrets.ZEP_API_KEY }}
+          ZEP_API_URL: ${{ secrets.ZEP_API_URL }}
           
       - name: Test Supabase client
         working-directory: ./backend
@@ -100,6 +104,8 @@ jobs:
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ZEP_API_KEY: ${{ secrets.ZEP_API_KEY }}
+          ZEP_API_URL: ${{ secrets.ZEP_API_URL }}
 
   test-frontend:
     runs-on: ubuntu-latest
@@ -207,7 +213,7 @@ jobs:
           if [ -f "environment.template" ]; then
             echo "✅ Environment template exists"
             # Check for required environment variables
-            required_vars=("NEO4J_URI" "NEO4J_USERNAME" "NEO4J_PASSWORD" "ANTHROPIC_API_KEY" "COHERE_API_KEY" "SUPABASE_URL" "SUPABASE_SERVICE_KEY")
+            required_vars=("NEO4J_URI" "NEO4J_USERNAME" "NEO4J_PASSWORD" "ANTHROPIC_API_KEY" "COHERE_API_KEY" "SUPABASE_URL" "SUPABASE_SERVICE_KEY" "ZEP_API_KEY")
             for var in "${required_vars[@]}"; do
               if grep -q "^$var=" environment.template; then
                 echo "✅ $var found in environment template"

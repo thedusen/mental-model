@@ -17,6 +17,8 @@ JWT_EXPIRATION_HOURS=24
 # API Keys for third-party services
 ANTHROPIC_API_KEY=your-anthropic-api-key-here
 COHERE_API_KEY=your-cohere-api-key-here
+ZEP_API_KEY=your-zep-api-key-here
+ZEP_API_URL=https://api.getzep.com
 
 # Google OAuth Configuration (for user authentication)
 GOOGLE_CLIENT_ID=your-google-client-id.googleusercontent.com

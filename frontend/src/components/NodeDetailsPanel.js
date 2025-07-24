@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import './NodeDetailsPanel.css';
 
 const getCategoryStyle = (category) => {
@@ -43,8 +44,8 @@ function NodeDetailsPanel({ selectedNode, chatContextNode, onSetChatContext, isC
   if (isCollapsed) {
     return (
       <div className="node-details-panel collapsed">
-        <button onClick={onToggleCollapse} className="panel-toggle" aria-label="Expand sidebar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <button onClick={onToggleCollapse} className="collapsed-expand-button" aria-label="Expand sidebar">
+          <ChevronLeft size={20} />
         </button>
       </div>
     );
@@ -73,8 +74,9 @@ function NodeDetailsPanel({ selectedNode, chatContextNode, onSetChatContext, isC
     <div className={`node-details-panel ${!selectedNode ? 'empty-state' : ''}`}>
       {selectedNode && (
         <div className="panel-header">
-          <button onClick={onToggleCollapse} className="panel-toggle" aria-label="Collapse sidebar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <button onClick={onToggleCollapse} className="panel-toggle-with-text" aria-label="Collapse sidebar">
+            <span>Collapse</span>
+            <ChevronRight size={20} />
           </button>
         </div>
       )}
@@ -83,7 +85,7 @@ function NodeDetailsPanel({ selectedNode, chatContextNode, onSetChatContext, isC
         <div className="empty-panel-header">
           <button onClick={onToggleCollapse} className="panel-toggle-with-text" aria-label="Collapse sidebar">
             <span>Collapse</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <ChevronRight size={20} />
           </button>
         </div>
       )}
