@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { auth } from '../utils/supabase';
 import './Authentication.css';
 
-const Authentication = ({ onAuthSuccess, onClose, mode = 'modal' }) => {
-  const [isSignUp, setIsSignUp] = useState(false);
+const Authentication = ({ onAuthSuccess, onClose, mode = 'modal', initialMode = 'signin' }) => {
+  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [email, setEmail] = useState('');

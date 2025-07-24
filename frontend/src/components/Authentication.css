@@ -177,12 +177,22 @@
 }
 
 .form-group input:disabled {
-  background-color: var(--background-secondary);
+  background-color: #f8f9fa;
   cursor: not-allowed;
 }
 
 .form-group input::placeholder {
   color: #9ca3af;
+}
+
+/* Prevent dark autofill flash on Chrome */
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus,
+.form-group input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+  -webkit-text-fill-color: #495057 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
 }
 
 .auth-button {

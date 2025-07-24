@@ -272,6 +272,7 @@ const PreferencesModal = ({ user, onClose }) => {
 const UserProfile = ({ user, onAuthTrigger }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState('signin');
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
@@ -348,7 +349,10 @@ const UserProfile = ({ user, onAuthTrigger }) => {
         <div className="auth-buttons">
           <button 
             className="sign-in-button"
-            onClick={() => setShowAuth(true)}
+            onClick={() => {
+              setAuthMode('signin');
+              setShowAuth(true);
+            }}
             aria-label="Sign in to your account"
           >
             Sign In
@@ -356,8 +360,8 @@ const UserProfile = ({ user, onAuthTrigger }) => {
           <button 
             className="sign-up-button"
             onClick={() => {
+              setAuthMode('signup');
               setShowAuth(true);
-              // You could set a state to default to sign up mode
             }}
             aria-label="Create new account"
           >
@@ -371,6 +375,7 @@ const UserProfile = ({ user, onAuthTrigger }) => {
             onAuthSuccess={handleAuthSuccess}
             onClose={() => setShowAuth(false)}
             mode="slide"
+            initialMode={authMode}
           />
         )}
       </div>
@@ -505,6 +510,7 @@ const UserProfile = ({ user, onAuthTrigger }) => {
           onAuthSuccess={handleAuthSuccess}
           onClose={() => setShowAuth(false)}
           mode="slide"
+          initialMode={authMode}
         />
       )}
 
