@@ -7,13 +7,17 @@ from supabase import create_client, Client
 from typing import Optional
 
 # Get Supabase configuration from environment variables
-SUPABASE_URL = os.getenv("SUPABASE_URL", "http://127.0.0.1:54321")
+# Use localhost fallback only in development (when no production env vars are set)
+SUPABASE_URL = os.getenv(
+    "SUPABASE_URL", 
+    "http://127.0.0.1:54321" if os.getenv("NODE_ENV") != "production" else None
+)
 SUPABASE_SERVICE_KEY = os.getenv(
     "SUPABASE_SERVICE_KEY",
     # Fallback to anon key for development if service key not available
     os.getenv(
         "SUPABASE_ANON_KEY",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOuoJN_mz4WnKu11FU3gZoD6p8LTOgXhHO6M",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOuoJN_mz4WnKu11FU3gZoD6p8LTOgXhHO6M" if os.getenv("NODE_ENV") != "production" else None,
     ),
 )
 
