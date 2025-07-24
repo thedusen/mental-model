@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = (() => {
   const envUrl = process.env.REACT_APP_SUPABASE_URL;
   console.log('Environment SUPABASE_URL:', envUrl);
+  console.log('Current timestamp:', new Date().toISOString());
   
   if (!envUrl || envUrl.trim() === '') {
     console.warn('REACT_APP_SUPABASE_URL not set, using localhost fallback');
