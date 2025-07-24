@@ -387,10 +387,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS - Allow your frontend domain
+# CORS - Use environment-based allowed origins for security
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for debugging
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(","),
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
     allow_headers=["*"],  # Allow all headers
