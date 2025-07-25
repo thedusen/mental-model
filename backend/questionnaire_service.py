@@ -98,9 +98,13 @@ class QuestionnaireService:
             await self._save_response(user_id, question_id, answer_text)
 
             # Immediately sync to Zep for progressive context building
-            zep_sync_success = await self._sync_answer_to_zep(user_id, question, answer_text)
+            zep_sync_success = await self._sync_answer_to_zep(
+                user_id, question, answer_text
+            )
             if not zep_sync_success:
-                logger.warning(f"Failed to sync answer to Zep for user {user_id}, question {question_id} - continuing with questionnaire")
+                logger.warning(
+                    f"Failed to sync answer to Zep for user {user_id}, question {question_id} - continuing with questionnaire"
+                )
 
             # Check if questionnaire is complete
             answered_count = await self._count_answered_questions(user_id)
@@ -398,7 +402,7 @@ class QuestionnaireService:
         """
         Sync individual answer to Zep with consistent entity ID and enhanced error handling
         This allows for progressive context building and easy updates
-        
+
         Returns:
             bool: True if sync was successful, False otherwise
         """
@@ -409,30 +413,42 @@ class QuestionnaireService:
             # Get user profile from Supabase to provide better user metadata to Zep
             user_profile = None
             try:
-                user_response = self.supabase.client.table("user_profiles").select("*").eq("user_id", user_id).single().execute()
+                user_response = (
+                    self.supabase.client.table("user_profiles")
+                    .select("*")
+                    .eq("user_id", user_id)
+                    .single()
+                    .execute()
+                )
                 user_profile = user_response.data if user_response.data else None
             except Exception as profile_error:
-                logger.debug(f"Could not get user profile for {user_id}: {profile_error}")
+                logger.debug(
+                    f"Could not get user profile for {user_id}: {profile_error}"
+                )
 
             # Ensure user exists in Zep with enhanced metadata
             user_metadata = {
                 "user_type": "business_owner",
                 "source": "questionnaire",
             }
-            
+
             if user_profile:
                 if user_profile.get("email"):
                     user_metadata["email"] = user_profile["email"]
                 if user_profile.get("first_name"):
-                    user_metadata["first_name"] = user_profile["first_name"]  
+                    user_metadata["first_name"] = user_profile["first_name"]
                 if user_profile.get("last_name"):
                     user_metadata["last_name"] = user_profile["last_name"]
 
             # Ensure user exists with retry logic
             try:
-                self.zep.manager.ensure_user_exists(user_id, user_metadata, retry_count=2)
+                self.zep.manager.ensure_user_exists(
+                    user_id, user_metadata, retry_count=2
+                )
             except Exception as user_error:
-                logger.error(f"Failed to ensure user exists in Zep for {user_id}: {user_error}")
+                logger.error(
+                    f"Failed to ensure user exists in Zep for {user_id}: {user_error}"
+                )
                 return False
 
             entity_id = f"business_profile_q{question['question_number']}"
@@ -452,20 +468,29 @@ class QuestionnaireService:
             for attempt in range(retry_count):
                 try:
                     await self.zep.add_or_update_business_context(user_id, entity_data)
-                    logger.debug(f"Successfully synced answer to Zep for user {user_id}, question {question['question_number']}")
+                    logger.debug(
+                        f"Successfully synced answer to Zep for user {user_id}, question {question['question_number']}"
+                    )
                     return True
                 except Exception as sync_error:
-                    logger.warning(f"Attempt {attempt + 1} failed to sync to Zep for user {user_id}, question {question['question_number']}: {sync_error}")
+                    logger.warning(
+                        f"Attempt {attempt + 1} failed to sync to Zep for user {user_id}, question {question['question_number']}: {sync_error}"
+                    )
                     if attempt == retry_count - 1:
-                        logger.error(f"Failed to sync to Zep after {retry_count} attempts")
+                        logger.error(
+                            f"Failed to sync to Zep after {retry_count} attempts"
+                        )
                         return False
                     # Brief wait before retry
                     import asyncio
+
                     await asyncio.sleep(1)
 
         except Exception as e:
             # Log but don't fail the questionnaire flow if Zep sync fails
-            logger.error(f"Failed to sync answer to Zep for user {user_id}, question {question['question_number']}: {e}")
+            logger.error(
+                f"Failed to sync answer to Zep for user {user_id}, question {question['question_number']}: {e}"
+            )
             return False
 
     async def get_questionnaire_status(self, user_id: str) -> Dict:

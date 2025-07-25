@@ -26,17 +26,21 @@ if ZEP_API_KEY:
     try:
         logger.info(f"Initializing Zep client with URL: {ZEP_API_URL}")
         zep_client = Zep(base_url=ZEP_API_URL, api_key=ZEP_API_KEY)
-        
+
         # Test connection by attempting to create a test operation
         try:
             test_response = zep_client.user.list_ordered(page_size=1)
             zep_health_status["connected"] = True
-            zep_health_status["initialized_at"] = str(os.getenv("DEPLOY_TIME", "unknown"))
+            zep_health_status["initialized_at"] = str(
+                os.getenv("DEPLOY_TIME", "unknown")
+            )
             logger.info("Zep client initialized successfully and connection verified")
         except Exception as test_error:
-            logger.warning(f"Zep client initialized but connection test failed: {test_error}")
+            logger.warning(
+                f"Zep client initialized but connection test failed: {test_error}"
+            )
             zep_health_status["last_error"] = str(test_error)
-            
+
     except Exception as e:
         logger.error(f"Failed to initialize Zep client: {e}")
         zep_health_status["last_error"] = str(e)
@@ -67,61 +71,79 @@ def validate_production_environment():
         "valid": True,
         "warnings": [],
         "errors": [],
-        "recommendations": []
+        "recommendations": [],
     }
-    
+
     # Critical environment variables
     critical_vars = {
         "NEO4J_URI": os.getenv("NEO4J_URI"),
-        "NEO4J_USERNAME": os.getenv("NEO4J_USERNAME"), 
+        "NEO4J_USERNAME": os.getenv("NEO4J_USERNAME"),
         "NEO4J_PASSWORD": os.getenv("NEO4J_PASSWORD"),
         "ANTHROPIC_API_KEY": os.getenv("ANTHROPIC_API_KEY"),
         "COHERE_API_KEY": os.getenv("COHERE_API_KEY"),
     }
-    
+
     # Optional but recommended variables
     optional_vars = {
         "ZEP_API_KEY": os.getenv("ZEP_API_KEY"),
         "ZEP_API_URL": os.getenv("ZEP_API_URL"),
     }
-    
+
     # Check critical variables
     for var_name, var_value in critical_vars.items():
         if not var_value:
-            validation_results["errors"].append(f"Missing critical environment variable: {var_name}")
+            validation_results["errors"].append(
+                f"Missing critical environment variable: {var_name}"
+            )
             validation_results["valid"] = False
         elif var_name.endswith("_KEY") and len(var_value) < 10:
-            validation_results["warnings"].append(f"Environment variable {var_name} appears to be too short")
-    
+            validation_results["warnings"].append(
+                f"Environment variable {var_name} appears to be too short"
+            )
+
     # Check optional variables
     for var_name, var_value in optional_vars.items():
         if not var_value:
             if var_name == "ZEP_API_KEY":
-                validation_results["warnings"].append("ZEP_API_KEY not set - user personalization features will be disabled")
+                validation_results["warnings"].append(
+                    "ZEP_API_KEY not set - user personalization features will be disabled"
+                )
             elif var_name == "ZEP_API_URL":
-                validation_results["recommendations"].append("ZEP_API_URL not set - using default https://api.getzep.com")
-    
+                validation_results["recommendations"].append(
+                    "ZEP_API_URL not set - using default https://api.getzep.com"
+                )
+
     # Environment-specific checks
     environment = os.getenv("ENVIRONMENT", "development").lower()
     if environment in ["production", "prod"]:
         # Production-specific validations
         if os.getenv("NEO4J_URI", "").startswith("bolt://localhost"):
-            validation_results["errors"].append("Production environment should not use localhost Neo4j")
+            validation_results["errors"].append(
+                "Production environment should not use localhost Neo4j"
+            )
             validation_results["valid"] = False
-            
+
         if not os.getenv("CORS_ORIGINS"):
-            validation_results["warnings"].append("CORS_ORIGINS not set - this may cause frontend connectivity issues")
-            
+            validation_results["warnings"].append(
+                "CORS_ORIGINS not set - this may cause frontend connectivity issues"
+            )
+
         # Check for development indicators
         if os.getenv("DEBUG", "").lower() == "true":
-            validation_results["recommendations"].append("DEBUG mode should be disabled in production")
-    
+            validation_results["recommendations"].append(
+                "DEBUG mode should be disabled in production"
+            )
+
     # Zep-specific validations
     if zep_client:
-        validation_results["recommendations"].append("Zep client initialized successfully")
+        validation_results["recommendations"].append(
+            "Zep client initialized successfully"
+        )
     elif ZEP_API_KEY:
-        validation_results["warnings"].append("Zep API key provided but client initialization failed")
-    
+        validation_results["warnings"].append(
+            "Zep API key provided but client initialization failed"
+        )
+
     return validation_results
 
 
@@ -132,16 +154,16 @@ try:
         logger.error("Environment validation failed:")
         for error in validation["errors"]:
             logger.error(f"  - {error}")
-    
+
     if validation["warnings"]:
         logger.warning("Environment validation warnings:")
         for warning in validation["warnings"]:
             logger.warning(f"  - {warning}")
-            
+
     if validation["recommendations"]:
         logger.info("Environment recommendations:")
         for rec in validation["recommendations"]:
             logger.info(f"  - {rec}")
-            
+
 except Exception as e:
     logger.error(f"Failed to run environment validation: {e}")
