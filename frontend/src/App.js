@@ -29,6 +29,35 @@ function App() {
   
   // Authentication trigger ref - function to trigger auth sidebar
   const authTriggerRef = useRef(null);
+
+  // Handle auth success from OAuth callback
+  useEffect(() => {
+    const handleAuthCallback = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const authStatus = urlParams.get('auth');
+      
+      if (authStatus === 'success') {
+        console.log('✅ Auth success detected from URL parameter');
+        // Clean up the URL parameter
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        
+        // Force a small delay to ensure auth state has propagated
+        setTimeout(() => {
+          console.log('🔄 Triggering auth state refresh after OAuth success');
+          // This will be handled by the auth state listeners in components
+        }, 100);
+      } else if (authStatus === 'error') {
+        console.error('❌ Auth error detected from URL parameter');
+        // Clean up the URL parameter
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        // Could show error notification here if needed
+      }
+    };
+
+    handleAuthCallback();
+  }, []);
   
   // Chat message handling - this will be passed to ChatPanel
   const handleAddChatMessage = (message) => {

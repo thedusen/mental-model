@@ -24,13 +24,32 @@ const LeftSidebar = ({
     const initializeAuth = async () => {
       try {
         const currentUser = await auth.getUser();
+        console.log('🔍 LeftSidebar initial user:', currentUser);
         setUser(currentUser);
         
         // Listen for auth state changes
-        const { data: { subscription } } = auth.onAuthStateChange((event, session) => {
+        const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
+          console.log('🔄 LeftSidebar auth state change:', event, session?.user?.email);
+          
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-            setUser(session?.user);
+            // For OAuth flows, ensure we get the most up-to-date user data
+            if (event === 'SIGNED_IN') {
+              // Small delay to ensure session is fully established
+              setTimeout(async () => {
+                try {
+                  const refreshedUser = await auth.getUser();
+                  console.log('🔄 Refreshed user after sign-in:', refreshedUser);
+                  setUser(refreshedUser);
+                } catch (error) {
+                  console.error('Error refreshing user after sign-in:', error);
+                  setUser(session?.user || null);
+                }
+              }, 200);
+            } else {
+              setUser(session?.user || null);
+            }
           } else if (event === 'SIGNED_OUT') {
+            console.log('🚪 User signed out in LeftSidebar');
             setUser(null);
           }
         });

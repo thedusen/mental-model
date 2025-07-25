@@ -9,7 +9,7 @@
   flex-direction: column;
   position: relative;
   transition: width 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden;
+  overflow: visible; /* Allow dropdowns to overflow */
 }
 
 .left-sidebar.collapsed {
@@ -23,7 +23,7 @@
   align-items: stretch;
   padding: 60px 16px 16px 16px; /* Top padding to make room for collapse button */
   border-bottom: 1px solid #AEAEAE;
-  gap: 12px;
+  gap: 72px; /* Increased significantly for more obvious spacing */
   position: relative;
 }
 
@@ -103,6 +103,9 @@
 .user-profile-section {
   margin-top: auto;
   border-top: 1px solid #AEAEAE;
+  position: relative;
+  z-index: 10; /* Ensure dropdown appears above other content */
+  overflow: visible; /* Allow dropdown to overflow this section */
 }
 
 .chat-history-section .chat-history {

@@ -103,6 +103,42 @@ export const auth = {
       }
     });
     return { data, error };
+  },
+
+  // Manually refresh auth state (useful after OAuth redirects)
+  refreshAuthState: async () => {
+    try {
+      console.log('🔄 Manually refreshing auth state...');
+      
+      // First try to refresh the session
+      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+      
+      if (refreshError) {
+        console.log('⚠️ Session refresh failed, trying to get current session:', refreshError.message);
+      } else {
+        console.log('✅ Session refreshed successfully');
+      }
+      
+      // Get the current session/user
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('❌ Error getting session during refresh:', sessionError);
+        return { user: null, error: sessionError };
+      }
+      
+      if (session?.user) {
+        console.log('✅ Auth refresh successful, user found:', session.user.email);
+        return { user: session.user, error: null };
+      } else {
+        console.log('ℹ️ No user session found during refresh');
+        return { user: null, error: null };
+      }
+      
+    } catch (error) {
+      console.error('❌ Error during manual auth refresh:', error);
+      return { user: null, error };
+    }
   }
 };
 

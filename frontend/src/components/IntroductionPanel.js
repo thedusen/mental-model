@@ -6,6 +6,14 @@ function IntroductionPanel({ isVisible, onClose, onAddChatMessage }) {
 
   return (
     <div className="introduction-panel">
+      <button 
+        className="close-button"
+        onClick={onClose}
+        aria-label="Close introduction panel"
+        title="Close panel"
+      >
+        ✕
+      </button>
       <div className="panel-content">
         <div className="intro-header">
           <h2 className="intro-title">The Profit Architect</h2>

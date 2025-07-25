@@ -416,22 +416,12 @@ const UserProfile = ({ user, onAuthTrigger }) => {
           <div className="user-name" title={displayName}>
             {displayName}
           </div>
-          <div className="user-email" title={user.email}>
-            {user.email}
-          </div>
+          {/* Email address hidden as requested */}
         </div>
         <div className="dropdown-arrow">
-          <svg 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2"
-            style={{ transform: showDropdown ? 'rotate(180deg)' : 'rotate(0deg)' }}
-          >
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
+          <span style={{ fontSize: '20px', display: 'inline-block' }}>
+            ⋮
+          </span>
         </div>
       </button>
 
@@ -451,11 +441,7 @@ const UserProfile = ({ user, onAuthTrigger }) => {
                 setShowProfileSettings(true);
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-              <span>Profile Settings</span>
+              Profile Settings
             </button>
             <button 
               className="dropdown-item"
@@ -465,11 +451,7 @@ const UserProfile = ({ user, onAuthTrigger }) => {
                 setShowPreferences(true);
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
-              </svg>
-              <span>Preferences</span>
+              Preferences
             </button>
             <button 
               className="dropdown-item"
@@ -479,11 +461,7 @@ const UserProfile = ({ user, onAuthTrigger }) => {
                 setShowBusinessProfile(true);
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-              </svg>
-              <span>Business Profile</span>
+              Business Profile
             </button>
           </div>
           <div className="dropdown-divider"></div>
@@ -493,12 +471,7 @@ const UserProfile = ({ user, onAuthTrigger }) => {
               role="menuitem"
               onClick={handleSignOut}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16,17 21,12 16,7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
-              </svg>
-              <span>Sign Out</span>
+              Sign Out
             </button>
           </div>
         </div>

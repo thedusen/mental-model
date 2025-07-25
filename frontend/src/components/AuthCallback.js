@@ -1,30 +1,77 @@
 import React, { useEffect } from 'react';
-import { supabase } from '../utils/supabase';
+import { supabase, auth } from '../utils/supabase';
 
 const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Get the session from URL hash
+        console.log('🔄 Processing OAuth callback...');
+        
+        // First, try to get the session from the URL/localStorage
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('Auth callback error:', error);
+          console.error('❌ Auth callback error:', error);
           // Redirect to home with error
           window.location.href = '/?auth=error';
           return;
         }
 
         if (data.session) {
-          console.log('Google auth successful:', data.session.user);
-          // Redirect to home with success
-          window.location.href = '/?auth=success';
+          console.log('✅ OAuth session found:', {
+            email: data.session.user.email,
+            provider: data.session.user.app_metadata?.provider,
+            confirmed: data.session.user.email_confirmed_at ? 'yes' : 'no'
+          });
+          
+          // Ensure the user data is complete and properly stored
+          const user = data.session.user;
+          if (user && user.email) {
+            console.log('✅ User data complete, redirecting with success');
+            // Add a small delay to ensure session is fully established
+            setTimeout(() => {
+              window.location.href = '/?auth=success';
+            }, 500);
+          } else {
+            console.error('⚠️ User data incomplete:', user);
+            window.location.href = '/?auth=error';
+          }
         } else {
-          // No session, redirect to home
-          window.location.href = '/';
+          console.log('ℹ️ No session found in callback, checking for hash/params...');
+          
+          // Try to handle the callback explicitly in case getSession didn't work
+          const urlParams = new URLSearchParams(window.location.search);
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          
+          console.log('URL params:', Object.fromEntries(urlParams));
+          console.log('Hash params:', Object.fromEntries(hashParams));
+          
+          if (hashParams.get('access_token') || urlParams.get('code')) {
+            console.log('🔄 Found auth tokens in URL, waiting for session...');
+            // Wait a bit longer for the session to be established
+            setTimeout(async () => {
+              try {
+                const { data: retryData } = await supabase.auth.getSession();
+                if (retryData.session) {
+                  console.log('✅ Session established on retry');
+                  window.location.href = '/?auth=success';
+                } else {
+                  console.log('❌ Session still not found after retry');
+                  window.location.href = '/?auth=error';
+                }
+              } catch (retryError) {
+                console.error('❌ Retry failed:', retryError);
+                window.location.href = '/?auth=error';
+              }
+            }, 1000);
+          } else {
+            // No session and no tokens, just redirect home
+            console.log('ℹ️ No session or tokens found, redirecting home');
+            window.location.href = '/';
+          }
         }
       } catch (error) {
-        console.error('Error handling auth callback:', error);
+        console.error('❌ Error handling auth callback:', error);
         window.location.href = '/?auth=error';
       }
     };
