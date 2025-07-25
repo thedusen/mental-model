@@ -10,6 +10,7 @@ import asyncio
 import json
 import time
 import numpy as np
+from datetime import datetime
 from functools import lru_cache
 from config import anthropic_client, cohere_client, get_db_session
 from keep_warm import keep_warm_service
@@ -403,13 +404,81 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # Simple health check for deployment platforms
 @app.get("/health")
 async def health_check():
+    health_status = {"status": "healthy", "services": {}}
+    
+    # Check Neo4j database
     try:
         with get_db_session() as session:
             session.run("RETURN 1")
-        return {"status": "healthy", "database": "connected"}
+        health_status["services"]["database"] = {"status": "connected"}
     except Exception as e:
-        logger.error(f"Health check failed: {e}")
-        return {"status": "unhealthy", "error": str(e)}
+        logger.error(f"Database health check failed: {e}")
+        health_status["services"]["database"] = {"status": "unhealthy", "error": str(e)}
+        health_status["status"] = "degraded"
+    
+    # Check Zep connectivity
+    from config import zep_client, zep_health_status
+    if zep_client:
+        try:
+            # Test current Zep connectivity
+            test_response = zep_client.user.list_ordered(page_size=1)
+            health_status["services"]["zep"] = {
+                "status": "connected",
+                "initialized_at": zep_health_status.get("initialized_at"),
+                "api_url": os.getenv("ZEP_API_URL", "https://api.getzep.com")
+            }
+        except Exception as e:
+            logger.warning(f"Zep health check failed: {e}")
+            health_status["services"]["zep"] = {
+                "status": "unhealthy", 
+                "error": str(e),
+                "last_known_error": zep_health_status.get("last_error")
+            }
+            if health_status["status"] == "healthy":
+                health_status["status"] = "degraded"
+    else:
+        health_status["services"]["zep"] = {
+            "status": "disabled",
+            "reason": zep_health_status.get("last_error", "Not configured")
+        }
+        if health_status["status"] == "healthy":
+            health_status["status"] = "degraded"
+    
+    return health_status
+
+
+@app.get("/api/environment/validate")
+async def validate_environment():
+    """Get environment validation status for debugging production issues"""
+    from config import validate_production_environment
+    try:
+        validation = validate_production_environment()
+        return {
+            "validation": validation,
+            "environment": os.getenv("ENVIRONMENT", "development"),
+            "zep_configured": bool(os.getenv("ZEP_API_KEY")),
+            "zep_url": os.getenv("ZEP_API_URL", "https://api.getzep.com")
+        }
+    except Exception as e:
+        logger.error(f"Environment validation endpoint failed: {e}")
+        return {
+            "error": str(e),
+            "validation": {"valid": False, "errors": [str(e)], "warnings": [], "recommendations": []}
+        }
+
+
+@app.get("/api/circuit-breakers/status")
+async def get_circuit_breaker_status():
+    """Get status of all circuit breakers for monitoring"""
+    from circuit_breaker import get_all_circuit_breaker_status
+    try:
+        return {
+            "circuit_breakers": get_all_circuit_breaker_status(),
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Circuit breaker status endpoint failed: {e}")
+        return {"error": str(e), "circuit_breakers": {}}
 
 
 # Startup event to begin keep-warm service (only for Aura deployments)

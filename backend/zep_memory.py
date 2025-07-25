@@ -9,6 +9,7 @@ from typing import List, Dict, Any, Optional
 from zep_cloud.client import Zep
 from zep_cloud import Message, User
 from config import zep_client
+from circuit_breaker import circuit_breaker_decorator, CircuitBreakerOpenError
 
 logger = logging.getLogger(__name__)
 
@@ -21,14 +22,15 @@ class ZepMemoryManager:
         self.enabled = zep_client is not None
 
     def ensure_user_exists(
-        self, user_id: str, user_metadata: Optional[Dict[str, Any]] = None
+        self, user_id: str, user_metadata: Optional[Dict[str, Any]] = None, retry_count: int = 3
     ) -> User:
         """
-        Ensure a user exists in Zep, create if not exists
+        Ensure a user exists in Zep, create if not exists with retry logic
 
         Args:
             user_id: Unique user identifier (from Supabase)
             user_metadata: Optional metadata about the user (should include 'name' for display)
+            retry_count: Number of retries for user creation
 
         Returns:
             User object from Zep
@@ -37,27 +39,74 @@ class ZepMemoryManager:
             logger.warning("Zep is disabled - ensure_user_exists returning None")
             return None
 
+        # Try to get existing user first
         try:
-            # Try to get existing user
-            user = self.client.user.get(user_id)
+            user = self._get_user_with_circuit_breaker(user_id)
             logger.info(f"Found existing Zep user: {user_id}")
             return user
-        except Exception:
-            # User doesn't exist, create new one
-            logger.info(f"Creating new Zep user: {user_id}")
+        except CircuitBreakerOpenError:
+            logger.warning(f"Circuit breaker open - cannot check/create user {user_id}")
+            return None
+        except Exception as get_error:
+            logger.debug(f"User {user_id} doesn't exist in Zep, will create: {get_error}")
+            # User doesn't exist, proceed to creation
 
-            # Ensure we have proper user metadata with display name
-            default_metadata = {
-                "name": user_id,  # Use user_id as fallback display name
-                "created_at": str(datetime.now()),
-                "user_type": "business_owner",
-            }
+        # User doesn't exist, create new one with retry logic
+        for attempt in range(retry_count):
+            try:
+                logger.info(f"Creating new Zep user: {user_id} (attempt {attempt + 1}/{retry_count})")
 
-            # Merge with provided metadata, giving priority to provided values
-            final_metadata = {**default_metadata, **(user_metadata or {})}
+                # Enhanced metadata following Zep best practices
+                default_metadata = {
+                    "created_at": str(datetime.now()),
+                    "user_type": "business_owner",
+                    "source": "mental_model_app",
+                }
 
-            user = self.client.user.add(user_id=user_id, metadata=final_metadata)
-            return user
+                # Extract proper user fields from metadata
+                final_metadata = {**default_metadata, **(user_metadata or {})}
+                
+                # Zep expects specific top-level fields, not in metadata
+                user_params = {
+                    "user_id": user_id,
+                    "metadata": final_metadata
+                }
+                
+                # Extract Zep-specific user fields if provided
+                if user_metadata:
+                    if "email" in user_metadata:
+                        user_params["email"] = user_metadata["email"]
+                    if "first_name" in user_metadata:
+                        user_params["first_name"] = user_metadata["first_name"]
+                    if "last_name" in user_metadata:
+                        user_params["last_name"] = user_metadata["last_name"]
+                
+                # Create user with proper fields using circuit breaker
+                user = self._create_user_with_circuit_breaker(**user_params)
+                
+                # Create an explicit session for this user following Zep best practices
+                try:
+                    session_id = f"main_session_{user_id}"
+                    self.client.memory.add_session(
+                        session_id=session_id, 
+                        user_id=user_id
+                    )
+                    logger.info(f"Created main session for user {user_id}: {session_id}")
+                except Exception as session_error:
+                    logger.warning(f"Failed to create main session for user {user_id}: {session_error}")
+                    # Don't fail user creation if session creation fails
+                
+                logger.info(f"Successfully created Zep user: {user_id}")
+                return user
+                
+            except Exception as create_error:
+                logger.warning(f"Attempt {attempt + 1} failed to create Zep user {user_id}: {create_error}")
+                if attempt == retry_count - 1:  # Last attempt
+                    logger.error(f"Failed to create Zep user {user_id} after {retry_count} attempts")
+                    raise create_error
+                # Wait before retry (exponential backoff)
+                import time
+                time.sleep(2 ** attempt)
 
     def add_conversation_memory(
         self, user_id: str, session_id: str, messages: List[Dict[str, str]]
@@ -505,6 +554,48 @@ class ZepMemoryManager:
         except Exception as e:
             logger.error(f"Error deleting user data from Zep: {str(e)}")
             return False
+
+    # Circuit breaker protected methods for key Zep operations
+    
+    @circuit_breaker_decorator(
+        failure_threshold=3,
+        recovery_timeout=30,
+        expected_exception=(Exception,),
+        circuit_name="zep_user_get"
+    )
+    def _get_user_with_circuit_breaker(self, user_id: str) -> User:
+        """Get user with circuit breaker protection"""
+        return self.client.user.get(user_id)
+    
+    @circuit_breaker_decorator(
+        failure_threshold=3,
+        recovery_timeout=30,
+        expected_exception=(Exception,),
+        circuit_name="zep_user_create"
+    )
+    def _create_user_with_circuit_breaker(self, **user_params) -> User:
+        """Create user with circuit breaker protection"""
+        return self.client.user.add(**user_params)
+    
+    @circuit_breaker_decorator(
+        failure_threshold=3,
+        recovery_timeout=30,
+        expected_exception=(Exception,),
+        circuit_name="zep_memory_get"
+    )
+    def _get_memory_with_circuit_breaker(self, session_id: str):
+        """Get memory with circuit breaker protection"""
+        return self.client.memory.get(session_id=session_id)
+    
+    @circuit_breaker_decorator(
+        failure_threshold=3,
+        recovery_timeout=30,
+        expected_exception=(Exception,),
+        circuit_name="zep_graph_add"
+    )
+    def _add_graph_data_with_circuit_breaker(self, user_id: str, data: str, data_type: str):
+        """Add graph data with circuit breaker protection"""
+        return self.client.graph.add(user_id=user_id, data=data, type=data_type)
 
 
 class ZepMemoryService:
