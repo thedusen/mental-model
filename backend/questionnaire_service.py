@@ -28,9 +28,13 @@ class QuestionnaireService:
             # Proactively ensure user exists in Zep before starting questionnaire
             user_created = await self._ensure_zep_user_exists(user_id)
             if not user_created:
-                logger.error(f"CRITICAL: Cannot create user {user_id} in Zep - questionnaire cannot start")
-                raise Exception("User sync service unavailable. Please try again later or contact support if the issue persists.")
-            
+                logger.error(
+                    f"CRITICAL: Cannot create user {user_id} in Zep - questionnaire cannot start"
+                )
+                raise Exception(
+                    "User sync service unavailable. Please try again later or contact support if the issue persists."
+                )
+
             # Create or update progress record
             await self._create_or_update_progress(
                 user_id=user_id,
@@ -111,7 +115,9 @@ class QuestionnaireService:
                 logger.error(
                     f"CRITICAL: Failed to sync answer to Zep for user {user_id}, question {question_id} - stopping questionnaire"
                 )
-                raise Exception(f"User sync service unavailable. Please try again later or contact support if the issue persists.")
+                raise Exception(
+                    f"User sync service unavailable. Please try again later or contact support if the issue persists."
+                )
 
             # Check if questionnaire is complete
             answered_count = await self._count_answered_questions(user_id)
@@ -556,7 +562,9 @@ class QuestionnaireService:
                 )
                 user_profile = user_response.data if user_response.data else None
             except Exception as profile_error:
-                logger.debug(f"Could not get user profile for {user_id}: {profile_error}")
+                logger.debug(
+                    f"Could not get user profile for {user_id}: {profile_error}"
+                )
 
             # Build user metadata
             user_metadata = {
@@ -574,15 +582,21 @@ class QuestionnaireService:
 
             # Ensure user exists with retry logic
             try:
-                self.zep.manager.ensure_user_exists(user_id, user_metadata, retry_count=2)
+                self.zep.manager.ensure_user_exists(
+                    user_id, user_metadata, retry_count=2
+                )
                 logger.info(f"Successfully ensured user {user_id} exists in Zep")
                 return True
             except Exception as user_error:
-                logger.error(f"Failed to ensure user exists in Zep for {user_id}: {user_error}")
+                logger.error(
+                    f"Failed to ensure user exists in Zep for {user_id}: {user_error}"
+                )
                 return False
 
         except Exception as e:
-            logger.error(f"Critical error in _ensure_zep_user_exists for {user_id}: {e}")
+            logger.error(
+                f"Critical error in _ensure_zep_user_exists for {user_id}: {e}"
+            )
             return False
 
 
