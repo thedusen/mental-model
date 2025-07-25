@@ -55,7 +55,8 @@
 }
 
 .user-profile.authenticated {
-  /* Dropdown container styling handled by .user-profile-button */
+  position: relative; /* Ensure proper positioning context for dropdown */
+  z-index: 100; /* Higher than other sidebar content */
 }
 
 /* User Profile Button (for authenticated users) */
@@ -78,8 +79,7 @@
 }
 
 .user-profile-button:focus {
-  outline: 2px solid var(--primary-color, #007bff);
-  outline-offset: 2px;
+  outline: none; /* Remove purple focus outline */
 }
 
 /* User Avatar */
@@ -128,7 +128,7 @@
 .user-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary, #212529);
+  color: #000000; /* Changed to black for better visibility */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -180,17 +180,19 @@
 /* Dropdown Menu */
 .user-dropdown {
   position: absolute;
-  top: 100%;
-  left: 16px;
-  right: 16px;
-  background: var(--background-primary, #ffffff);
-  border: 1px solid var(--border-color, #e1e5e9);
+  bottom: calc(100% - 5px); /* Position 5px below the profile button to cover horizontal line */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 247px; /* Specific width as requested */
+  background: #ffffff;
+  border: 1px solid #e1e5e9;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 9999;
   padding: 8px 0;
-  margin-top: 4px;
   animation: dropdownSlideIn 0.15s ease-out;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 @keyframes dropdownSlideIn {
@@ -218,18 +220,18 @@
   gap: 12px;
   cursor: pointer;
   font-size: 14px;
-  color: var(--text-primary, #212529);
+  color: #000000; /* Black text */
   transition: background-color 0.2s ease;
   text-align: left;
 }
 
 .dropdown-item:hover {
-  background: var(--background-hover, #f0f0f0);
+  background: #f9f9f9 !important; /* Very light grey hover state - force override */
 }
 
 .dropdown-item:focus {
   outline: none;
-  background: var(--background-hover, #f0f0f0);
+  background: #f9f9f9 !important; /* Same light grey as hover - force override */
 }
 
 .dropdown-item.danger {
@@ -237,8 +239,15 @@
 }
 
 .dropdown-item.danger:hover {
-  background: var(--danger-light, #f8d7da);
-  color: var(--danger-dark, #721c24);
+  background: #f9f9f9 !important; /* Same light grey hover for consistency - force override */
+  color: var(--danger-color, #dc3545); /* Keep red text */
+}
+
+.dropdown-icon {
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .dropdown-divider {
