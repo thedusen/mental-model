@@ -558,7 +558,9 @@ class QuestionnaireService:
                     .execute()
                 )
                 user_profile = user_response.data if user_response.data else None
-                logger.debug(f"Retrieved user profile from Supabase for {user_id}: {bool(user_profile)}")
+                logger.debug(
+                    f"Retrieved user profile from Supabase for {user_id}: {bool(user_profile)}"
+                )
             except Exception as profile_error:
                 logger.warning(
                     f"Could not get user profile for {user_id}: {profile_error}"
@@ -568,14 +570,11 @@ class QuestionnaireService:
             user_metadata = {
                 "user_type": "business_owner",
                 "source": "questionnaire",
-                "created_via": "supabase_integration"
+                "created_via": "supabase_integration",
             }
 
             # Extract user data for Zep user creation (not just metadata)
-            user_creation_data = {
-                "user_id": user_id,
-                "metadata": user_metadata
-            }
+            user_creation_data = {"user_id": user_id, "metadata": user_metadata}
 
             if user_profile:
                 # Add core user fields that Zep expects at the top level
@@ -588,15 +587,21 @@ class QuestionnaireService:
                 if user_profile.get("last_name"):
                     user_creation_data["last_name"] = user_profile["last_name"]
                     user_metadata["last_name"] = user_profile["last_name"]
-                    
-                logger.debug(f"Creating Zep user with profile data: {user_profile.get('email', 'no-email')}")
+
+                logger.debug(
+                    f"Creating Zep user with profile data: {user_profile.get('email', 'no-email')}"
+                )
             else:
-                logger.warning(f"No Supabase profile found for user {user_id}, creating minimal Zep user")
+                logger.warning(
+                    f"No Supabase profile found for user {user_id}, creating minimal Zep user"
+                )
 
             # Create user directly using Zep client to ensure proper user ID usage
             try:
                 created_user = self.zep.client.user.add(**user_creation_data)
-                logger.info(f"Successfully created user {user_id} in Zep with metadata: {user_metadata}")
+                logger.info(
+                    f"Successfully created user {user_id} in Zep with metadata: {user_metadata}"
+                )
                 return True
             except Exception as user_error:
                 logger.error(

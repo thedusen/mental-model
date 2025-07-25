@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def main():
     print("🎯 Definitive Zep User Creation Test")
     print("=" * 60)
@@ -21,7 +22,7 @@ def main():
     # Check environment
     zep_api_key = os.getenv("ZEP_API_KEY")
     zep_api_url = os.getenv("ZEP_API_URL", "https://api.getzep.com")
-    
+
     if not zep_api_key:
         print("❌ ZEP_API_KEY not set")
         return False
@@ -40,15 +41,17 @@ def main():
         try:
             users_response = client.user.list_ordered()
             print(f"   ✅ Success: {type(users_response)}")
-            
+
             if hasattr(users_response, "users"):
                 user_count = len(users_response.users) if users_response.users else 0
                 print(f"   📊 Users found: {user_count}")
-                
+
                 if user_count > 0:
                     print("   👥 Existing users:")
                     for i, user in enumerate(users_response.users[:3], 1):
-                        print(f"      {i}. {user.user_id} ({getattr(user, 'email', 'no email')})")
+                        print(
+                            f"      {i}. {user.user_id} ({getattr(user, 'email', 'no email')})"
+                        )
                 else:
                     print("   ⚠️ No existing users found")
             else:
@@ -63,19 +66,22 @@ def main():
         print("\n2️⃣ Testing user creation...")
         test_user_id = f"definitive_test_{int(datetime.now().timestamp())}"
         test_email = f"{test_user_id}@example.com"
-        
+
         try:
             created_user = client.user.add(
                 user_id=test_user_id,
                 email=test_email,
                 first_name="Definitive",
                 last_name="Test",
-                metadata={"source": "definitive_test", "created_at": datetime.now().isoformat()}
+                metadata={
+                    "source": "definitive_test",
+                    "created_at": datetime.now().isoformat(),
+                },
             )
             print(f"   ✅ User created successfully!")
             print(f"   👤 User ID: {created_user.user_id}")
             print(f"   📧 Email: {getattr(created_user, 'email', 'not set')}")
-            
+
         except Exception as e:
             print(f"   ❌ User creation failed: {e}")
             return False
@@ -87,7 +93,7 @@ def main():
             print(f"   ✅ User retrieved successfully!")
             print(f"   👤 Retrieved ID: {retrieved_user.user_id}")
             print(f"   📧 Email: {getattr(retrieved_user, 'email', 'not set')}")
-            
+
         except Exception as e:
             print(f"   ❌ User retrieval failed: {e}")
             return False
@@ -96,11 +102,11 @@ def main():
         print("\n4️⃣ Confirming user appears in list...")
         try:
             users_response = client.user.list_ordered()
-            
+
             if hasattr(users_response, "users") and users_response.users:
                 user_count = len(users_response.users)
                 print(f"   ✅ Found {user_count} total users")
-                
+
                 # Check if our test user is in the list
                 user_ids = [user.user_id for user in users_response.users]
                 if test_user_id in user_ids:
@@ -108,15 +114,17 @@ def main():
                 else:
                     print(f"   ⚠️ Test user NOT found in list")
                     print(f"   📋 User IDs in list: {user_ids[:5]}")
-                    
+
                 # Show all users for verification
                 print("   👥 All users:")
                 for i, user in enumerate(users_response.users, 1):
-                    print(f"      {i}. {user.user_id} ({getattr(user, 'email', 'no email')})")
+                    print(
+                        f"      {i}. {user.user_id} ({getattr(user, 'email', 'no email')})"
+                    )
             else:
                 print(f"   ❌ No users returned in list")
                 return False
-                
+
         except Exception as e:
             print(f"   ❌ User listing failed: {e}")
             return False
@@ -126,14 +134,14 @@ def main():
         try:
             client.user.delete(test_user_id)
             print(f"   ✅ Test user deleted successfully")
-            
+
         except Exception as e:
             print(f"   ⚠️ Cleanup failed (user may persist): {e}")
 
         print("\n🎉 ALL TESTS PASSED!")
         print("✅ User creation pipeline is working correctly")
         print("✅ Users should now appear in your Zep dashboard")
-        
+
         return True
 
     except ImportError as e:
@@ -144,15 +152,16 @@ def main():
         print(f"❌ Unexpected error: {e}")
         return False
 
+
 if __name__ == "__main__":
     success = main()
     print(f"\n📊 Final Result: {'✅ SUCCESS' if success else '❌ FAILED'}")
-    
+
     if not success:
         print("\n💡 Troubleshooting:")
         print("1. Verify ZEP_API_KEY is correct and active")
-        print("2. Check you're viewing the correct Zep project/organization") 
+        print("2. Check you're viewing the correct Zep project/organization")
         print("3. Ensure network connectivity to Zep API")
         print("4. Try the test again - API might have temporary issues")
-    
+
     sys.exit(0 if success else 1)
