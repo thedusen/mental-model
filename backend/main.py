@@ -422,7 +422,7 @@ async def health_check():
     if zep_client:
         try:
             # Test current Zep connectivity
-            test_response = zep_client.user.list_ordered(page_size=1)
+            test_response = zep_client.user.list(limit=1)
             health_status["services"]["zep"] = {
                 "status": "connected",
                 "initialized_at": zep_health_status.get("initialized_at"),
@@ -446,6 +446,43 @@ async def health_check():
             health_status["status"] = "degraded"
 
     return health_status
+
+
+@app.post("/api/circuit-breakers/reset")
+async def reset_circuit_breakers():
+    """Reset all circuit breakers - useful after fixing API issues"""
+    try:
+        from circuit_breaker import circuit_breaker_decorator
+        
+        if hasattr(circuit_breaker_decorator, '_breakers'):
+            reset_count = 0
+            for name, breaker in circuit_breaker_decorator._breakers.items():
+                if breaker.state != "closed":
+                    breaker.state = "closed"
+                    breaker.failure_count = 0
+                    breaker.last_failure_time = None
+                    reset_count += 1
+                    logger.info(f"Reset circuit breaker: {name}")
+            
+            return {
+                "success": True,
+                "message": f"Reset {reset_count} circuit breakers",
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "success": False,
+                "message": "No circuit breakers found",
+                "timestamp": datetime.now().isoformat()
+            }
+            
+    except Exception as e:
+        logger.error(f"Failed to reset circuit breakers: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 @app.get("/api/environment/validate")

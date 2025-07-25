@@ -1,5 +1,7 @@
 import os
 import logging
+from typing import Tuple
+from datetime import datetime
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
 import anthropic
@@ -22,29 +24,73 @@ ZEP_API_KEY = os.getenv("ZEP_API_KEY")
 zep_client = None
 zep_health_status = {"connected": False, "last_error": None, "initialized_at": None}
 
+def validate_zep_api_key(api_key: str) -> Tuple[bool, str]:
+    """Validate Zep API key format"""
+    if not api_key:
+        return False, "API key is empty"
+    
+    if not (api_key.startswith('zep_') or api_key.startswith('z_')):
+        return False, "API key should start with 'zep_' or 'z_'"
+    
+    if len(api_key) < 20:
+        return False, f"API key appears too short ({len(api_key)} characters)"
+    
+    if '\n' in api_key or '\r' in api_key:
+        return False, "API key contains newline characters"
+    
+    if api_key.startswith(' ') or api_key.endswith(' '):
+        return False, "API key has leading/trailing whitespace"
+    
+    return True, "API key format is valid"
+
 if ZEP_API_KEY:
-    try:
-        logger.info(f"Initializing Zep client with URL: {ZEP_API_URL}")
-        zep_client = Zep(base_url=ZEP_API_URL, api_key=ZEP_API_KEY)
-
-        # Test connection by attempting to create a test operation
-        try:
-            test_response = zep_client.user.list_ordered(page_size=1)
-            zep_health_status["connected"] = True
-            zep_health_status["initialized_at"] = str(
-                os.getenv("DEPLOY_TIME", "unknown")
-            )
-            logger.info("Zep client initialized successfully and connection verified")
-        except Exception as test_error:
-            logger.warning(
-                f"Zep client initialized but connection test failed: {test_error}"
-            )
-            zep_health_status["last_error"] = str(test_error)
-
-    except Exception as e:
-        logger.error(f"Failed to initialize Zep client: {e}")
-        zep_health_status["last_error"] = str(e)
+    # First validate API key format
+    key_valid, key_message = validate_zep_api_key(ZEP_API_KEY)
+    
+    if not key_valid:
+        logger.error(f"Invalid Zep API key format: {key_message}")
+        zep_health_status["last_error"] = f"Invalid API key format: {key_message}"
         zep_client = None
+    else:
+        try:
+            logger.info(f"Initializing Zep client with URL: {ZEP_API_URL}")
+            logger.info(f"API key format validation: {key_message}")
+            zep_client = Zep(base_url=ZEP_API_URL, api_key=ZEP_API_KEY)
+
+            # Test connection by attempting to create a test operation
+            try:
+                # Use user.list() instead of list_ordered() which may not exist
+                test_response = zep_client.user.list(limit=1)
+                zep_health_status["connected"] = True
+                zep_health_status["initialized_at"] = str(
+                    os.getenv("DEPLOY_TIME", datetime.now().isoformat())
+                )
+                logger.info("Zep client initialized successfully and connection verified")
+                
+                # Log user count for debugging
+                if hasattr(test_response, 'users') and test_response.users:
+                    logger.info(f"Found {len(test_response.users)} existing users in Zep")
+                else:
+                    logger.info("No existing users found in Zep (expected for new projects)")
+                    
+            except Exception as test_error:
+                error_msg = str(test_error)
+                logger.warning(f"Zep client initialized but connection test failed: {error_msg}")
+                zep_health_status["last_error"] = error_msg
+                
+                # Provide specific guidance based on error
+                if "401" in error_msg or "unauthorized" in error_msg.lower():
+                    logger.error("🚨 CRITICAL: Zep API key is invalid or expired!")
+                    logger.error("   -> Generate a new API key from https://cloud.getzep.com")
+                    logger.error("   -> Update ZEP_API_KEY environment variable")
+                elif "403" in error_msg or "forbidden" in error_msg.lower():
+                    logger.error("🚨 CRITICAL: Zep API key lacks required permissions!")
+                    logger.error("   -> Check API key scope in Zep dashboard")
+
+        except Exception as e:
+            logger.error(f"Failed to initialize Zep client: {e}")
+            zep_health_status["last_error"] = str(e)
+            zep_client = None
 else:
     logger.warning("ZEP_API_KEY not set - Zep functionality will be disabled")
     zep_health_status["last_error"] = "ZEP_API_KEY environment variable not set"
