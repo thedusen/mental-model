@@ -62,7 +62,7 @@ if ZEP_API_KEY:
             # Test connection by attempting to create a test operation
             try:
                 # Use user.list() instead of list_ordered() which may not exist
-                test_response = zep_client.user.list(limit=1)
+                test_response = zep_client.user.list_ordered()
                 zep_health_status["connected"] = True
                 zep_health_status["initialized_at"] = str(
                     os.getenv("DEPLOY_TIME", datetime.now().isoformat())

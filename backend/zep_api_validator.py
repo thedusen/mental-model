@@ -62,7 +62,7 @@ class ZepApiValidator:
             client = Zep(base_url=self.api_url, api_key=self.api_key)
 
             # Test basic API call
-            users_response = client.user.list(limit=1)
+            users_response = client.user.list_ordered()
 
             result["success"] = True
             result["details"]["api_url"] = self.api_url

@@ -57,7 +57,7 @@ def test_api_endpoints():
         # Test 2: Alternative user.list method
         print("\n2️⃣ Testing user.list()...")
         try:
-            result = client.user.list(limit=1)
+            result = client.user.list_ordered()
             print(f"   ✅ Success: {type(result)}")
             if hasattr(result, "users"):
                 print(f"   📊 Users found: {len(result.users) if result.users else 0}")

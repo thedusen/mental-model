@@ -422,7 +422,7 @@ async def health_check():
     if zep_client:
         try:
             # Test current Zep connectivity
-            test_response = zep_client.user.list(limit=1)
+            test_response = zep_client.user.list_ordered()
             health_status["services"]["zep"] = {
                 "status": "connected",
                 "initialized_at": zep_health_status.get("initialized_at"),
