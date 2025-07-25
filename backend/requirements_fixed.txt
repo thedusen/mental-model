@@ -1,0 +1,21 @@
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+neo4j==5.25.0
+anthropic==0.57.1
+cohere==5.11.0
+python-dotenv==1.0.1
+pydantic==2.10.2
+numpy>=1.26.0
+psutil==5.9.8
+PyJWT==2.8.0
+supabase==2.15.1
+# Remove zep-python==2.0.0 - CONFLICT WITH zep-cloud
+zep-cloud==2.21.0
+# Production performance and monitoring
+uvloop==0.21.0
+gunicorn==21.2.0
+
+# Development and testing
+flake8==7.0.0
+black==24.4.2
+autopep8==2.0.4
