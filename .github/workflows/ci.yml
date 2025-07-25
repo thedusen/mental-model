@@ -319,7 +319,7 @@ jobs:
   auto-format:
     runs-on: ubuntu-latest
     needs: [validate-docker, test-backend, test-frontend, validate-env-config] # Run after tests
-    if: github.ref == 'refs/heads/development' # Only run on the development branch
+    if: github.ref == 'refs/heads/development' && (success() || failure()) # Run on development branch even if tests fail
 
     steps:
       - name: Checkout code
