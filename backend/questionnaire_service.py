@@ -439,28 +439,15 @@ class QuestionnaireService:
                     f"Could not get user profile for {user_id}: {profile_error}"
                 )
 
-            # Ensure user exists in Zep with enhanced metadata
-            user_metadata = {
-                "user_type": "business_owner",
-                "source": "questionnaire",
-            }
-
-            if user_profile:
-                if user_profile.get("email"):
-                    user_metadata["email"] = user_profile["email"]
-                if user_profile.get("first_name"):
-                    user_metadata["first_name"] = user_profile["first_name"]
-                if user_profile.get("last_name"):
-                    user_metadata["last_name"] = user_profile["last_name"]
-
-            # Ensure user exists with retry logic
+            # Skip user creation here since it should already exist from _ensure_zep_user_exists
+            # This prevents duplicate user creation and conflicting metadata
             try:
-                self.zep.manager.ensure_user_exists(
-                    user_id, user_metadata, retry_count=2
-                )
+                # Verify user exists (should already exist from questionnaire start)
+                existing_user = self.zep.client.user.get(user_id)
+                logger.debug(f"Confirmed user {user_id} exists in Zep for answer sync")
             except Exception as user_error:
                 logger.error(
-                    f"Failed to ensure user exists in Zep for {user_id}: {user_error}"
+                    f"User {user_id} does not exist in Zep during answer sync: {user_error}"
                 )
                 return False
 
@@ -550,7 +537,17 @@ class QuestionnaireService:
         Returns True if user exists or was created successfully, False otherwise
         """
         try:
-            # Get user profile from Supabase to provide better user metadata to Zep
+            # First check if user already exists in Zep to avoid duplicate creation
+            try:
+                existing_user = self.zep.client.user.get(user_id)
+                if existing_user:
+                    logger.info(f"User {user_id} already exists in Zep")
+                    return True
+            except Exception:
+                # User doesn't exist, proceed with creation
+                pass
+
+            # Get user profile from Supabase to provide complete user metadata to Zep
             user_profile = None
             try:
                 user_response = (
@@ -561,35 +558,49 @@ class QuestionnaireService:
                     .execute()
                 )
                 user_profile = user_response.data if user_response.data else None
+                logger.debug(f"Retrieved user profile from Supabase for {user_id}: {bool(user_profile)}")
             except Exception as profile_error:
-                logger.debug(
+                logger.warning(
                     f"Could not get user profile for {user_id}: {profile_error}"
                 )
 
-            # Build user metadata
+            # Build complete user metadata for Zep
             user_metadata = {
                 "user_type": "business_owner",
                 "source": "questionnaire",
+                "created_via": "supabase_integration"
+            }
+
+            # Extract user data for Zep user creation (not just metadata)
+            user_creation_data = {
+                "user_id": user_id,
+                "metadata": user_metadata
             }
 
             if user_profile:
+                # Add core user fields that Zep expects at the top level
                 if user_profile.get("email"):
+                    user_creation_data["email"] = user_profile["email"]
                     user_metadata["email"] = user_profile["email"]
                 if user_profile.get("first_name"):
+                    user_creation_data["first_name"] = user_profile["first_name"]
                     user_metadata["first_name"] = user_profile["first_name"]
                 if user_profile.get("last_name"):
+                    user_creation_data["last_name"] = user_profile["last_name"]
                     user_metadata["last_name"] = user_profile["last_name"]
+                    
+                logger.debug(f"Creating Zep user with profile data: {user_profile.get('email', 'no-email')}")
+            else:
+                logger.warning(f"No Supabase profile found for user {user_id}, creating minimal Zep user")
 
-            # Ensure user exists with retry logic
+            # Create user directly using Zep client to ensure proper user ID usage
             try:
-                self.zep.manager.ensure_user_exists(
-                    user_id, user_metadata, retry_count=2
-                )
-                logger.info(f"Successfully ensured user {user_id} exists in Zep")
+                created_user = self.zep.client.user.add(**user_creation_data)
+                logger.info(f"Successfully created user {user_id} in Zep with metadata: {user_metadata}")
                 return True
             except Exception as user_error:
                 logger.error(
-                    f"Failed to ensure user exists in Zep for {user_id}: {user_error}"
+                    f"Failed to create user in Zep for {user_id}: {user_error}"
                 )
                 return False
 
