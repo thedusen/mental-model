@@ -29,41 +29,71 @@ const BusinessProfileQuestionnaire = ({
       
       setIsLoading(true);
       try {
-        // Load questions and existing answers in parallel
-        const [questionsResponse, progressResponse] = await Promise.all([
-          fetch(`${API_URL}/api/business-profile/questions`),
-          fetch(`${API_URL}/api/business-profile/progress/${user.id}`, {
+        // Initialize questionnaire and get current question/progress
+        const [startResponse, statusResponse] = await Promise.all([
+          fetch(`${API_URL}/api/questionnaire/start`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.access_token}`,
+            },
+            body: JSON.stringify({ user_id: user.id })
+          }),
+          fetch(`${API_URL}/api/questionnaire/status/${user.id}`, {
             headers: {
               'Authorization': `Bearer ${user.access_token}`,
             },
           })
         ]);
 
-        if (!questionsResponse.ok) {
-          throw new Error('Failed to load questions');
+        if (!startResponse.ok) {
+          throw new Error('Failed to initialize questionnaire');
         }
 
-        const questionsData = await questionsResponse.json();
-        setQuestions(questionsData.questions || []);
-
-        // Load existing progress if available
-        if (progressResponse.ok) {
-          const progressData = await progressResponse.json();
-          setProgress(progressData.progress);
-          
-          // Set existing answers
-          const existingAnswers = {};
-          progressData.answers?.forEach(answer => {
-            existingAnswers[answer.question_id] = answer.answer;
+        const startData = await startResponse.json();
+        
+        // Get status to understand current progress
+        if (statusResponse.ok) {
+          const statusData = await statusResponse.json();
+          setProgress({
+            current: statusData.current_question,
+            total: statusData.total_questions,
+            status: statusData.status,
+            completed_questions: statusData.questions_completed
           });
-          setAnswers(existingAnswers);
+          
+          // If questionnaire is already completed, show completion state
+          if (statusData.status === 'completed') {
+            setIsInitialized(true);
+            setIsLoading(false);
+            return;
+          }
+        }
 
-          // Set current question based on progress
-          const nextUnanswered = questionsData.questions?.findIndex(q => 
-            !existingAnswers[q.id]
-          );
-          if (nextUnanswered !== -1) {
-            setCurrentQuestionIndex(nextUnanswered);
+        // Get current question from start response or fetch current
+        let currentQuestionData;
+        if (startData.question) {
+          currentQuestionData = startData;
+        } else {
+          const currentResponse = await fetch(`${API_URL}/api/questionnaire/current/${user.id}`, {
+            headers: {
+              'Authorization': `Bearer ${user.access_token}`,
+            },
+          });
+          if (currentResponse.ok) {
+            currentQuestionData = await currentResponse.json();
+          }
+        }
+
+        if (currentQuestionData?.question) {
+          // Create questions array with just the current question for now
+          // We'll load others as needed
+          setQuestions([currentQuestionData.question]);
+          setCurrentQuestionIndex(0);
+          
+          // Set progress from response
+          if (currentQuestionData.progress) {
+            setProgress(currentQuestionData.progress);
           }
         }
 
@@ -79,12 +109,12 @@ const BusinessProfileQuestionnaire = ({
     initializeQuestionnaire();
   }, [user, API_URL]);
 
-  // Save answer to backend
+  // Save answer to backend using new questionnaire API
   const saveAnswer = useCallback(async (questionId, answer) => {
     if (!user) return false;
 
     try {
-      const response = await fetch(`${API_URL}/api/business-profile/answer`, {
+      const response = await fetch(`${API_URL}/api/questionnaire/answer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,8 +123,7 @@ const BusinessProfileQuestionnaire = ({
         body: JSON.stringify({
           user_id: user.id,
           question_id: questionId,
-          answer: answer,
-          answered_at: new Date().toISOString(),
+          answer_text: answer,
         }),
       });
 
@@ -110,7 +139,21 @@ const BusinessProfileQuestionnaire = ({
         onProgress?.(data.progress);
       }
 
-      return true;
+      // Handle completion or next question
+      if (data.completed) {
+        return { completed: true, data };
+      } else if (data.question) {
+        // Update questions array with next question
+        setQuestions(prev => {
+          const newQuestions = [...prev];
+          const nextIndex = newQuestions.length;
+          newQuestions[nextIndex] = data.question;
+          return newQuestions;
+        });
+        return { completed: false, data };
+      }
+
+      return { completed: false, data };
     } catch (err) {
       console.error('Error saving answer:', err);
       return false;
@@ -130,21 +173,24 @@ const BusinessProfileQuestionnaire = ({
     setAnswers(newAnswers);
 
     // Save to backend
-    const saved = await saveAnswer(currentQuestion.id, answer);
+    const result = await saveAnswer(currentQuestion.id, answer);
     
-    if (saved) {
-      // Move to next question or complete
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else {
+    if (result && result !== false) {
+      if (result.completed) {
         // Questionnaire completed
         const completedProgress = {
           ...progress,
           completed_at: new Date().toISOString(),
-          questions_completed: questions.length,
+          status: 'completed',
         };
         setProgress(completedProgress);
         onComplete?.(newAnswers, completedProgress);
+      } else if (result.data?.question) {
+        // Move to next question
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        if (result.data.progress) {
+          setProgress(result.data.progress);
+        }
       }
     } else {
       setError('Failed to save your answer. Please try again.');
@@ -155,26 +201,115 @@ const BusinessProfileQuestionnaire = ({
     setIsSaving(false);
   };
 
-  // Handle skip question
-  const handleSkip = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // If skipping the last question, still mark as "complete" with partial data
-      onComplete?.(answers, progress);
+  // Handle skip question using API command
+  const handleSkip = async () => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL}/api/questionnaire/command`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.access_token}`,
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          command: 'skip',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to skip question');
+      }
+
+      const data = await response.json();
+      
+      if (data.completed) {
+        // Questionnaire completed
+        const completedProgress = {
+          ...progress,
+          status: 'completed',
+        };
+        setProgress(completedProgress);
+        onComplete?.(answers, completedProgress);
+      } else if (data.question) {
+        // Move to next question
+        setQuestions(prev => {
+          const newQuestions = [...prev];
+          const nextIndex = newQuestions.length;
+          newQuestions[nextIndex] = data.question;
+          return newQuestions;
+        });
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        if (data.progress) {
+          setProgress(data.progress);
+        }
+      }
+    } catch (err) {
+      console.error('Error skipping question:', err);
+      setError('Failed to skip question. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  // Handle navigation to previous question
-  const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+  // Handle navigation to previous question using API command
+  const handlePrevious = async () => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL}/api/questionnaire/command`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.access_token}`,
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          command: 'previous',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to go to previous question');
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        setError(data.error);
+      } else if (data.question) {
+        // Update to previous question - we may need to rebuild questions array
+        setQuestions(prev => {
+          const newQuestions = [...prev];
+          // Insert previous question at current position - 1
+          if (currentQuestionIndex > 0) {
+            newQuestions[currentQuestionIndex - 1] = data.question;
+          }
+          return newQuestions;
+        });
+        setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1));
+        if (data.progress) {
+          setProgress(data.progress);
+        }
+      }
+    } catch (err) {
+      console.error('Error going to previous question:', err);
+      setError('Failed to go to previous question. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  // Calculate completion percentage
-  const completionPercentage = questions.length > 0 
-    ? Math.round((Object.keys(answers).length / questions.length) * 100)
+  // Calculate completion percentage from progress
+  const completionPercentage = progress 
+    ? Math.round((progress.current / progress.total) * 100)
     : 0;
 
   if (isLoading && !isInitialized) {
@@ -210,9 +345,9 @@ const BusinessProfileQuestionnaire = ({
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-  const isComplete = Object.keys(answers).length === questions.length;
+  const isComplete = progress?.status === 'completed';
 
-  if (isComplete && progress?.completed_at) {
+  if (isComplete) {
     return (
       <div className="profile-questionnaire-complete">
         <div className="completion-icon">🎉</div>
@@ -224,7 +359,7 @@ const BusinessProfileQuestionnaire = ({
         </p>
         <div className="completion-stats">
           <div className="stat">
-            <span className="stat-number">{questions.length}</span>
+            <span className="stat-number">{progress?.total || 11}</span>
             <span className="stat-label">Questions Answered</span>
           </div>
           <div className="stat">
@@ -257,8 +392,8 @@ const BusinessProfileQuestionnaire = ({
       )}
 
       <ProfileProgressIndicator 
-        current={Object.keys(answers).length}
-        total={questions.length}
+        current={progress?.current || 0}
+        total={progress?.total || 11}
         percentage={completionPercentage}
       />
 
