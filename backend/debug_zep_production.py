@@ -72,7 +72,7 @@ def test_zep_connectivity():
 
         # Try to list users (minimal operation)
         print("🔍 Testing user.list_ordered endpoint...")
-        users_response = client.user.list_ordered(page_size=1)
+        users_response = client.user.list_ordered()
         print(f"✅ API connectivity successful")
         print(f"📊 Response type: {type(users_response)}")
 
@@ -182,7 +182,7 @@ def test_existing_users():
 
         # Get user list with more details
         print("🔍 Fetching existing users...")
-        users_response = client.user.list_ordered(page_size=10)
+        users_response = client.user.list_ordered()
 
         if hasattr(users_response, "users") and users_response.users:
             print(f"✅ Found {len(users_response.users)} users:")

@@ -43,10 +43,10 @@ def test_api_endpoints():
         client = Zep(base_url=zep_api_url, api_key=zep_api_key)
         print("✅ Zep client created successfully")
 
-        # Test 1: user.list_ordered (the failing method)
+        # Test 1: user.list_ordered (the working method)
         print("\n1️⃣ Testing user.list_ordered()...")
         try:
-            result = client.user.list_ordered(page_size=1)
+            result = client.user.list_ordered()
             print(f"   ✅ Success: {type(result)}")
             if hasattr(result, "users"):
                 print(f"   📊 Users found: {len(result.users) if result.users else 0}")
