@@ -457,6 +457,54 @@ async def health_check():
     return health_status
 
 
+@app.get("/api/debug/supabase-connection")
+async def test_supabase_connection():
+    """Debug endpoint to test Supabase connection and session creation"""
+    try:
+        # Test basic connectivity
+        user_id = "test_user_debug_" + str(int(time.time()))
+
+        # Test user profile creation
+        user_data = {"id": user_id, "created_at": "now()"}
+        profile_response = (
+            supabase_service.client.table("user_profiles").insert(user_data).execute()
+        )
+
+        # Test session creation
+        session_data = {"user_id": user_id, "title": "Debug Test Session"}
+        session_response = (
+            supabase_service.client.table("chat_sessions")
+            .insert(session_data)
+            .execute()
+        )
+
+        # Clean up test data
+        supabase_service.client.table("chat_sessions").delete().eq(
+            "user_id", user_id
+        ).execute()
+        supabase_service.client.table("user_profiles").delete().eq(
+            "id", user_id
+        ).execute()
+
+        return {
+            "status": "connected",
+            "supabase_url": os.getenv("SUPABASE_URL", "NOT_SET"),
+            "has_service_key": bool(os.getenv("SUPABASE_SERVICE_KEY")),
+            "test_query_success": True,
+            "table_access": "granted",
+            "session_creation": "success",
+            "profile_creation": "success",
+        }
+    except Exception as e:
+        return {
+            "status": "failed",
+            "error": str(e),
+            "supabase_url": os.getenv("SUPABASE_URL", "NOT_SET"),
+            "has_service_key": bool(os.getenv("SUPABASE_SERVICE_KEY")),
+            "detailed_error": str(e),
+        }
+
+
 @app.post("/api/circuit-breakers/reset")
 async def reset_circuit_breakers():
     """Reset all circuit breakers - useful after fixing API issues"""

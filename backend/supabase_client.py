@@ -63,9 +63,22 @@ class SupabaseService:
 
     async def create_chat_session(self, user_id: str, title: Optional[str] = None):
         """Create a new chat session"""
-        data = {"user_id": user_id, "title": title}
-        response = self.client.table("chat_sessions").insert(data).execute()
-        return response.data[0] if response.data else None
+        try:
+            # First, ensure user exists in user_profiles table
+            user_profile = await self.get_user_by_id(user_id)
+            if not user_profile:
+                # Create user profile if it doesn't exist
+                user_data = {"id": user_id, "created_at": "now()"}
+                self.client.table("user_profiles").insert(user_data).execute()
+
+            # Create session data
+            data = {"user_id": user_id, "title": title}
+            response = self.client.table("chat_sessions").insert(data).execute()
+            return response.data[0] if response.data else None
+
+        except Exception as e:
+            print(f"Error creating chat session: {e}")
+            raise e
 
     async def get_user_sessions(self, user_id: str, limit: int = 50, offset: int = 0):
         """Get all chat sessions for a user"""
