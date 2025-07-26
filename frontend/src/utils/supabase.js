@@ -152,15 +152,49 @@ export const chat = {
     if (!user) throw new Error('User not authenticated');
 
     try {
-      console.log('🔍 About to call supabase.from...');
-      const { data, error } = await supabase
-        .from('chat_sessions')
-        .insert({ user_id: user.id, title })
-        .select()
-        .single();
+      // 🔧 FIX: Use backend API instead of direct Supabase to ensure Zep user creation
+      console.log('🔍 About to call backend API for session creation...');
+      
+      // Environment validation to prevent production failures
+      const API_URL = (() => {
+        const url = process.env.REACT_APP_API_URL;
+        if (!url && process.env.NODE_ENV === 'production') {
+          throw new Error('REACT_APP_API_URL must be configured in production');
+        }
+        return url || 'http://localhost:8000';
+      })();
+      
+      const response = await fetch(`${API_URL}/api/chat/sessions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          title: title
+        })
+      });
 
-      console.log('🎯 createSession result:', { data, error });
-      return { data, error };
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('🎯 createSession result from backend:', data);
+      
+      // Convert backend response to match expected format
+      return { 
+        data: {
+          id: data.id,
+          user_id: data.user_id,
+          title: data.title,
+          created_at: data.created_at,
+          updated_at: data.updated_at,
+          metadata: data.metadata || {}
+        }, 
+        error: null 
+      };
     } catch (err) {
       console.error('❌ createSession caught error:', err);
       return { data: null, error: err };
