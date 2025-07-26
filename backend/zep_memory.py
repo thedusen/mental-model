@@ -136,8 +136,17 @@ class ZepMemoryManager:
             return
 
         try:
-            # Ensure user exists
-            self.ensure_user_exists(user_id)
+            # Skip user creation here - user should already exist from questionnaire or previous chat
+            # Only verify user exists without creating a new one
+            try:
+                existing_user = self.client.user.get(user_id)
+                logger.debug(f"Confirmed user {user_id} exists for conversation memory")
+            except Exception as user_check_error:
+                logger.warning(
+                    f"User {user_id} may not exist in Zep for conversation memory: {user_check_error}"
+                )
+                # Don't create user here - this could cause duplicates
+                # Let the conversation continue but log the issue
 
             # Convert messages to Zep format
             zep_messages = []

@@ -229,7 +229,15 @@ async def get_optimized_user_context(user_id: str, session_id: str, query: str) 
 
         # Get conversational memory context using optimized Zep approach
         try:
-            zep_memory.ensure_user_exists(user_id)
+            # Only verify user exists, don't create to prevent duplicates
+            # User should already exist from questionnaire flow
+            try:
+                existing_user = zep_memory.client.user.get(user_id)
+                logger.debug(f"Confirmed user {user_id} exists for chat context")
+            except Exception as user_check_error:
+                logger.debug(f"User {user_id} may not exist in Zep: {user_check_error}")
+                # Skip memory retrieval if user doesn't exist
+
             memory = zep_memory.client.memory.get(session_id=session_id)
 
             if hasattr(memory, "context") and memory.context:
@@ -1287,6 +1295,63 @@ async def search_nodes(
 async def create_chat_session(request: CreateSessionRequest):
     """Create a new chat session for a user"""
     try:
+        # Ensure user exists in Zep when they start their first chat session
+        # This handles users who chat without completing the questionnaire
+        try:
+            # Check if user already exists
+            existing_user = zep_memory.client.user.get(request.user_id)
+            logger.debug(
+                f"User {request.user_id} already exists in Zep for chat session"
+            )
+        except Exception:
+            # User doesn't exist, create minimal user for chat
+            logger.info(
+                f"Creating minimal Zep user for chat-only user: {request.user_id}"
+            )
+            try:
+                # Get user profile from Supabase for proper metadata
+                from supabase_client import SupabaseService
+
+                supabase = SupabaseService()
+
+                user_profile = None
+                try:
+                    user_response = (
+                        supabase.client.table("user_profiles")
+                        .select("*")
+                        .eq("user_id", request.user_id)
+                        .single()
+                        .execute()
+                    )
+                    user_profile = user_response.data if user_response.data else None
+                except Exception:
+                    pass
+
+                user_creation_data = {
+                    "user_id": request.user_id,
+                    "metadata": {
+                        "user_type": "business_owner",
+                        "source": "chat_session",
+                        "created_via": "chat_only",
+                    },
+                }
+
+                if user_profile:
+                    if user_profile.get("email"):
+                        user_creation_data["email"] = user_profile["email"]
+                    if user_profile.get("first_name"):
+                        user_creation_data["first_name"] = user_profile["first_name"]
+                    if user_profile.get("last_name"):
+                        user_creation_data["last_name"] = user_profile["last_name"]
+
+                zep_memory.client.user.add(**user_creation_data)
+                logger.info(f"Created Zep user for chat session: {request.user_id}")
+            except Exception as create_error:
+                logger.warning(
+                    f"Failed to create Zep user for chat session: {create_error}"
+                )
+                # Continue with session creation even if Zep user creation fails
+
         session_data = await supabase_service.create_chat_session(
             user_id=request.user_id, title=request.title
         )
