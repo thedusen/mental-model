@@ -1033,16 +1033,7 @@ class ZepMemoryService:
                 type="json",  # Use standard Zep data type instead of custom type
             )
 
-            # Also add as conversation context using a consistent session pattern
-            session_id = f"business_profile_{user_id}"
-
-            # Create message with structured context
-            context_message = Message(
-                role="system", content=f"Business Profile Context: {business_context}"
-            )
-
-            # Add to memory - this will automatically extract entities and facts
-            self.client.memory.add(session_id=session_id, messages=[context_message])
+            # Business context is already added via graph.add() above - no additional memory calls needed
 
             logger.info(
                 f"Upserted business context in Zep for user {user_id}: {entity_id}"
