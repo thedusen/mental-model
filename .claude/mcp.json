@@ -31,6 +31,16 @@
         "-y",
         "puppeteer-mcp-server"
       ]
+    },
+    "zep-docs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@getzep/mcp-server"
+      ],
+      "env": {
+        "ZEP_API_URL": "https://docs-mcp.getzep.com"
+      }
     }
   }
 }

@@ -1,0 +1,9 @@
+- Backup model on anthropic API fail
+- remove"great next question"
+- set up sub agents
+- Chat not submitting on enter key
+- double messages
+- immediately make enter button disabled on submitting
+- Don't save empty conversations
+- fix persistance of nudge "Let's chat!"
+- make question box disappear after immediately

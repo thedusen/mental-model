@@ -21,6 +21,56 @@ class ZepMemoryManager:
         self.client = zep_client
         self.enabled = zep_client is not None
 
+    def _extract_user_metadata_from_supabase(self, user_id: str) -> Dict[str, Any]:
+        """
+        Centralized function to extract user metadata from Supabase consistently
+        Returns structured metadata for Zep user creation
+        """
+        try:
+            from supabase_client import SupabaseService
+
+            supabase = SupabaseService()
+
+            user_response = (
+                supabase.client.table("user_profiles")
+                .select("*")
+                .eq("user_id", user_id)
+                .single()
+                .execute()
+            )
+            user_profile = user_response.data if user_response.data else {}
+
+            # Build consistent metadata structure
+            metadata = {
+                "created_at": str(datetime.now()),
+                "user_type": "business_owner",
+                "source": "mental_model_app",
+                "supabase_user_id": user_id,
+            }
+
+            # Add profile data if available
+            if user_profile.get("email"):
+                metadata["email"] = user_profile["email"]
+            if user_profile.get("first_name"):
+                metadata["first_name"] = user_profile["first_name"]
+            if user_profile.get("last_name"):
+                metadata["last_name"] = user_profile["last_name"]
+            if user_profile.get("name"):
+                metadata["name"] = user_profile["name"]
+
+            logger.debug(f"Extracted metadata for user {user_id}: {metadata}")
+            return metadata
+
+        except Exception as e:
+            logger.warning(f"Failed to extract Supabase metadata for {user_id}: {e}")
+            # Return minimal metadata if Supabase fails
+            return {
+                "created_at": str(datetime.now()),
+                "user_type": "business_owner",
+                "source": "mental_model_app",
+                "supabase_user_id": user_id,
+            }
+
     def ensure_user_exists(
         self,
         user_id: str,
@@ -56,6 +106,17 @@ class ZepMemoryManager:
             )
             # User doesn't exist, proceed to creation
 
+        # Get metadata from Supabase if not provided or merge with existing
+        if user_metadata is None:
+            user_metadata = self._extract_user_metadata_from_supabase(user_id)
+            logger.debug(f"Using extracted Supabase metadata for {user_id}")
+        else:
+            # Merge provided metadata with Supabase data for completeness
+            supabase_metadata = self._extract_user_metadata_from_supabase(user_id)
+            merged_metadata = {**supabase_metadata, **user_metadata}
+            user_metadata = merged_metadata
+            logger.debug(f"Using merged metadata for {user_id}")
+
         # User doesn't exist, create new one with retry logic
         for attempt in range(retry_count):
             try:
@@ -63,27 +124,21 @@ class ZepMemoryManager:
                     f"Creating new Zep user: {user_id} (attempt {attempt + 1}/{retry_count})"
                 )
 
-                # Enhanced metadata following Zep best practices
-                default_metadata = {
-                    "created_at": str(datetime.now()),
-                    "user_type": "business_owner",
-                    "source": "mental_model_app",
+                # Build user creation parameters using extracted metadata
+                user_params = {
+                    "user_id": user_id,
+                    "metadata": user_metadata,
                 }
 
-                # Extract proper user fields from metadata
-                final_metadata = {**default_metadata, **(user_metadata or {})}
+                # Extract Zep-specific top-level fields from metadata
+                if user_metadata.get("email"):
+                    user_params["email"] = user_metadata["email"]
+                if user_metadata.get("first_name"):
+                    user_params["first_name"] = user_metadata["first_name"]
+                if user_metadata.get("last_name"):
+                    user_params["last_name"] = user_metadata["last_name"]
 
-                # Zep expects specific top-level fields, not in metadata
-                user_params = {"user_id": user_id, "metadata": final_metadata}
-
-                # Extract Zep-specific user fields if provided
-                if user_metadata:
-                    if "email" in user_metadata:
-                        user_params["email"] = user_metadata["email"]
-                    if "first_name" in user_metadata:
-                        user_params["first_name"] = user_metadata["first_name"]
-                    if "last_name" in user_metadata:
-                        user_params["last_name"] = user_metadata["last_name"]
+                logger.debug(f"Creating user with params: {user_params}")
 
                 # Create user with proper fields using circuit breaker
                 user = self._create_user_with_circuit_breaker(**user_params)
