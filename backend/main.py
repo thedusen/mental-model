@@ -1301,7 +1301,9 @@ async def create_chat_session(request: CreateSessionRequest):
             # Use centralized user creation with metadata from Supabase
             user_metadata = {"source": "chat_session", "created_via": "chat_only"}
 
-            user = zep_memory.ensure_user_exists(request.user_id, user_metadata)
+            user = await zep_memory.ensure_user_exists_coordinated(
+                request.user_id, user_metadata
+            )
             if user:
                 logger.info(
                     f"Ensured Zep user exists for chat session: {request.user_id}"

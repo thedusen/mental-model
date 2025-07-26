@@ -10,8 +10,104 @@ from zep_cloud.client import Zep
 from zep_cloud import Message, User
 from config import zep_client
 from circuit_breaker import circuit_breaker_decorator, CircuitBreakerOpenError
+import asyncio
+import hashlib
+import time
 
 logger = logging.getLogger(__name__)
+
+
+class DistributedUserLock:
+    """
+    Distributed lock using Supabase advisory locks for coordinating user creation
+    across multiple Railway containers
+    """
+
+    def __init__(self, user_id: str, timeout: int = 10):
+        self.user_id = user_id
+        self.timeout = timeout
+        self.lock_id = self._generate_lock_id(user_id)
+        self._acquired = False
+
+    def _generate_lock_id(self, user_id: str) -> int:
+        """Generate numeric lock ID from user_id for Supabase advisory locks"""
+        # Use hash to convert user_id to integer for advisory lock
+        hash_value = hashlib.md5(user_id.encode()).hexdigest()
+        # Take first 8 hex chars and convert to int (32-bit)
+        return int(hash_value[:8], 16) % (2**31 - 1)
+
+    async def acquire(self) -> bool:
+        """Acquire distributed lock using Supabase advisory lock"""
+        try:
+            from supabase_client import SupabaseService
+
+            supabase = SupabaseService()
+
+            # Use PostgreSQL advisory lock
+            result = supabase.client.rpc(
+                "pg_try_advisory_lock", {"lock_id": self.lock_id}
+            ).execute()
+
+            self._acquired = result.data if result.data else False
+
+            if self._acquired:
+                logger.debug(
+                    f"Acquired distributed lock for user {self.user_id} (lock_id: {self.lock_id})"
+                )
+            else:
+                logger.debug(
+                    f"Failed to acquire distributed lock for user {self.user_id}"
+                )
+
+            return self._acquired
+
+        except Exception as e:
+            logger.error(
+                f"Error acquiring distributed lock for user {self.user_id}: {e}"
+            )
+            return False
+
+    async def release(self):
+        """Release distributed lock"""
+        if not self._acquired:
+            return
+
+        try:
+            from supabase_client import SupabaseService
+
+            supabase = SupabaseService()
+
+            # Release PostgreSQL advisory lock
+            supabase.client.rpc(
+                "pg_advisory_unlock", {"lock_id": self.lock_id}
+            ).execute()
+
+            logger.debug(
+                f"Released distributed lock for user {self.user_id} (lock_id: {self.lock_id})"
+            )
+            self._acquired = False
+
+        except Exception as e:
+            logger.error(
+                f"Error releasing distributed lock for user {self.user_id}: {e}"
+            )
+
+    async def __aenter__(self):
+        """Async context manager entry"""
+        start_time = time.time()
+
+        while time.time() - start_time < self.timeout:
+            if await self.acquire():
+                return self
+            await asyncio.sleep(0.1)  # Wait 100ms before retry
+
+        raise TimeoutError(
+            f"Failed to acquire distributed lock for user {self.user_id} within {self.timeout}s"
+        )
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager exit"""
+        await self.release()
 
 
 class ZepMemoryManager:
@@ -20,6 +116,7 @@ class ZepMemoryManager:
     def __init__(self):
         self.client = zep_client
         self.enabled = zep_client is not None
+        self._creation_locks = {}  # In-memory locks for same-container coordination
 
     def _extract_user_metadata_from_supabase(self, user_id: str) -> Dict[str, Any]:
         """
@@ -70,6 +167,127 @@ class ZepMemoryManager:
                 "source": "mental_model_app",
                 "supabase_user_id": user_id,
             }
+
+    def _get_distributed_lock(
+        self, user_id: str, timeout: int = 10
+    ) -> "DistributedUserLock":
+        """
+        Get a distributed lock for user creation across Railway containers
+        Uses Supabase advisory locks for coordination
+        """
+        return DistributedUserLock(user_id, timeout)
+
+    def _acquire_local_lock(self, user_id: str):
+        """Acquire local lock to prevent same-container races"""
+        if user_id not in self._creation_locks:
+            self._creation_locks[user_id] = asyncio.Lock()
+        return self._creation_locks[user_id]
+
+    async def ensure_user_exists_coordinated(
+        self,
+        user_id: str,
+        user_metadata: Optional[Dict[str, Any]] = None,
+        retry_count: int = 3,
+    ) -> User:
+        """
+        Ensure user exists with distributed coordination to prevent duplicates
+        Uses distributed locking to coordinate across Railway containers
+        """
+        if not self.enabled:
+            logger.warning(
+                "Zep is disabled - ensure_user_exists_coordinated returning None"
+            )
+            return None
+
+        # First try to get existing user (fast path)
+        try:
+            user = self._get_user_with_circuit_breaker(user_id)
+            logger.info(f"Found existing Zep user: {user_id}")
+            return user
+        except CircuitBreakerOpenError:
+            logger.warning(f"Circuit breaker open - cannot check/create user {user_id}")
+            return None
+        except Exception:
+            # User doesn't exist, proceed with coordinated creation
+            logger.debug(
+                f"User {user_id} doesn't exist, proceeding with coordinated creation"
+            )
+
+        # Use distributed coordination for user creation
+        lock_key = f"zep_user_creation_{user_id}"
+
+        try:
+            async with self._get_distributed_lock(lock_key):
+                # Double-check after acquiring distributed lock
+                try:
+                    user = self._get_user_with_circuit_breaker(user_id)
+                    logger.info(
+                        f"Found existing Zep user after lock acquisition: {user_id}"
+                    )
+                    return user
+                except Exception:
+                    # User still doesn't exist, safe to create
+                    return await self._create_user_with_coordination(
+                        user_id, user_metadata
+                    )
+
+        except Exception as lock_error:
+            logger.error(
+                f"Failed to acquire distributed lock for user {user_id}: {lock_error}"
+            )
+            # Fallback to regular creation (with idempotent handling)
+            return self.ensure_user_exists(user_id, user_metadata, retry_count)
+
+    async def _create_user_with_coordination(
+        self, user_id: str, user_metadata: Optional[Dict[str, Any]] = None
+    ) -> User:
+        """Create user with local coordination (called within distributed lock)"""
+
+        # Get metadata from Supabase if not provided
+        if user_metadata is None:
+            user_metadata = self._extract_user_metadata_from_supabase(user_id)
+            logger.debug(f"Using extracted Supabase metadata for {user_id}")
+        else:
+            # Merge provided metadata with Supabase data for completeness
+            supabase_metadata = self._extract_user_metadata_from_supabase(user_id)
+            merged_metadata = {**supabase_metadata, **user_metadata}
+            user_metadata = merged_metadata
+            logger.debug(f"Using merged metadata for {user_id}")
+
+        # Build user creation parameters using extracted metadata
+        user_params = {
+            "user_id": user_id,
+            "metadata": user_metadata,
+        }
+
+        # Extract Zep-specific top-level fields from metadata
+        if user_metadata.get("email"):
+            user_params["email"] = user_metadata["email"]
+        if user_metadata.get("first_name"):
+            user_params["first_name"] = user_metadata["first_name"]
+        if user_metadata.get("last_name"):
+            user_params["last_name"] = user_metadata["last_name"]
+
+        logger.debug(f"Creating coordinated user with params: {user_params}")
+
+        # Create user with idempotent handling
+        user = self._create_user_idempotent(**user_params)
+
+        # Create an explicit session for this user
+        try:
+            session_id = f"main_session_{user_id}"
+            self.client.memory.add_session(session_id=session_id, user_id=user_id)
+            logger.info(f"Created main session for user {user_id}: {session_id}")
+        except Exception as session_error:
+            logger.warning(
+                f"Failed to create main session for user {user_id}: {session_error}"
+            )
+            # Don't fail user creation if session creation fails
+
+        logger.info(
+            f"Successfully created coordinated Zep user: {user_id} with metadata"
+        )
+        return user
 
     def ensure_user_exists(
         self,
@@ -140,8 +358,8 @@ class ZepMemoryManager:
 
                 logger.debug(f"Creating user with params: {user_params}")
 
-                # Create user with proper fields using circuit breaker
-                user = self._create_user_with_circuit_breaker(**user_params)
+                # Create user with idempotent handling
+                user = self._create_user_idempotent(**user_params)
 
                 # Create an explicit session for this user following Zep best practices
                 try:
@@ -175,11 +393,56 @@ class ZepMemoryManager:
 
                 time.sleep(2**attempt)
 
-    def add_conversation_memory(
-        self, user_id: str, session_id: str, messages: List[Dict[str, str]]
-    ) -> None:
+    def _create_user_idempotent(self, **user_params) -> User:
         """
-        Add conversation messages to Zep for automatic knowledge extraction
+        Create user with idempotent handling - prevents duplicate user errors
+        Returns existing user if user already exists
+        """
+        user_id = user_params.get("user_id")
+
+        try:
+            # Attempt to create user using circuit breaker
+            user = self._create_user_with_circuit_breaker(**user_params)
+            logger.info(f"Successfully created new Zep user: {user_id}")
+            return user
+
+        except Exception as create_error:
+            error_message = str(create_error).lower()
+
+            # Check if error indicates user already exists
+            if any(
+                keyword in error_message
+                for keyword in [
+                    "already exists",
+                    "duplicate",
+                    "conflict",
+                    "unique constraint",
+                ]
+            ):
+                logger.info(
+                    f"User {user_id} already exists in Zep, fetching existing user"
+                )
+                try:
+                    # Fetch the existing user
+                    existing_user = self._get_user_with_circuit_breaker(user_id)
+                    logger.info(f"Successfully retrieved existing Zep user: {user_id}")
+                    return existing_user
+                except Exception as get_error:
+                    logger.error(
+                        f"Failed to fetch existing user {user_id} after creation conflict: {get_error}"
+                    )
+                    raise create_error  # Re-raise original error
+            else:
+                # Not a duplicate error, re-raise original
+                logger.error(f"User creation failed for {user_id}: {create_error}")
+                raise create_error
+
+    def add_conversation_memory_safe(
+        self, user_id: str, session_id: str, messages: List[Dict[str, str]]
+    ) -> bool:
+        """
+        Add conversation messages to Zep with safety checks
+        Returns True if successful, False if failed (but doesn't raise exceptions)
 
         Args:
             user_id: User identifier
@@ -187,21 +450,36 @@ class ZepMemoryManager:
             messages: List of message dictionaries with 'role' and 'content'
         """
         if not self.enabled:
-            logger.warning("Zep is disabled - add_conversation_memory skipping")
-            return
+            logger.warning("Zep is disabled - add_conversation_memory_safe skipping")
+            return False
 
         try:
-            # Skip user creation here - user should already exist from questionnaire or previous chat
-            # Only verify user exists without creating a new one
+            # Verify user exists first - critical safety check
             try:
-                existing_user = self.client.user.get(user_id)
-                logger.debug(f"Confirmed user {user_id} exists for conversation memory")
-            except Exception as user_check_error:
-                logger.warning(
-                    f"User {user_id} may not exist in Zep for conversation memory: {user_check_error}"
+                self._get_user_with_circuit_breaker(user_id)
+                logger.debug(f"Confirmed user {user_id} exists for memory operation")
+            except Exception as user_error:
+                logger.error(
+                    f"User {user_id} does not exist in Zep, cannot add memory: {user_error}"
                 )
-                # Don't create user here - this could cause duplicates
-                # Let the conversation continue but log the issue
+                return False  # Fail safely - don't add memory for non-existent user
+
+            # Ensure session exists before adding memory
+            try:
+                self._get_memory_with_circuit_breaker(session_id)
+                logger.debug(f"Session {session_id} exists")
+            except Exception:
+                # Session doesn't exist, create it
+                try:
+                    self.client.memory.add_session(
+                        session_id=session_id, user_id=user_id
+                    )
+                    logger.info(f"Created session {session_id} for user {user_id}")
+                except Exception as session_error:
+                    logger.error(
+                        f"Failed to create session {session_id}: {session_error}"
+                    )
+                    return False
 
             # Convert messages to Zep format
             zep_messages = []
@@ -211,16 +489,34 @@ class ZepMemoryManager:
                 )
                 zep_messages.append(zep_message)
 
-            # Add messages to Zep memory
-            self.client.memory.add(session_id=session_id, messages=zep_messages)
-
-            logger.info(
-                f"Added {len(zep_messages)} messages to Zep memory for session {session_id}"
-            )
+            # Add messages to Zep memory safely
+            try:
+                self.client.memory.add(session_id=session_id, messages=zep_messages)
+                logger.info(
+                    f"Successfully added {len(zep_messages)} messages to Zep memory for session {session_id}"
+                )
+                return True
+            except Exception as memory_error:
+                logger.error(f"Failed to add messages to Zep memory: {memory_error}")
+                return False
 
         except Exception as e:
-            logger.error(f"Error adding conversation memory to Zep: {str(e)}")
-            raise
+            logger.error(f"Error in add_conversation_memory_safe: {str(e)}")
+            return False
+
+    def add_conversation_memory(
+        self, user_id: str, session_id: str, messages: List[Dict[str, str]]
+    ) -> None:
+        """
+        Legacy method - redirects to safe version
+        Kept for backward compatibility but now uses safe implementation
+        """
+        result = self.add_conversation_memory_safe(user_id, session_id, messages)
+        if not result:
+            logger.warning(
+                f"Conversation memory addition failed for user {user_id}, session {session_id}"
+            )
+            # Don't raise exception - allow conversation to continue
 
     def add_business_data(
         self, user_id: str, data: Dict[str, Any], data_type: str = "json"
@@ -634,40 +930,40 @@ class ZepMemoryManager:
     # Circuit breaker protected methods for key Zep operations
 
     @circuit_breaker_decorator(
-        failure_threshold=3,
-        recovery_timeout=30,
+        failure_threshold=2,  # Optimized: fail faster
+        recovery_timeout=5,  # Optimized: recover faster (was 30)
         expected_exception=(Exception,),
-        circuit_name="zep_user_get",
+        circuit_name="zep_user_operations",  # Unified: single circuit for coordination
     )
     def _get_user_with_circuit_breaker(self, user_id: str) -> User:
         """Get user with circuit breaker protection"""
         return self.client.user.get(user_id)
 
     @circuit_breaker_decorator(
-        failure_threshold=3,
-        recovery_timeout=30,
+        failure_threshold=2,  # Optimized: fail faster
+        recovery_timeout=5,  # Optimized: recover faster (was 30)
         expected_exception=(Exception,),
-        circuit_name="zep_user_create",
+        circuit_name="zep_user_operations",  # Unified: single circuit for coordination
     )
     def _create_user_with_circuit_breaker(self, **user_params) -> User:
         """Create user with circuit breaker protection"""
         return self.client.user.add(**user_params)
 
     @circuit_breaker_decorator(
-        failure_threshold=3,
-        recovery_timeout=30,
+        failure_threshold=2,  # Optimized: fail faster
+        recovery_timeout=5,  # Optimized: recover faster (was 30)
         expected_exception=(Exception,),
-        circuit_name="zep_memory_get",
+        circuit_name="zep_memory_operations",  # Separate circuit for memory operations
     )
     def _get_memory_with_circuit_breaker(self, session_id: str):
         """Get memory with circuit breaker protection"""
         return self.client.memory.get(session_id=session_id)
 
     @circuit_breaker_decorator(
-        failure_threshold=3,
-        recovery_timeout=30,
+        failure_threshold=2,  # Optimized: fail faster
+        recovery_timeout=5,  # Optimized: recover faster (was 30)
         expected_exception=(Exception,),
-        circuit_name="zep_graph_add",
+        circuit_name="zep_graph_operations",  # Separate circuit for graph operations
     )
     def _add_graph_data_with_circuit_breaker(
         self, user_id: str, data: str, data_type: str

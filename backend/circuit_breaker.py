@@ -25,9 +25,9 @@ class CircuitBreaker:
 
     def __init__(
         self,
-        failure_threshold: int = 5,
+        failure_threshold: int = 2,  # Fail faster (was 5)
         timeout: int = 60,
-        recovery_timeout: int = 30,
+        recovery_timeout: int = 5,  # Recover faster (was 30)
         expected_exception: tuple = (Exception,),
     ):
         self.failure_threshold = failure_threshold
