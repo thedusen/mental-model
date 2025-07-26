@@ -999,8 +999,19 @@ class ZepMemoryService:
             return
 
         try:
-            # Ensure user exists
-            self.manager.ensure_user_exists(user_id)
+            # Skip user creation here since it should already exist from _ensure_zep_user_exists in questionnaire start
+            # This prevents duplicate user creation and conflicting metadata
+            try:
+                # Verify user exists (should already exist from questionnaire start)
+                existing_user = self.manager.client.user.get(user_id)
+                logger.debug(
+                    f"Confirmed user {user_id} exists in Zep for business context sync"
+                )
+            except Exception as user_error:
+                logger.error(
+                    f"User {user_id} does not exist in Zep during business context sync: {user_error}"
+                )
+                return  # Don't raise exception, just return to prevent questionnaire flow failure
 
             entity_id = entity_data.get("entity_id")
             if not entity_id:
