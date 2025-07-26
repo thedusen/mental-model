@@ -1298,20 +1298,34 @@ async def create_chat_session(request: CreateSessionRequest):
         # Ensure user exists in Zep when they start their first chat session
         # This handles users who chat without completing the questionnaire
         try:
-            # Use centralized user creation with metadata from Supabase
-            user_metadata = {"source": "chat_session", "created_via": "chat_only"}
+            # Use the SAME simple approach as questionnaire flow that's working
+            from zep_memory import zep_service
 
-            user = await zep_memory.ensure_user_exists_coordinated(
-                request.user_id, user_metadata
-            )
-            if user:
-                logger.info(
-                    f"Ensured Zep user exists for chat session: {request.user_id}"
-                )
-            else:
-                logger.warning(
-                    f"Failed to ensure Zep user exists for chat session: {request.user_id}"
-                )
+            # Check if user already exists first
+            try:
+                existing_user = zep_service.client.user.get(request.user_id)
+                if existing_user:
+                    logger.info(
+                        f"User {request.user_id} already exists in Zep (chat flow)"
+                    )
+                else:
+                    # User doesn't exist, create with same approach as questionnaire
+                    user_metadata = {
+                        "source": "chat_session",
+                        "created_via": "chat_only",
+                        "user_type": "business_owner",
+                    }
+                    user_creation_data = {
+                        "user_id": request.user_id,
+                        "metadata": user_metadata,
+                    }
+
+                    created_user = zep_service.client.user.add(**user_creation_data)
+                    logger.info(
+                        f"Successfully created user {request.user_id} in Zep (chat flow)"
+                    )
+            except Exception as zep_error:
+                logger.warning(f"Could not create/check Zep user for chat: {zep_error}")
                 # Continue with session creation even if Zep user creation fails
         except Exception as user_error:
             logger.warning(
