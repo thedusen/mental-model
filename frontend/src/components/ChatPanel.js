@@ -561,8 +561,8 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
 
 
   // Create a new session when user starts typing (if not authenticated, show auth)
-  const createNewSessionIfNeeded = async () => {
-    console.log('📝 createNewSessionIfNeeded - user:', user, 'currentSession:', currentSession);
+  const createNewSessionIfNeeded = async (retryCount = 0) => {
+    console.log('📝 createNewSessionIfNeeded - user:', user, 'currentSession:', currentSession, 'retryCount:', retryCount);
     
     if (!user) {
       console.log('❌ No user - showing auth');
@@ -572,29 +572,69 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
 
     // Create session if we don't have one (regardless of message count)
     if (!currentSession) {
+      const maxRetries = 3;
+      
       try {
-        console.log('🆕 Creating new session...');
+        console.log(`🆕 Creating new session... (attempt ${retryCount + 1}/${maxRetries + 1})`);
         const { data: newSession, error } = await chat.createSession();
         console.log('📊 Session creation result:', { data: newSession, error });
         
         if (error) {
           console.error('❌ Session creation error:', error);
+          
+          // Retry logic for failed session creation
+          if (retryCount < maxRetries) {
+            const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff: 1s, 2s, 4s
+            console.log(`⏳ Retrying session creation in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return await createNewSessionIfNeeded(retryCount + 1);
+          }
+          
           throw error;
         }
         
-        if (!newSession) {
-          console.error('❌ No session returned from chat.createSession');
+        if (!newSession || !newSession.id) {
+          console.error('❌ No valid session returned from chat.createSession:', newSession);
+          
+          // Retry logic for invalid session response
+          if (retryCount < maxRetries) {
+            const delay = Math.pow(2, retryCount) * 1000;
+            console.log(`⏳ Retrying session creation due to invalid response in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return await createNewSessionIfNeeded(retryCount + 1);
+          }
+          
           return false;
         }
         
-        console.log('✅ New session created:', newSession.id);
+        console.log('✅ New session created successfully:', newSession.id);
         setCurrentSession(newSession);
+        
+        // Validate session was set correctly
+        if (!newSession.id) {
+          console.error('❌ Session created but has no ID:', newSession);
+          return false;
+        }
+        
+        console.log('🔗 Session state updated, ready for chat requests');
         return true;
+        
       } catch (error) {
-        console.error('❌ Error creating session:', error);
+        console.error(`❌ Error creating session (attempt ${retryCount + 1}):`, error);
+        
+        // Retry logic for network/server errors
+        if (retryCount < maxRetries) {
+          const delay = Math.pow(2, retryCount) * 1000;
+          console.log(`⏳ Retrying session creation after error in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return await createNewSessionIfNeeded(retryCount + 1);
+        }
+        
+        console.error('❌ All session creation attempts failed');
         return false;
       }
     }
+    
     console.log('✅ Session already exists:', currentSession.id);
     return true;
   };
@@ -671,8 +711,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         console.log('🎯 businessProfileProgress status:', businessProfileProgress?.status);
         // Start the new chat-integrated questionnaire
         try {
+          console.log('🎯 Questionnaire flow: about to create session for user:', user?.id);
           const success = await createNewSessionIfNeeded();
-          console.log('🔗 Session creation result:', success);
+          console.log('🎯 Questionnaire flow: session creation result:', success);
           if (success) {
             console.log('🎯 About to call startChatQuestionnaire...');
             await startChatQuestionnaire();
@@ -903,8 +944,25 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
 
     // Create session if needed (will show auth if not logged in)
+    console.log('🎯 Direct typing flow: about to create session for user:', user?.id);
     const canProceed = await createNewSessionIfNeeded();
-    if (!canProceed) return;
+    console.log('🎯 Direct typing flow: session creation result:', canProceed);
+    
+    if (!canProceed) {
+      console.error('❌ Direct typing flow: session creation failed, stopping message send');
+      
+      // Show user-friendly error message
+      const errorMessage = {
+        id: Date.now(),
+        role: 'assistant',
+        content: 'I had trouble setting up the chat session. Please try refreshing the page or try again in a moment.',
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
+    
+    console.log('✅ Direct typing flow: session ready, proceeding with chat request');
 
     const userMessage = { role: 'user', content: currentInput };
     setInput('');
@@ -935,6 +993,14 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
 
     try {
+      // Safety check - ensure we have a session after creation
+      if (!currentSession) {
+        console.error('❌ No current session available for chat request');
+        throw new Error('Session not available. Please try again.');
+      }
+
+      console.log('🚀 Sending chat request with session:', currentSession.id, 'user:', user.id);
+
       // Prepare conversation history
       const conversationHistory = messages.map(msg => ({
         role: msg.role,
