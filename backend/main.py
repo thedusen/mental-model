@@ -17,6 +17,7 @@ from keep_warm import keep_warm_service
 from prompts import SYSTEM_PROMPT
 from supabase_client import supabase_service
 from zep_memory import zep_memory
+from circuit_breaker import circuit_breaker_decorator
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -649,6 +650,37 @@ async def chat(query: ChatQuery):
             f"🔍 Chat request received - user_id: {query.user_id}, session_id: {query.session_id}, question: {query.question[:50]}..."
         )
 
+        # CRITICAL: Ensure user exists in Zep FIRST (before any context retrieval)
+        user_creation_success = False
+        if query.user_id:
+            logger.info(
+                f"🔧 Attempting to ensure Zep user exists for chat-only flow: {query.user_id}"
+            )
+            try:
+                user_metadata = {"source": "chat_direct", "created_via": "chat_only"}
+                user = await zep_memory.ensure_user_exists_coordinated(
+                    query.user_id, user_metadata
+                )
+                if user:
+                    logger.info(
+                        f"✅ Successfully ensured Zep user exists for direct chat: {query.user_id}"
+                    )
+                    user_creation_success = True
+                else:
+                    logger.error(
+                        f"❌ Failed to create Zep user for direct chat: {query.user_id} - user creation returned None"
+                    )
+            except Exception as user_error:
+                logger.error(
+                    f"❌ Error ensuring Zep user exists for chat: {user_error}",
+                    exc_info=True,
+                )
+                # Don't continue if user creation is critical for the flow
+        else:
+            logger.warning(
+                "⚠️ No user_id provided in chat request - skipping Zep user creation"
+            )
+
         # Generate embedding for the current question
         embedding = generate_query_embedding(query.question)
 
@@ -680,33 +712,7 @@ async def chat(query: ChatQuery):
                 "No specific expert knowledge graph context found for this question."
             )
 
-        # Ensure user exists in Zep for chat-only flows (before getting user context)
-        if query.user_id:
-            logger.info(
-                f"🔧 Attempting to ensure Zep user exists for chat-only flow: {query.user_id}"
-            )
-            try:
-                user_metadata = {"source": "chat_direct", "created_via": "chat_only"}
-                user = await zep_memory.ensure_user_exists_coordinated(
-                    query.user_id, user_metadata
-                )
-                if user:
-                    logger.info(
-                        f"✅ Successfully ensured Zep user exists for direct chat: {query.user_id}"
-                    )
-                else:
-                    logger.warning(
-                        f"⚠️ Failed to create Zep user for direct chat: {query.user_id}"
-                    )
-            except Exception as user_error:
-                logger.error(
-                    f"❌ Error ensuring Zep user exists for chat: {user_error}"
-                )
-                # Continue with chat even if user creation fails
-        else:
-            logger.warning(
-                "⚠️ No user_id provided in chat request - skipping Zep user creation"
-            )
+        # User already created at the beginning of the function
 
         # Get optimized user context from Zep (business profile + conversational memory)
         user_context_str = ""
@@ -794,6 +800,40 @@ async def chat(query: ChatQuery):
 async def chat_stream(query: ChatQuery):
     """Streaming chat endpoint for real-time responses"""
     try:
+        logger.info(
+            f"🔍 Streaming chat request received - user_id: {query.user_id}, session_id: {query.session_id}, question: {query.question[:50]}..."
+        )
+
+        # CRITICAL: Ensure user exists in Zep FIRST (before any context retrieval)
+        user_creation_success = False
+        if query.user_id:
+            logger.info(
+                f"🔧 Attempting to ensure Zep user exists for streaming chat: {query.user_id}"
+            )
+            try:
+                user_metadata = {"source": "chat_direct", "created_via": "chat_only"}
+                user = await zep_memory.ensure_user_exists_coordinated(
+                    query.user_id, user_metadata
+                )
+                if user:
+                    logger.info(
+                        f"✅ Successfully ensured Zep user exists for streaming chat: {query.user_id}"
+                    )
+                    user_creation_success = True
+                else:
+                    logger.error(
+                        f"❌ Failed to create Zep user for streaming chat: {query.user_id} - user creation returned None"
+                    )
+            except Exception as user_error:
+                logger.error(
+                    f"❌ Error ensuring Zep user exists for streaming chat: {user_error}",
+                    exc_info=True,
+                )
+        else:
+            logger.warning(
+                "⚠️ No user_id provided in streaming chat request - skipping Zep user creation"
+            )
+
         # Generate embedding for the current question
         embedding = generate_query_embedding(query.question)
 
@@ -825,22 +865,7 @@ async def chat_stream(query: ChatQuery):
                 "No specific expert knowledge graph context found for this question."
             )
 
-        # Ensure user exists in Zep for chat-only flows (before getting user context)
-        if query.user_id:
-            try:
-                user_metadata = {"source": "chat_direct", "created_via": "chat_only"}
-                user = await zep_memory.ensure_user_exists_coordinated(
-                    query.user_id, user_metadata
-                )
-                if user:
-                    logger.info(
-                        f"Ensured Zep user exists for streaming chat: {query.user_id}"
-                    )
-            except Exception as user_error:
-                logger.warning(
-                    f"Error ensuring Zep user exists for streaming chat: {user_error}"
-                )
-                # Continue with chat even if user creation fails
+        # User already created at the beginning of the function
 
         # Get optimized user context from Zep (business profile + conversational memory)
         user_context_str = ""
