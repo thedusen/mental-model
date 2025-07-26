@@ -7,3 +7,10 @@
 - Don't save empty conversations
 - fix persistance of nudge "Let's chat!"
 - make question box disappear after immediately
+- add additional escape words for profile questions
+- return to previous chat after questions
+- focus on fields for sign up and sign in
+
+
+zep fixes:
+- extremely long chat delay

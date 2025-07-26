@@ -949,17 +949,20 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('🎯 Direct typing flow: session creation result:', canProceed);
     
     if (!canProceed) {
-      console.error('❌ Direct typing flow: session creation failed, stopping message send');
+      console.error('❌ Direct typing flow: session creation failed');
+      console.log('🔄 Attempting to proceed without session - backend will create user directly');
       
-      // Show user-friendly error message
-      const errorMessage = {
-        id: Date.now(),
-        role: 'assistant',
-        content: 'I had trouble setting up the chat session. Please try refreshing the page or try again in a moment.',
-        isError: true
+      // FALLBACK: If session creation fails, still allow chat but use a temporary session
+      // This is because the backend endpoints now have user creation logic
+      const tempSession = {
+        id: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        user_id: user.id,
+        created_at: new Date().toISOString(),
+        title: null
       };
-      setMessages(prev => [...prev, errorMessage]);
-      return;
+      
+      console.log('🔄 Using temporary session for chat:', tempSession.id);
+      setCurrentSession(tempSession);
     }
     
     console.log('✅ Direct typing flow: session ready, proceeding with chat request');
