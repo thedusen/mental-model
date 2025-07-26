@@ -645,6 +645,10 @@ def generate_query_embedding(text):
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(query: ChatQuery):
     try:
+        logger.info(
+            f"🔍 Chat request received - user_id: {query.user_id}, session_id: {query.session_id}, question: {query.question[:50]}..."
+        )
+
         # Generate embedding for the current question
         embedding = generate_query_embedding(query.question)
 
@@ -678,6 +682,9 @@ async def chat(query: ChatQuery):
 
         # Ensure user exists in Zep for chat-only flows (before getting user context)
         if query.user_id:
+            logger.info(
+                f"🔧 Attempting to ensure Zep user exists for chat-only flow: {query.user_id}"
+            )
             try:
                 user_metadata = {"source": "chat_direct", "created_via": "chat_only"}
                 user = await zep_memory.ensure_user_exists_coordinated(
@@ -685,11 +692,21 @@ async def chat(query: ChatQuery):
                 )
                 if user:
                     logger.info(
-                        f"Ensured Zep user exists for direct chat: {query.user_id}"
+                        f"✅ Successfully ensured Zep user exists for direct chat: {query.user_id}"
+                    )
+                else:
+                    logger.warning(
+                        f"⚠️ Failed to create Zep user for direct chat: {query.user_id}"
                     )
             except Exception as user_error:
-                logger.warning(f"Error ensuring Zep user exists for chat: {user_error}")
+                logger.error(
+                    f"❌ Error ensuring Zep user exists for chat: {user_error}"
+                )
                 # Continue with chat even if user creation fails
+        else:
+            logger.warning(
+                "⚠️ No user_id provided in chat request - skipping Zep user creation"
+            )
 
         # Get optimized user context from Zep (business profile + conversational memory)
         user_context_str = ""
@@ -1724,24 +1741,28 @@ async def get_business_profile_progress(user_id: str):
         progress = await supabase_service.get_business_profile_progress(user_id)
         answers = await supabase_service.get_business_profile_answers(user_id)
 
+        # Handle new users who don't have any business profile progress yet
+        if progress is None:
+            logger.info(f"No business profile progress found for new user {user_id}")
+            return {
+                "progress": None,
+                "answers": answers or [],
+            }
+
         return {
-            "progress": (
-                BusinessProfileProgressResponse(
-                    user_id=progress["user_id"],
-                    questions_completed=progress["questions_completed"],
-                    total_questions=progress["total_questions"],
-                    started_at=progress.get("started_at"),
-                    completed_at=progress.get("completed_at"),
-                    last_question_at=progress.get("last_question_at"),
-                    current_question_id=progress.get("current_question_id"),
-                )
-                if progress
-                else None
+            "progress": BusinessProfileProgressResponse(
+                user_id=progress["user_id"],
+                questions_completed=progress["questions_completed"],
+                total_questions=progress["total_questions"],
+                started_at=progress.get("started_at"),
+                completed_at=progress.get("completed_at"),
+                last_question_at=progress.get("last_question_at"),
+                current_question_id=progress.get("current_question_id"),
             ),
             "answers": answers or [],
         }
     except Exception as e:
-        logger.error(f"Error getting business profile progress: {e}")
+        logger.error(f"Error getting business profile progress for user {user_id}: {e}")
         raise HTTPException(status_code=500, detail="Failed to get progress")
 
 
