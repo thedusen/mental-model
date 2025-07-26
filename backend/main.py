@@ -684,7 +684,9 @@ async def chat(query: ChatQuery):
                     query.user_id, user_metadata
                 )
                 if user:
-                    logger.info(f"Ensured Zep user exists for direct chat: {query.user_id}")
+                    logger.info(
+                        f"Ensured Zep user exists for direct chat: {query.user_id}"
+                    )
             except Exception as user_error:
                 logger.warning(f"Error ensuring Zep user exists for chat: {user_error}")
                 # Continue with chat even if user creation fails
@@ -814,9 +816,13 @@ async def chat_stream(query: ChatQuery):
                     query.user_id, user_metadata
                 )
                 if user:
-                    logger.info(f"Ensured Zep user exists for streaming chat: {query.user_id}")
+                    logger.info(
+                        f"Ensured Zep user exists for streaming chat: {query.user_id}"
+                    )
             except Exception as user_error:
-                logger.warning(f"Error ensuring Zep user exists for streaming chat: {user_error}")
+                logger.warning(
+                    f"Error ensuring Zep user exists for streaming chat: {user_error}"
+                )
                 # Continue with chat even if user creation fails
 
         # Get optimized user context from Zep (business profile + conversational memory)
