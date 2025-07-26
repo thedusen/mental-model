@@ -429,7 +429,7 @@ class QuestionnaireService:
                 user_response = (
                     self.supabase.client.table("user_profiles")
                     .select("*")
-                    .eq("user_id", user_id)
+                    .eq("id", user_id)
                     .single()
                     .execute()
                 )
@@ -553,7 +553,7 @@ class QuestionnaireService:
                 user_response = (
                     self.supabase.client.table("user_profiles")
                     .select("*")
-                    .eq("user_id", user_id)
+                    .eq("id", user_id)
                     .single()
                     .execute()
                 )
