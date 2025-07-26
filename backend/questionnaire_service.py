@@ -181,10 +181,10 @@ class QuestionnaireService:
                 return {"error": "No active questionnaire found"}
 
             current_q_num = progress.get("current_question", 1)
-
+            
             # Normalize command for flexible matching
             cmd = command.lower().strip()
-
+            
             # Define command synonyms
             skip_commands = ["skip", "skip question", "skip this", "next", "pass"]
             pause_commands = [
@@ -208,7 +208,6 @@ class QuestionnaireService:
                 "previous question",
             ]
             resume_commands = ["resume", "continue", "restart"]
-
             if cmd in skip_commands:
                 # Get the actual question to use its database ID
                 current_question = await self._get_question_by_number(current_q_num)
