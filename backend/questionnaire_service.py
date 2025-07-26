@@ -173,7 +173,7 @@ class QuestionnaireService:
 
     async def handle_command(self, user_id: str, command: str) -> Dict:
         """
-        Handle special commands: skip, pause, previous
+        Handle special commands: skip, pause, previous, and their synonyms
         """
         try:
             progress = await self._get_progress(user_id)
@@ -181,8 +181,17 @@ class QuestionnaireService:
                 return {"error": "No active questionnaire found"}
 
             current_q_num = progress.get("current_question", 1)
+            
+            # Normalize command for flexible matching
+            cmd = command.lower().strip()
+            
+            # Define command synonyms
+            skip_commands = ["skip", "skip question", "skip this", "next", "pass"]
+            pause_commands = ["pause", "exit", "stop", "end", "quit", "cancel", "close", "done", "finish", "enough"]
+            previous_commands = ["previous", "back", "go back", "undo", "back up", "previous question"]
+            resume_commands = ["resume", "continue", "restart"]
 
-            if command.lower() == "skip":
+            if cmd in skip_commands:
                 # Get the actual question to use its database ID
                 current_question = await self._get_question_by_number(current_q_num)
                 if not current_question:
@@ -221,7 +230,7 @@ class QuestionnaireService:
                     "message": f"Skipped. Next question: {next_question['question_text']}",
                 }
 
-            elif command.lower() == "pause":
+            elif cmd in pause_commands:
                 await self._create_or_update_progress(user_id=user_id, status="paused")
                 return {
                     "paused": True,
@@ -233,7 +242,7 @@ class QuestionnaireService:
                     },
                 }
 
-            elif command.lower() == "previous":
+            elif cmd in previous_commands:
                 if current_q_num <= 1:
                     return {
                         "error": "Already at the first question",
@@ -259,7 +268,7 @@ class QuestionnaireService:
                     "message": f"Going back. {prev_question['question_text']}",
                 }
 
-            elif command.lower() == "resume":
+            elif cmd in resume_commands:
                 if progress["status"] != "paused":
                     return {"error": "No paused questionnaire to resume"}
 
@@ -279,7 +288,7 @@ class QuestionnaireService:
                 }
 
             else:
-                return {"error": f"Unknown command: {command}"}
+                return {"error": f"Unknown command: {command}. Try: skip, pause, previous, or resume."}
 
         except Exception as e:
             print(f"Error handling command '{command}' for user {user_id}: {e}")

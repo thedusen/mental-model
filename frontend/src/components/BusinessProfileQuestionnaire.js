@@ -378,16 +378,19 @@ const BusinessProfileQuestionnaire = ({
 
   return (
     <div className={`business-profile-questionnaire ${mode}`}>
+      {/* Close button - always visible in top right */}
+      <button 
+        onClick={onClose} 
+        className="questionnaire-close-button"
+        aria-label="Close questionnaire"
+        disabled={isSaving}
+      >
+        ✕
+      </button>
+
       {mode === 'modal' && (
         <div className="questionnaire-header">
           <h2>Build Your Business Profile</h2>
-          <button 
-            onClick={onClose} 
-            className="close-button"
-            aria-label="Close questionnaire"
-          >
-            ✕
-          </button>
         </div>
       )}
 
