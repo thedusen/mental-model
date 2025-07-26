@@ -128,14 +128,38 @@ class ZepMemoryManager:
 
             supabase = SupabaseService()
 
-            user_response = (
-                supabase.client.table("user_profiles")
-                .select("*")
-                .eq("id", user_id)
-                .single()
-                .execute()
-            )
-            user_profile = user_response.data if user_response.data else {}
+            # First try to get existing user profile
+            try:
+                user_response = (
+                    supabase.client.table("user_profiles")
+                    .select("*")
+                    .eq("id", user_id)
+                    .single()
+                    .execute()
+                )
+                user_profile = user_response.data if user_response.data else {}
+            except Exception as profile_error:
+                # User profile doesn't exist, create it automatically
+                logger.info(
+                    f"User profile not found for {user_id}, creating automatically: {profile_error}"
+                )
+                try:
+                    # Create minimal user profile record
+                    user_data = {"id": user_id, "created_at": "now()"}
+                    create_response = (
+                        supabase.client.table("user_profiles")
+                        .insert(user_data)
+                        .execute()
+                    )
+                    user_profile = (
+                        create_response.data[0] if create_response.data else {}
+                    )
+                    logger.info(f"Successfully created user profile for {user_id}")
+                except Exception as create_error:
+                    logger.warning(
+                        f"Failed to create user profile for {user_id}: {create_error}"
+                    )
+                    user_profile = {}  # Fall back to empty profile
 
             # Build consistent metadata structure
             metadata = {

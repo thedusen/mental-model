@@ -464,11 +464,27 @@ async def test_supabase_connection():
         # Test basic connectivity
         user_id = "test_user_debug_" + str(int(time.time()))
 
-        # Test user profile creation
-        user_data = {"id": user_id, "created_at": "now()"}
-        profile_response = (
-            supabase_service.client.table("user_profiles").insert(user_data).execute()
-        )
+        # Test user profile creation with proper UUID validation
+        import uuid
+
+        try:
+            uuid.UUID(user_id)  # Validate it's a proper UUID
+            user_data = {"id": user_id, "created_at": "now()"}
+            profile_response = (
+                supabase_service.client.table("user_profiles")
+                .insert(user_data)
+                .execute()
+            )
+        except ValueError:
+            # Generate a proper UUID for testing
+            test_uuid = str(uuid.uuid4())
+            user_data = {"id": test_uuid, "created_at": "now()"}
+            profile_response = (
+                supabase_service.client.table("user_profiles")
+                .insert(user_data)
+                .execute()
+            )
+            user_id = test_uuid  # Use the generated UUID for subsequent operations
 
         # Test session creation
         session_data = {"user_id": user_id, "title": "Debug Test Session"}

@@ -64,14 +64,7 @@ class SupabaseService:
     async def create_chat_session(self, user_id: str, title: Optional[str] = None):
         """Create a new chat session"""
         try:
-            # First, ensure user exists in user_profiles table
-            user_profile = await self.get_user_by_id(user_id)
-            if not user_profile:
-                # Create user profile if it doesn't exist
-                user_data = {"id": user_id, "created_at": "now()"}
-                self.client.table("user_profiles").insert(user_data).execute()
-
-            # Create session data
+            # Create session data (user profile creation is handled in Zep integration)
             data = {"user_id": user_id, "title": title}
             response = self.client.table("chat_sessions").insert(data).execute()
             return response.data[0] if response.data else None
