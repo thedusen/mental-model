@@ -533,86 +533,40 @@ class QuestionnaireService:
 
     async def _ensure_zep_user_exists(self, user_id: str) -> bool:
         """
-        Proactively ensure user exists in Zep before questionnaire starts
+        Proactively ensure user exists in Zep before questionnaire starts using coordinated creation
         Returns True if user exists or was created successfully, False otherwise
         """
         try:
-            # First check if user already exists in Zep to avoid duplicate creation
-            try:
-                existing_user = self.zep.client.user.get(user_id)
-                if existing_user:
-                    logger.info(f"User {user_id} already exists in Zep")
-                    return True
-            except Exception:
-                # User doesn't exist, proceed with creation
-                pass
-
-            # Get user profile from Supabase to provide complete user metadata to Zep
-            user_profile = None
-            try:
-                user_response = (
-                    self.supabase.client.table("user_profiles")
-                    .select("*")
-                    .eq("id", user_id)
-                    .single()
-                    .execute()
-                )
-                user_profile = user_response.data if user_response.data else None
-                logger.debug(
-                    f"Retrieved user profile from Supabase for {user_id}: {bool(user_profile)}"
-                )
-            except Exception as profile_error:
-                logger.warning(
-                    f"Could not get user profile for {user_id}: {profile_error}"
-                )
-
-            # Build complete user metadata for Zep
+            # Use the coordinated user creation from ZepMemoryManager to prevent duplicates
             user_metadata = {
-                "user_type": "business_owner",
                 "source": "questionnaire",
-                "created_via": "supabase_integration",
+                "created_via": "profile_setup",
+                "user_type": "business_owner",
             }
 
-            # Extract user data for Zep user creation (not just metadata)
-            user_creation_data = {"user_id": user_id, "metadata": user_metadata}
+            # Import here to avoid circular imports
+            from zep_memory import ZepMemoryManager
 
-            if user_profile:
-                # Add core user fields that Zep expects at the top level
-                if user_profile.get("email"):
-                    user_creation_data["email"] = user_profile["email"]
-                    user_metadata["email"] = user_profile["email"]
-                if user_profile.get("first_name"):
-                    user_creation_data["first_name"] = user_profile["first_name"]
-                    user_metadata["first_name"] = user_profile["first_name"]
-                if user_profile.get("last_name"):
-                    user_creation_data["last_name"] = user_profile["last_name"]
-                    user_metadata["last_name"] = user_profile["last_name"]
+            zep_memory = ZepMemoryManager()
 
-                logger.debug(
-                    f"Creating Zep user with profile data: {user_profile.get('email', 'no-email')}"
-                )
-            else:
-                logger.warning(
-                    f"No Supabase profile found for user {user_id}, creating minimal Zep user"
-                )
+            # Use coordinated creation that handles distributed locking and deduplication
+            user = await zep_memory.ensure_user_exists_coordinated(
+                user_id, user_metadata
+            )
 
-            # Create user directly using Zep client to ensure proper user ID usage
-            try:
-                created_user = self.zep.client.user.add(**user_creation_data)
+            if user:
                 logger.info(
-                    f"Successfully created user {user_id} in Zep with metadata: {user_metadata}"
+                    f"Successfully ensured Zep user exists via coordinated creation: {user_id}"
                 )
                 return True
-            except Exception as user_error:
-                logger.error(
-                    f"Failed to create user in Zep for {user_id}: {user_error}"
+            else:
+                logger.warning(
+                    f"Failed to ensure Zep user exists via coordinated creation: {user_id}"
                 )
                 return False
 
         except Exception as e:
-            logger.error(
-                f"Critical error in _ensure_zep_user_exists for {user_id}: {e}"
-            )
+            logger.error(f"Error ensuring Zep user exists for {user_id}: {e}")
             return False
 
 
