@@ -676,6 +676,19 @@ async def chat(query: ChatQuery):
                 "No specific expert knowledge graph context found for this question."
             )
 
+        # Ensure user exists in Zep for chat-only flows (before getting user context)
+        if query.user_id:
+            try:
+                user_metadata = {"source": "chat_direct", "created_via": "chat_only"}
+                user = await zep_memory.ensure_user_exists_coordinated(
+                    query.user_id, user_metadata
+                )
+                if user:
+                    logger.info(f"Ensured Zep user exists for direct chat: {query.user_id}")
+            except Exception as user_error:
+                logger.warning(f"Error ensuring Zep user exists for chat: {user_error}")
+                # Continue with chat even if user creation fails
+
         # Get optimized user context from Zep (business profile + conversational memory)
         user_context_str = ""
         if query.session_id and query.user_id:
@@ -792,6 +805,19 @@ async def chat_stream(query: ChatQuery):
             expert_context_str = (
                 "No specific expert knowledge graph context found for this question."
             )
+
+        # Ensure user exists in Zep for chat-only flows (before getting user context)
+        if query.user_id:
+            try:
+                user_metadata = {"source": "chat_direct", "created_via": "chat_only"}
+                user = await zep_memory.ensure_user_exists_coordinated(
+                    query.user_id, user_metadata
+                )
+                if user:
+                    logger.info(f"Ensured Zep user exists for streaming chat: {query.user_id}")
+            except Exception as user_error:
+                logger.warning(f"Error ensuring Zep user exists for streaming chat: {user_error}")
+                # Continue with chat even if user creation fails
 
         # Get optimized user context from Zep (business profile + conversational memory)
         user_context_str = ""
