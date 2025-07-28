@@ -147,8 +147,8 @@ export const chat = {
   // Create a new chat session
   createSession: async (title = null) => {
     console.log('🎯 createSession called with title:', title);
-    console.log('🔍 SESSION CREATION FLOW STARTED - User ID:', user?.id);
     const user = await auth.getUser();
+    console.log('🔍 SESSION CREATION FLOW STARTED - User ID:', user?.id);
     console.log('🎯 createSession user:', user);
     if (!user) throw new Error('User not authenticated');
 
