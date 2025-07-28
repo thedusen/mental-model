@@ -11,7 +11,7 @@ import {
   server,
   setProductionEnv,
   setDevelopmentEnv
-} from './testUtils';
+} from '../../test-support/testUtils';
 
 // Mock the supabase module
 jest.mock('../../utils/supabase', () => {

@@ -11,7 +11,7 @@ import {
   server,
   setProductionEnv,
   setDevelopmentEnv
-} from '../utils/testUtils';
+} from '../../test-support/testUtils';
 
 // Mock the entire supabase module
 const mockSupabaseModule = {

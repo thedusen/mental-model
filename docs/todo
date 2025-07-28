@@ -1,6 +1,5 @@
 - Backup model on anthropic API fail
 - remove"great next question"
-- set up sub agents
 - Chat not submitting on enter key
 - double messages
 - immediately make enter button disabled on submitting
