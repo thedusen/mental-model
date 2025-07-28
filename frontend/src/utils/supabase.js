@@ -147,6 +147,7 @@ export const chat = {
   // Create a new chat session
   createSession: async (title = null) => {
     console.log('🎯 createSession called with title:', title);
+    console.log('🔍 SESSION CREATION FLOW STARTED - User ID:', user?.id);
     const user = await auth.getUser();
     console.log('🎯 createSession user:', user);
     if (!user) throw new Error('User not authenticated');
@@ -154,6 +155,7 @@ export const chat = {
     try {
       // 🔧 FIX: Use backend API instead of direct Supabase to ensure Zep user creation
       console.log('🔍 About to call backend API for session creation...');
+      console.log('📡 CALLING /api/chat/sessions - This should create Zep user');
       
       // Environment validation to prevent production failures
       const API_URL = (() => {
@@ -182,6 +184,8 @@ export const chat = {
 
       const data = await response.json();
       console.log('🎯 createSession result from backend:', data);
+      console.log('✅ SESSION CREATION SUCCESS - Zep user should be created now');
+      console.log('📝 Session ID:', data.id, 'User ID:', data.user_id);
       
       // Convert backend response to match expected format
       return { 
@@ -196,7 +200,8 @@ export const chat = {
         error: null 
       };
     } catch (err) {
-      console.error('❌ createSession caught error:', err);
+      console.error('❌ SESSION CREATION FAILED:', err);
+      console.error('❌ This means Zep user was NOT created');
       return { data: null, error: err };
     }
   },

@@ -752,9 +752,10 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         console.log('🎯 businessProfileProgress status:', businessProfileProgress?.status);
         // Start the new chat-integrated questionnaire
         try {
-          console.log('🎯 Questionnaire flow: about to create session for user:', user?.id);
+          console.log('🎯 LETS CHAT FLOW: Questionnaire flow: about to create session for user:', user?.id);
+          console.log('🔍 LETS CHAT FLOW: This should create Zep user if successful');
           const questionnaireSession = await createNewSessionIfNeeded();
-          console.log('🎯 Questionnaire flow: session creation result:', questionnaireSession);
+          console.log('🎯 LETS CHAT FLOW: session creation result:', questionnaireSession);
           if (questionnaireSession) {
             console.log('🎯 About to call startChatQuestionnaire...');
             await startChatQuestionnaire();
@@ -985,12 +986,14 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
 
     // Create session if needed (will show auth if not logged in)
-    console.log('🎯 Direct typing flow: about to create session for user:', user?.id);
+    console.log('🎯 REGULAR CHAT FLOW: Direct typing flow: about to create session for user:', user?.id);
+    console.log('🔍 REGULAR CHAT FLOW: This should create Zep user if successful');
     const activeSession = await createNewSessionIfNeeded();
-    console.log('🎯 Direct typing flow: session creation result:', activeSession);
+    console.log('🎯 REGULAR CHAT FLOW: session creation result:', activeSession);
     
     if (!activeSession) {
-      console.error('❌ Direct typing flow: session creation failed - cannot proceed');
+      console.error('❌ REGULAR CHAT FLOW: session creation failed - cannot proceed');
+      console.error('❌ REGULAR CHAT FLOW: Zep user was NOT created');
       setLoading(false);
       
       // Show error message to user instead of creating temporary session
@@ -1003,7 +1006,8 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       return;
     }
     
-    console.log('✅ Direct typing flow: session ready, proceeding with chat request');
+    console.log('✅ REGULAR CHAT FLOW: session ready, proceeding with chat request');
+    console.log('✅ REGULAR CHAT FLOW: Zep user should have been created successfully');
 
     const userMessage = { role: 'user', content: currentInput };
     setInput('');
@@ -1034,7 +1038,8 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
 
     try {
-      console.log('🚀 Sending chat request with session:', activeSession.id, 'user:', user.id);
+      console.log('🚀 REGULAR CHAT FLOW: Sending chat request with session:', activeSession.id, 'user:', user.id);
+      console.log('📡 REGULAR CHAT FLOW: About to call /api/chat/stream endpoint');
 
       // Prepare conversation history
       const conversationHistory = messages.map(msg => ({
@@ -1112,7 +1117,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         }
       }
     } catch (error) {
-      console.error('Error with streaming, attempting fallback:', error);
+      console.error('❌ REGULAR CHAT FLOW: Streaming chat failed, attempting fallback:', error);
+      console.log('🔍 REGULAR CHAT FLOW: Session was created successfully, but chat request failed');
+      console.log('🔍 REGULAR CHAT FLOW: Zep user should still exist, just chat functionality broken');
       
       try {
         // Fallback to regular chat endpoint
@@ -1139,7 +1146,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         console.log(`Fallback successful.`);
 
       } catch (fallbackError) {
-        console.error('Fallback also failed:', fallbackError);
+        console.error('❌ REGULAR CHAT FLOW: Fallback also failed:', fallbackError);
+        console.log('🔍 REGULAR CHAT FLOW: Both streaming and regular chat failed');
+        console.log('🔍 REGULAR CHAT FLOW: Session created successfully, Zep user exists, but chat endpoints broken');
         const errorMessage = {
           role: 'assistant',
           content: 'Sorry, I encountered an error while processing your request. Please try again.',
