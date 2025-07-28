@@ -608,7 +608,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     if (!user) {
       console.log('❌ No user - showing auth');
       setShowAuth(true);
-      return false;
+      return null;
     }
 
     // Create session if we don't have one (regardless of message count)
@@ -645,7 +645,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
             return await createNewSessionIfNeeded(retryCount + 1);
           }
           
-          return false;
+          return null;
         }
         
         console.log('✅ New session created successfully:', newSession.id);
@@ -654,11 +654,11 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         // Validate session was set correctly
         if (!newSession.id) {
           console.error('❌ Session created but has no ID:', newSession);
-          return false;
+          return null;
         }
         
         console.log('🔗 Session state updated, ready for chat requests');
-        return true;
+        return newSession;
         
       } catch (error) {
         console.error(`❌ Error creating session (attempt ${retryCount + 1}):`, error);
@@ -672,12 +672,12 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         }
         
         console.error('❌ All session creation attempts failed');
-        return false;
+        return null;
       }
     }
     
     console.log('✅ Session already exists:', currentSession.id);
-    return true;
+    return currentSession;
   };
 
   // Business profile questionnaire handlers
@@ -722,9 +722,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       if (businessProfileProgress && businessProfileProgress.status === 'in_progress') {
         console.log('🔄 Resuming existing questionnaire...');
         try {
-          const success = await createNewSessionIfNeeded();
-          console.log('🔗 Session creation result for resume:', success);
-          if (success) {
+          const resumeSession = await createNewSessionIfNeeded();
+          console.log('🔗 Session creation result for resume:', resumeSession);
+          if (resumeSession) {
             await resumeQuestionnaire();
           } else {
             console.error('❌ Failed to create session for resume');
@@ -753,9 +753,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         // Start the new chat-integrated questionnaire
         try {
           console.log('🎯 Questionnaire flow: about to create session for user:', user?.id);
-          const success = await createNewSessionIfNeeded();
-          console.log('🎯 Questionnaire flow: session creation result:', success);
-          if (success) {
+          const questionnaireSession = await createNewSessionIfNeeded();
+          console.log('🎯 Questionnaire flow: session creation result:', questionnaireSession);
+          if (questionnaireSession) {
             console.log('🎯 About to call startChatQuestionnaire...');
             await startChatQuestionnaire();
           } else {
@@ -986,10 +986,10 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
 
     // Create session if needed (will show auth if not logged in)
     console.log('🎯 Direct typing flow: about to create session for user:', user?.id);
-    const canProceed = await createNewSessionIfNeeded();
-    console.log('🎯 Direct typing flow: session creation result:', canProceed);
+    const activeSession = await createNewSessionIfNeeded();
+    console.log('🎯 Direct typing flow: session creation result:', activeSession);
     
-    if (!canProceed) {
+    if (!activeSession) {
       console.error('❌ Direct typing flow: session creation failed - cannot proceed');
       setLoading(false);
       
@@ -1034,7 +1034,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
 
     try {
-      console.log('🚀 Sending chat request with session:', currentSession.id, 'user:', user.id);
+      console.log('🚀 Sending chat request with session:', activeSession.id, 'user:', user.id);
 
       // Prepare conversation history
       const conversationHistory = messages.map(msg => ({
@@ -1069,7 +1069,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
           conversation_history: conversationHistory,
           chat_context_node: chatContextNodeData,
           user_id: user.id,
-          session_id: currentSession.id,
+          session_id: activeSession.id,
         }),
       });
 
