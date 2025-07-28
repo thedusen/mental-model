@@ -2,7 +2,7 @@
  * Test utilities and mocks for Zep user creation tests
  */
 
-import { http, HttpResponse } from 'msw';
+import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 // Mock Supabase client
@@ -56,26 +56,26 @@ export const mockSession = {
 // API response handlers for MSW
 export const handlers = [
   // Successful session creation
-  http.post('http://localhost:8000/api/chat/sessions', () => {
-    return HttpResponse.json(mockSession);
+  rest.post('http://localhost:8000/api/chat/sessions', (req, res, ctx) => {
+    return res(ctx.json(mockSession));
   }),
 
   // Session creation with network error simulation
-  http.post('http://localhost:8000/api/chat/sessions-error', () => {
-    return new HttpResponse(null, { status: 500 });
+  rest.post('http://localhost:8000/api/chat/sessions-error', (req, res, ctx) => {
+    return res(ctx.status(500));
   }),
 
   // Session creation with Zep failure but successful session creation
-  http.post('http://localhost:8000/api/chat/sessions-zep-fail', () => {
-    return HttpResponse.json({
+  rest.post('http://localhost:8000/api/chat/sessions-zep-fail', (req, res, ctx) => {
+    return res(ctx.json({
       ...mockSession,
       metadata: { zep_user_created: false, zep_error: 'Connection timeout' }
-    });
+    }));
   }),
 
   // Production environment validation
-  http.post('https://api.mental-model.com/api/chat/sessions', () => {
-    return HttpResponse.json(mockSession);
+  rest.post('https://api.mental-model.com/api/chat/sessions', (req, res, ctx) => {
+    return res(ctx.json(mockSession));
   })
 ];
 

@@ -181,14 +181,32 @@ class QuestionnaireService:
                 return {"error": "No active questionnaire found"}
 
             current_q_num = progress.get("current_question", 1)
-            
+
             # Normalize command for flexible matching
             cmd = command.lower().strip()
-            
+
             # Define command synonyms
             skip_commands = ["skip", "skip question", "skip this", "next", "pass"]
-            pause_commands = ["pause", "exit", "stop", "end", "quit", "cancel", "close", "done", "finish", "enough"]
-            previous_commands = ["previous", "back", "go back", "undo", "back up", "previous question"]
+            pause_commands = [
+                "pause",
+                "exit",
+                "stop",
+                "end",
+                "quit",
+                "cancel",
+                "close",
+                "done",
+                "finish",
+                "enough",
+            ]
+            previous_commands = [
+                "previous",
+                "back",
+                "go back",
+                "undo",
+                "back up",
+                "previous question",
+            ]
             resume_commands = ["resume", "continue", "restart"]
 
             if cmd in skip_commands:
@@ -288,7 +306,9 @@ class QuestionnaireService:
                 }
 
             else:
-                return {"error": f"Unknown command: {command}. Try: skip, pause, previous, or resume."}
+                return {
+                    "error": f"Unknown command: {command}. Try: skip, pause, previous, or resume."
+                }
 
         except Exception as e:
             print(f"Error handling command '{command}' for user {user_id}: {e}")
