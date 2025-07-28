@@ -201,10 +201,19 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         // Reload business profile data to ensure nudge state is correct
         setTimeout(async () => {
           try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout for reload
+            
             const [progressResponse, nudgeResponse] = await Promise.all([
-              fetch(`${API_URL}/api/questionnaire/status/${user.id}`),
-              fetch(`${API_URL}/api/business-profile/nudge-status/${user.id}`)
+              fetch(`${API_URL}/api/questionnaire/status/${user.id}`, {
+                signal: controller.signal
+              }),
+              fetch(`${API_URL}/api/business-profile/nudge-status/${user.id}`, {
+                signal: controller.signal
+              })
             ]);
+            
+            clearTimeout(timeoutId);
             
             if (progressResponse.ok) {
               const progressData = await progressResponse.json();
@@ -216,7 +225,11 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               setNudgeStatus(nudgeData);
             }
           } catch (error) {
-            console.error('Error reloading business profile data after completion:', error);
+            if (error.name === 'AbortError') {
+              console.warn('⏰ Business profile reload timed out after questionnaire completion');
+            } else {
+              console.error('Error reloading business profile data after completion:', error);
+            }
           }
         }, 1000);
         
@@ -450,31 +463,59 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       try {
         console.log('🔍 Loading business profile data for user:', user.id);
         
-        // Load questionnaire status and nudge status
-        const [progressResponse, nudgeResponse] = await Promise.all([
-          fetch(`${API_URL}/api/questionnaire/status/${user.id}`),
-          fetch(`${API_URL}/api/business-profile/nudge-status/${user.id}`)
-        ]);
+        // Create timeout controller for business profile requests
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
+        try {
+          // Load questionnaire status and nudge status with timeout
+          const [progressResponse, nudgeResponse] = await Promise.all([
+            fetch(`${API_URL}/api/questionnaire/status/${user.id}`, {
+              signal: controller.signal,
+              timeout: 5000
+            }),
+            fetch(`${API_URL}/api/business-profile/nudge-status/${user.id}`, {
+              signal: controller.signal,
+              timeout: 5000
+            })
+          ]);
+          
+          clearTimeout(timeoutId);
 
-        console.log('📊 Progress response status:', progressResponse.status);
-        console.log('📊 Nudge response status:', nudgeResponse.status);
+          console.log('📊 Progress response status:', progressResponse.status);
+          console.log('📊 Nudge response status:', nudgeResponse.status);
 
-        if (progressResponse.ok) {
-          const progressData = await progressResponse.json();
-          console.log('📊 Progress data:', progressData);
-          setBusinessProfileProgress(progressData);
-        } else {
-          console.error('❌ Progress response not ok:', progressResponse.status, progressResponse.statusText);
+          if (progressResponse.ok) {
+            const progressData = await progressResponse.json();
+            console.log('📊 Progress data:', progressData);
+            setBusinessProfileProgress(progressData);
+          } else {
+            console.error('❌ Progress response not ok:', progressResponse.status, progressResponse.statusText);
+            setBusinessProfileProgress(null);
+          }
+
+          if (nudgeResponse.ok) {
+            const nudgeData = await nudgeResponse.json();
+            console.log('📊 Nudge data:', nudgeData);
+            setNudgeStatus(nudgeData);
+          } else {
+            console.error('❌ Nudge response not ok:', nudgeResponse.status, nudgeResponse.statusText);
+            // Set default nudge status for new users
+            setNudgeStatus({
+              user_type: 'not_started',
+              should_show_nudge: true,
+              progress: null
+            });
+          }
+        } catch (timeoutError) {
+          clearTimeout(timeoutId);
+          if (timeoutError.name === 'AbortError') {
+            console.warn('⏰ Business profile data loading timed out, using defaults');
+          } else {
+            console.error('❌ Network error loading business profile data:', timeoutError);
+          }
+          // Set default state on timeout/error so app continues to work
           setBusinessProfileProgress(null);
-        }
-
-        if (nudgeResponse.ok) {
-          const nudgeData = await nudgeResponse.json();
-          console.log('📊 Nudge data:', nudgeData);
-          setNudgeStatus(nudgeData);
-        } else {
-          console.error('❌ Nudge response not ok:', nudgeResponse.status, nudgeResponse.statusText);
-          // Set default nudge status for new users
           setNudgeStatus({
             user_type: 'not_started',
             should_show_nudge: true,
@@ -949,20 +990,17 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('🎯 Direct typing flow: session creation result:', canProceed);
     
     if (!canProceed) {
-      console.error('❌ Direct typing flow: session creation failed');
-      console.log('🔄 Attempting to proceed without session - backend will create user directly');
+      console.error('❌ Direct typing flow: session creation failed - cannot proceed');
+      setLoading(false);
       
-      // FALLBACK: If session creation fails, still allow chat but use a temporary session
-      // This is because the backend endpoints now have user creation logic
-      const tempSession = {
-        id: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        user_id: user.id,
-        created_at: new Date().toISOString(),
-        title: null
+      // Show error message to user instead of creating temporary session
+      const errorMessage = {
+        role: 'assistant',
+        content: 'I\'m having trouble setting up your chat session. Please try refreshing the page or try again in a moment.',
+        isError: true
       };
-      
-      console.log('🔄 Using temporary session for chat:', tempSession.id);
-      setCurrentSession(tempSession);
+      setMessages(prev => [...prev, errorMessage]);
+      return;
     }
     
     console.log('✅ Direct typing flow: session ready, proceeding with chat request');
@@ -996,12 +1034,6 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
 
     try {
-      // Safety check - ensure we have a session after creation
-      if (!currentSession) {
-        console.error('❌ No current session available for chat request');
-        throw new Error('Session not available. Please try again.');
-      }
-
       console.log('🚀 Sending chat request with session:', currentSession.id, 'user:', user.id);
 
       // Prepare conversation history
