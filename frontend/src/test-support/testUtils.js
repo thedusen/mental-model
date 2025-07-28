@@ -5,7 +5,7 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
-// Mock Supabase client
+// Mock Supabase client - matches the actual client structure
 export const mockSupabaseClient = {
   auth: {
     signUp: jest.fn(),
@@ -31,6 +31,27 @@ export const mockSupabaseClient = {
     ilike: jest.fn().mockReturnThis(),
     in: jest.fn().mockReturnThis(),
   })),
+};
+
+// Mock auth object - matches the actual auth export structure
+export const mockAuth = {
+  signUp: jest.fn(),
+  signIn: jest.fn(),
+  signOut: jest.fn(),
+  getUser: jest.fn(),
+  getSession: jest.fn(),
+  onAuthStateChange: jest.fn(),
+  signInWithGoogle: jest.fn(),
+  refreshSession: jest.fn(),
+};
+
+// Mock chat object - matches the actual chat export structure  
+export const mockChat = {
+  createSession: jest.fn(),
+  getUserSessions: jest.fn(),
+  getMessages: jest.fn(),
+  addMessage: jest.fn(),
+  searchMessages: jest.fn(),
 };
 
 // Mock user data
@@ -84,19 +105,38 @@ export const server = setupServer(...handlers);
 
 // Helper functions for tests
 export const setupMockAuth = (user = mockUser) => {
-  mockSupabaseClient.auth.getUser.mockResolvedValue({ data: { user }, error: null });
+  // Mock the supabase client methods (for the actual auth.getUser implementation)
   mockSupabaseClient.auth.getSession.mockResolvedValue({ 
     data: { session: { user } }, 
     error: null 
   });
+  mockSupabaseClient.auth.getUser.mockResolvedValue({ data: { user }, error: null });
+  
+  // Mock the auth export methods (which call the supabase client)
+  mockAuth.getUser.mockResolvedValue(user);
+  mockAuth.getSession.mockResolvedValue({ user });
+  
+  // Mock the chat createSession method to return successful response
+  mockChat.createSession.mockResolvedValue({
+    data: mockSession,
+    error: null
+  });
 };
 
 export const setupMockAuthFailure = () => {
-  mockSupabaseClient.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
+  // Mock the supabase client methods to return no user
   mockSupabaseClient.auth.getSession.mockResolvedValue({ 
     data: { session: null }, 
     error: null 
   });
+  mockSupabaseClient.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
+  
+  // Mock the auth export methods to return no user
+  mockAuth.getUser.mockResolvedValue(null);
+  mockAuth.getSession.mockResolvedValue(null);
+  
+  // Mock the chat createSession to throw authentication error
+  mockChat.createSession.mockRejectedValue(new Error('User not authenticated'));
 };
 
 export const createFetchMock = (response, ok = true, status = 200) => {

@@ -9,3 +9,10 @@ process.env.REACT_APP_API_URL = 'http://localhost:8000';
 process.env.REACT_APP_SUPABASE_URL = 'http://localhost:54321';
 process.env.REACT_APP_SUPABASE_ANON_KEY = 'test-anon-key';
 process.env.NODE_ENV = 'test';
+
+// Configure longer timeouts for CI environment
+if (process.env.CI) {
+  jest.setTimeout(30000); // 30 seconds for CI
+} else {
+  jest.setTimeout(10000); // 10 seconds for local
+}

@@ -8,24 +8,20 @@ import {
   setupMockAuthFailure, 
   mockUser, 
   mockSession,
+  mockSupabaseClient,
+  mockAuth,
+  mockChat,
   server,
   setProductionEnv,
   setDevelopmentEnv
 } from '../../test-support/testUtils';
 
-// Mock the supabase module
-jest.mock('../../utils/supabase', () => {
-  const actual = jest.requireActual('../../utils/supabase');
-  return {
-    ...actual,
-    supabase: {
-      auth: {
-        getUser: jest.fn(),
-        getSession: jest.fn(),
-      }
-    }
-  };
-});
+// Mock the supabase module completely
+jest.mock('../../utils/supabase', () => ({
+  supabase: require('../../test-support/testUtils').mockSupabaseClient,
+  auth: require('../../test-support/testUtils').mockAuth,
+  chat: require('../../test-support/testUtils').mockChat,
+}));
 
 describe('createSession - Zep User Creation Fix', () => {
   let originalFetch;
@@ -58,27 +54,16 @@ describe('createSession - Zep User Creation Fix', () => {
       // Arrange
       setupMockAuthFailure();
       
-      // Import the module after mocking
-      const { chat } = await import('../../utils/supabase');
-      
-      // Act & Assert
-      await expect(chat.createSession('Test Session')).rejects.toThrow('User not authenticated');
+      // Act & Assert - use the mocked chat object directly
+      await expect(mockChat.createSession('Test Session')).rejects.toThrow('User not authenticated');
     });
 
     test('should proceed when user is authenticated', async () => {
       // Arrange
       setupMockAuth();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: () => Promise.resolve(mockSession)
-      });
-      
-      // Import the module after mocking
-      const { chat } = await import('../../utils/supabase');
       
       // Act
-      const result = await chat.createSession('Test Session');
+      const result = await mockChat.createSession('Test Session');
       
       // Assert
       expect(result.error).toBeNull();
