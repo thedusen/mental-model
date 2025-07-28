@@ -617,8 +617,31 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       
       try {
         console.log(`🆕 Creating new session... (attempt ${retryCount + 1}/${maxRetries + 1})`);
-        const { data: newSession, error } = await chat.createSession();
-        console.log('📊 Session creation result:', { data: newSession, error });
+        
+        // Add timeout to session creation to prevent hanging
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Session creation timeout')), 20000); // 20 second timeout
+        });
+        
+        const sessionPromise = chat.createSession();
+        const result = await Promise.race([sessionPromise, timeoutPromise]);
+        
+        console.log('📊 Session creation result:', result);
+        
+        // Handle both direct response and { data, error } format
+        let newSession, error;
+        if (result && typeof result === 'object') {
+          if ('data' in result && 'error' in result) {
+            newSession = result.data;
+            error = result.error;
+          } else {
+            newSession = result;
+            error = null;
+          }
+        } else {
+          newSession = result;
+          error = null;
+        }
         
         if (error) {
           console.error('❌ Session creation error:', error);
@@ -663,15 +686,61 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       } catch (error) {
         console.error(`❌ Error creating session (attempt ${retryCount + 1}):`, error);
         
-        // Retry logic for network/server errors
-        if (retryCount < maxRetries) {
-          const delay = Math.pow(2, retryCount) * 1000;
-          console.log(`⏳ Retrying session creation after error in ${delay}ms...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+        // Better error categorization for different retry strategies
+        const isTimeoutError = error.message && error.message.includes('timeout');
+        const isNetworkError = error.message && (error.message.includes('network') || error.message.includes('fetch'));
+        const isCorsError = error.message && error.message.includes('CORS');
+        const isServerError = error.message && error.message.includes('500');
+        
+        // Decide if we should retry based on error type
+        let shouldRetry = retryCount < maxRetries;
+        let retryDelay = Math.pow(2, retryCount) * 1000; // Default exponential backoff
+        
+        if (isTimeoutError) {
+          // Longer delay for timeout errors
+          retryDelay = Math.pow(2, retryCount) * 2000;
+          console.log(`⏰ Timeout error detected - will use longer delay: ${retryDelay}ms`);
+        } else if (isCorsError) {
+          // Don't retry CORS errors as they indicate configuration issues
+          shouldRetry = false;
+          console.log(`🚫 CORS error detected - not retrying as this indicates server configuration issue`);
+        } else if (isServerError) {
+          // Longer delay for server errors
+          retryDelay = Math.pow(2, retryCount) * 3000;
+          console.log(`🔥 Server error detected - will use longer delay: ${retryDelay}ms`);
+        }
+        
+        if (shouldRetry) {
+          console.log(`⏳ Retrying session creation after ${error.message} in ${retryDelay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
           return await createNewSessionIfNeeded(retryCount + 1);
         }
         
-        console.error('❌ All session creation attempts failed');
+        console.error('❌ All session creation attempts failed - final error:', error.message);
+        
+        // Show user-friendly error message based on final error type
+        let errorMessage = "I'm sorry I can't set up your chat at the moment";
+        
+        if (isTimeoutError) {
+          errorMessage += " - the server is taking too long to respond. Please try again.";
+        } else if (isCorsError) {
+          errorMessage += " - there's a connection issue. Please refresh the page.";
+        } else if (isServerError) {
+          errorMessage += " - the server is experiencing issues. Please try again in a moment.";
+        } else if (isNetworkError) {
+          errorMessage += " - please check your internet connection.";
+        } else {
+          errorMessage += ". Please try refreshing the page or contact support if the issue persists.";
+        }
+        
+        // Add error message to chat if we have a way to show it
+        const errorChatMessage = {
+          role: 'assistant',
+          content: errorMessage,
+          isError: true
+        };
+        setMessages(prev => [...prev, errorChatMessage]);
+        
         return null;
       }
     }

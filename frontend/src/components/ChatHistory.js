@@ -72,15 +72,37 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
     try {
       console.log('📞 Calling chat.getSessions()...');
       
-      // Add timeout to prevent infinite loading
+      // Add timeout to prevent infinite loading with better error handling
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Request timeout')), 10000);
+        setTimeout(() => reject(new Error('Request timeout - please check your internet connection')), 15000);
       });
       
       const sessionPromise = chat.getSessions();
-      const { data, error: sessionError } = await Promise.race([sessionPromise, timeoutPromise]);
+      const result = await Promise.race([sessionPromise, timeoutPromise]);
       
-      console.log('📊 getSessions result:', { data, error: sessionError });
+      console.log('📊 getSessions result:', result);
+      
+      // Handle different result formats
+      let data, sessionError;
+      if (result && typeof result === 'object') {
+        if ('data' in result && 'error' in result) {
+          // Standard Supabase response format
+          data = result.data;
+          sessionError = result.error;
+        } else if (Array.isArray(result)) {
+          // Direct array response
+          data = result;
+          sessionError = null;
+        } else {
+          // Unknown format
+          console.warn('⚠️ Unexpected response format:', result);
+          data = [];
+          sessionError = null;
+        }
+      } else {
+        data = [];
+        sessionError = null;
+      }
       
       if (sessionError) {
         console.error('❌ Session error from Supabase:', sessionError);
@@ -97,19 +119,34 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
       
       // Only update state if component is still mounted
       if (isMountedRef.current) {
-        // More specific error handling
+        // More specific error handling with better user messaging
+        let errorMessage = 'Failed to load chat history';
+        let shouldShowRetry = true;
+        
         if (err.message && err.message.includes('JWT')) {
-          setError('Authentication expired - please sign in again');
+          errorMessage = 'Authentication expired - please sign in again';
+          shouldShowRetry = false;
         } else if (err.message && err.message.includes('network')) {
-          setError('Network error - check your connection');
+          errorMessage = 'Network error - please check your internet connection and try again';
         } else if (err.message && err.message.includes('timeout')) {
-          setError('Connection timeout - slow network detected');
-        } else {
-          setError('Failed to load chat history - please try again');
+          errorMessage = 'Connection timeout - the server is taking too long to respond';
+        } else if (err.message && err.message.includes('CORS')) {
+          errorMessage = 'Server connection issue - please try refreshing the page';
+        } else if (err.message && err.message.includes('500')) {
+          errorMessage = 'Server error - please try again in a moment';
+        } else if (err.message) {
+          errorMessage = `Connection failed: ${err.message}`;
         }
+        
+        setError(errorMessage);
         
         // Set empty sessions on error to prevent infinite loading
         setSessions([]);
+        
+        // Show refresh button for recoverable errors
+        if (shouldShowRetry) {
+          setShowRefreshButton(true);
+        }
       }
     } finally {
       console.log('🏁 Finally block reached - isMountedRef.current:', isMountedRef.current);

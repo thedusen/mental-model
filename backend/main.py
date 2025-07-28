@@ -398,13 +398,23 @@ app = FastAPI(
 )
 
 # CORS - Use environment-based allowed origins for security
+# Default includes both local dev and production frontend
+default_origins = "http://localhost:3000,https://mental-model-frontend.vercel.app"
+allowed_origins = os.getenv("ALLOWED_ORIGINS", default_origins).split(",")
+
+# Strip whitespace from origins
+allowed_origins = [origin.strip() for origin in allowed_origins]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(","),
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
     allow_headers=["*"],  # Allow all headers
 )
+
+# Log CORS configuration for debugging
+logger.info(f"CORS configured with allowed origins: {allowed_origins}")
 
 # Add Gzip compression for better performance
 app.add_middleware(GZipMiddleware, minimum_size=1000)
@@ -1432,36 +1442,69 @@ async def search_nodes(
 @app.post("/api/chat/sessions", response_model=SessionResponse)
 async def create_chat_session(request: CreateSessionRequest):
     """Create a new chat session for a user"""
+    session_start_time = time.time()
+    logger.info(f"🚀 SESSION CREATION STARTED for user: {request.user_id}, title: {request.title}")
+    
     try:
         # Ensure user exists in Zep when they start their first chat session
         # This handles users who chat without completing the questionnaire
+        zep_user_creation_start = time.time()
+        zep_user = None
+        zep_creation_success = False
+        
         try:
+            logger.info(f"🔍 ZEP USER CREATION: Starting for user {request.user_id}")
+            
             # Use centralized user creation with metadata from Supabase
             user_metadata = {"source": "chat_session", "created_via": "chat_only"}
+            logger.debug(f"📋 ZEP USER CREATION: Using metadata {user_metadata}")
 
-            user = await zep_memory.ensure_user_exists_coordinated(
+            zep_user = await zep_memory.ensure_user_exists_coordinated(
                 request.user_id, user_metadata
             )
-            if user:
-                logger.info(
-                    f"Ensured Zep user exists for chat session: {request.user_id}"
-                )
+            
+            zep_creation_time = time.time() - zep_user_creation_start
+            
+            if zep_user:
+                logger.info(f"✅ ZEP USER CREATION SUCCESS: User {request.user_id} created/verified in {zep_creation_time:.2f}s")
+                logger.info(f"📝 ZEP USER DETAILS: ID={zep_user.user_id if hasattr(zep_user, 'user_id') else 'unknown'}")
+                zep_creation_success = True
             else:
-                logger.warning(
-                    f"Failed to ensure Zep user exists for chat session: {request.user_id}"
-                )
-                # Continue with session creation even if Zep user creation fails
+                logger.error(f"❌ ZEP USER CREATION FAILED: ensure_user_exists_coordinated returned None for {request.user_id} after {zep_creation_time:.2f}s")
+                logger.error(f"🔍 ZEP USER CREATION FAILED CONTEXT: This means Zep user was NOT created")
+                
         except Exception as user_error:
-            logger.warning(
-                f"Error ensuring Zep user exists for chat session: {user_error}"
-            )
-            # Continue with session creation even if Zep user creation fails
+            zep_creation_time = time.time() - zep_user_creation_start
+            logger.error(f"❌ ZEP USER CREATION EXCEPTION: {user_error} for user {request.user_id} after {zep_creation_time:.2f}s")
+            logger.error(f"📋 ZEP USER CREATION EXCEPTION TYPE: {type(user_error).__name__}")
+            logger.error(f"🔍 ZEP USER CREATION EXCEPTION CONTEXT: This means Zep user was NOT created due to exception")
+            import traceback
+            logger.error(f"📊 ZEP USER CREATION STACK TRACE: {traceback.format_exc()}")
 
+        # Create Supabase session regardless of Zep user creation result
+        logger.info(f"📝 SUPABASE SESSION: Creating session for user {request.user_id}")
+        supabase_session_start = time.time()
+        
         session_data = await supabase_service.create_chat_session(
             user_id=request.user_id, title=request.title
         )
+        
+        supabase_session_time = time.time() - supabase_session_start
+        
         if not session_data:
+            logger.error(f"❌ SUPABASE SESSION FAILED: No session data returned for user {request.user_id}")
             raise HTTPException(status_code=500, detail="Failed to create session")
+
+        logger.info(f"✅ SUPABASE SESSION SUCCESS: Session {session_data['id']} created in {supabase_session_time:.2f}s")
+        
+        total_time = time.time() - session_start_time
+        
+        # Log comprehensive session creation summary
+        logger.info(f"🏁 SESSION CREATION COMPLETE for user {request.user_id}:")
+        logger.info(f"   📊 Total time: {total_time:.2f}s")
+        logger.info(f"   🎯 Zep user creation: {'SUCCESS' if zep_creation_success else 'FAILED'}")
+        logger.info(f"   📝 Supabase session: SUCCESS ({session_data['id']})")
+        logger.info(f"   ⚠️  Impact: {'Full functionality' if zep_creation_success else 'Limited functionality - no Zep memory'}")
 
         return SessionResponse(
             id=session_data["id"],
@@ -1472,7 +1515,11 @@ async def create_chat_session(request: CreateSessionRequest):
             metadata=session_data.get("metadata", {}),
         )
     except Exception as e:
-        logger.error(f"Error creating chat session: {e}")
+        total_time = time.time() - session_start_time
+        logger.error(f"💥 SESSION CREATION CRITICAL FAILURE for user {request.user_id}: {e} after {total_time:.2f}s")
+        logger.error(f"📋 FAILURE TYPE: {type(e).__name__}")
+        import traceback
+        logger.error(f"📊 FAILURE STACK TRACE: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail="Failed to create chat session")
 
 
@@ -1826,33 +1873,73 @@ async def get_business_profile_questions():
 @app.get("/api/business-profile/progress/{user_id}")
 async def get_business_profile_progress(user_id: str):
     """Get user's business profile progress and existing answers"""
+    logger.info(f"Getting business profile progress for user {user_id}")
+    
     try:
-        progress = await supabase_service.get_business_profile_progress(user_id)
-        answers = await supabase_service.get_business_profile_answers(user_id)
-
+        # Validate user_id format
+        if not user_id or len(user_id.strip()) == 0:
+            logger.warning(f"Invalid user_id provided: '{user_id}'")
+            raise HTTPException(status_code=400, detail="Invalid user ID")
+        
+        # Try to get progress with individual error handling
+        progress = None
+        answers = []
+        
+        try:
+            progress = await supabase_service.get_business_profile_progress(user_id)
+            logger.debug(f"Retrieved progress for user {user_id}: {progress is not None}")
+        except Exception as progress_error:
+            logger.warning(f"Failed to get progress for user {user_id}: {progress_error}")
+            # Continue without progress data
+        
+        try:
+            answers = await supabase_service.get_business_profile_answers(user_id)
+            logger.debug(f"Retrieved {len(answers or [])} answers for user {user_id}")
+        except Exception as answers_error:
+            logger.warning(f"Failed to get answers for user {user_id}: {answers_error}")
+            # Continue with empty answers
+        
         # Handle new users who don't have any business profile progress yet
         if progress is None:
-            logger.info(f"No business profile progress found for new user {user_id}")
+            logger.info(f"No business profile progress found for user {user_id}, returning defaults")
             return {
                 "progress": None,
                 "answers": answers or [],
             }
 
-        return {
-            "progress": BusinessProfileProgressResponse(
-                user_id=progress["user_id"],
-                questions_completed=progress["questions_completed"],
-                total_questions=progress["total_questions"],
-                started_at=progress.get("started_at"),
-                completed_at=progress.get("completed_at"),
-                last_question_at=progress.get("last_question_at"),
-                current_question_id=progress.get("current_question_id"),
-            ),
-            "answers": answers or [],
-        }
+        # Validate progress data structure
+        try:
+            return {
+                "progress": BusinessProfileProgressResponse(
+                    user_id=progress["user_id"],
+                    questions_completed=progress.get("questions_completed", 0),
+                    total_questions=progress.get("total_questions", 11),
+                    started_at=progress.get("started_at"),
+                    completed_at=progress.get("completed_at"),
+                    last_question_at=progress.get("last_question_at"),
+                    current_question_id=progress.get("current_question_id"),
+                ),
+                "answers": answers or [],
+            }
+        except (KeyError, TypeError) as data_error:
+            logger.error(f"Invalid progress data structure for user {user_id}: {data_error}")
+            # Return default structure for corrupted data
+            return {
+                "progress": None,
+                "answers": answers or [],
+            }
+            
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
     except Exception as e:
-        logger.error(f"Error getting business profile progress for user {user_id}: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get progress")
+        logger.error(f"Unexpected error getting business profile progress for user {user_id}: {e}")
+        # Return graceful fallback instead of 500 error
+        return {
+            "progress": None,
+            "answers": [],
+            "error": "Could not load business profile data"
+        }
 
 
 @app.post("/api/business-profile/answer")
