@@ -755,10 +755,33 @@ async def chat(query: ChatQuery):
                 "⚠️ No user_id provided in chat request - skipping Zep user creation"
             )
 
-        # Generate embedding for the current question
-        embedding = generate_query_embedding(query.question)
+        # Get optimized user context from Zep FIRST (business profile + conversational memory)
+        user_context_str = ""
+        if query.session_id and query.user_id:
+            user_context_str = await get_optimized_user_context(
+                user_id=query.user_id, session_id=query.session_id, query=query.question
+            )
 
-        # Retrieve relevant context from expert knowledge graph
+        # Create enhanced search query combining user question with Zep context for better semantic matching
+        enhanced_search_query = query.question
+        if user_context_str:
+            # Extract key context elements for search enhancement (limit to avoid token overflow)
+            context_for_search = user_context_str[
+                :500
+            ]  # Limit context for search embedding
+            enhanced_search_query = (
+                f"{query.question}\n\nRelevant context: {context_for_search}"
+            )
+            logger.info(
+                f"🔍 Enhanced search query with Zep context for better semantic matching"
+            )
+        else:
+            logger.info(f"🔍 Using original question only (no Zep context available)")
+
+        # Generate embedding for the enhanced search query (includes both question + Zep context)
+        embedding = generate_query_embedding(enhanced_search_query)
+
+        # Retrieve relevant context from expert knowledge graph using enhanced query
         with get_db_session() as session:
             result = session.run(
                 """
@@ -784,15 +807,6 @@ async def chat(query: ChatQuery):
         else:
             expert_context_str = (
                 "No specific expert knowledge graph context found for this question."
-            )
-
-        # User already created at the beginning of the function
-
-        # Get optimized user context from Zep (business profile + conversational memory)
-        user_context_str = ""
-        if query.session_id and query.user_id:
-            user_context_str = await get_optimized_user_context(
-                user_id=query.user_id, session_id=query.session_id, query=query.question
             )
 
         # Apply intelligent context length management
@@ -850,6 +864,29 @@ async def chat(query: ChatQuery):
             if block.type == "text":
                 answer_text = block.text
                 break
+
+        # Store the conversation in Zep for future context retrieval
+        if query.user_id and query.session_id:
+            try:
+                # Add both user question and assistant response to Zep memory
+                conversation_messages = [
+                    {"role": "user", "content": query.question},
+                    {"role": "assistant", "content": answer_text},
+                ]
+
+                zep_memory.add_conversation_memory(
+                    user_id=query.user_id,
+                    session_id=query.session_id,
+                    messages=conversation_messages,
+                )
+                logger.info(
+                    f"✅ Successfully stored chat conversation in Zep for user {query.user_id}, session {query.session_id}"
+                )
+            except Exception as zep_storage_error:
+                logger.warning(
+                    f"⚠️ Failed to store conversation in Zep: {zep_storage_error}"
+                )
+                # Continue without failing the chat response
 
         return {
             "answer": answer_text,
