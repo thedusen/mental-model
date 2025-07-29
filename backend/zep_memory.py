@@ -134,12 +134,12 @@ class ZepMemoryManager:
                 auth_user = supabase.client.auth.admin.get_user_by_id(user_id)
                 if auth_user and hasattr(auth_user, "user") and auth_user.user:
                     user_email = auth_user.user.email
-                    logger.debug(
-                        f"Retrieved email from Supabase auth for {user_id}: {user_email}"
+                    logger.info(
+                        f"✅ Retrieved email from Supabase auth for {user_id}: {user_email}"
                     )
             except Exception as auth_error:
-                logger.debug(
-                    f"Could not retrieve email from Supabase auth for {user_id}: {auth_error}"
+                logger.warning(
+                    f"❌ Failed to retrieve email from Supabase auth for {user_id}: {auth_error} (type: {type(auth_error).__name__})"
                 )
 
             # Then try to get existing user profile for other data
@@ -197,7 +197,12 @@ class ZepMemoryManager:
             if user_profile.get("name"):
                 metadata["name"] = user_profile["name"]
 
-            logger.debug(f"Extracted metadata for user {user_id}: {metadata}")
+            # Log summary of extracted metadata
+            email_status = "✅ Found" if metadata.get("email") else "❌ Missing"
+            logger.info(
+                f"📋 Metadata extraction summary for {user_id}: Email {email_status}, Fields: {list(metadata.keys())}"
+            )
+            logger.debug(f"Full extracted metadata for user {user_id}: {metadata}")
             return metadata
 
         except Exception as e:
@@ -545,7 +550,7 @@ class ZepMemoryManager:
                 if user_metadata.get("last_name"):
                     user_params["last_name"] = user_metadata["last_name"]
 
-                logger.debug(f"Creating user with params: {user_params}")
+                logger.info(f"🔧 Creating Zep user with params: {user_params}")
 
                 # Create user with idempotent handling
                 user = self._create_user_idempotent(**user_params)
