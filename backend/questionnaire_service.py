@@ -181,10 +181,10 @@ class QuestionnaireService:
                 return {"error": "No active questionnaire found"}
 
             current_q_num = progress.get("current_question", 1)
-            
+
             # Normalize command for flexible matching
             cmd = command.lower().strip()
-            
+
             # Define command synonyms
             skip_commands = ["skip", "skip question", "skip this", "next", "pass"]
             pause_commands = [
