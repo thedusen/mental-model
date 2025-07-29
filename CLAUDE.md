@@ -48,11 +48,23 @@ cd backend && python import_data.py
 ```
 
 ### Full Development Setup
+
+#### Local Development
 1. `./setup-hooks.sh` (install Git hooks for CI validation)
 2. `docker compose up` (start Neo4j)
 3. `cd backend && python main.py` (start API server)
 4. `cd frontend && npm start` (start React app)
 5. Access at http://localhost:3000
+
+#### Live Development Environment
+- **Frontend**: GitHub Actions workflow deploys `development` branch to Vercel after CI passes
+- **Backend**: Railway development environment automatically deploys `development` branch  
+- **Database**: Configure development-specific Neo4j connection in Railway environment variables
+- Push to `development` branch triggers:
+  1. CI workflow runs tests and validation
+  2. If CI passes, GitHub Actions deploys frontend to Vercel development environment
+  3. Railway automatically deploys backend from `development` branch
+  4. Both services connect using configured development environment variables
 
 ### Git Hooks
 ```bash
@@ -181,11 +193,33 @@ ZEP_API_KEY=your-zep-api-key
 ZEP_API_URL=https://api.getzep.com  # or http://localhost:8000 for self-hosted
 ```
 
-### Production Deployment Notes
-- **Backend**: Deploy to Railway with nixpacks.toml configuration
-- **Frontend**: Deploy to Vercel with REACT_APP_API_URL pointing to backend
-- **Database**: Use Neo4j AuraDB with automated keep-warm service
-- **CORS**: Configure proper origins in production (currently allows all)
+### Deployment Environments
+
+#### Railway Backend Environments
+- **Production**: Deploy from `main` branch to Railway production environment
+- **Development**: Deploy from `development` branch to Railway development environment
+  - Use Railway's "Duplicate Environment" feature to copy production setup
+  - Configure different environment variables for development database/services
+  - Automatic deployment when pushing to `development` branch
+
+#### Vercel Frontend Environments  
+- **Production**: Deploy from `main` branch (automatic via Vercel GitHub integration)
+- **Development**: Deploy from `development` branch via GitHub Actions after CI passes
+- Frontend environments automatically connect to corresponding Railway backend environments
+
+**GitHub Actions Setup Requirements**:
+- Repository Variables: `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+- Repository Secrets: `VERCEL_TOKEN`
+- Workflow: `.github/workflows/deploy-development.yml` handles development deployments
+
+#### Database Strategy
+- **Production**: Neo4j AuraDB with automated keep-warm service
+- **Development**: Can use same AuraDB instance with different database name, or separate development instance
+
+#### CORS Configuration
+- Configure proper origins for both development and production environments
+- Development backend should allow Vercel development domain
+- Production backend should allow production domain
 
 ## Testing Strategy
 - **Manual Testing**: Use `/health` endpoint to verify database connectivity

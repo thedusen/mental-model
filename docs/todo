@@ -9,7 +9,13 @@
 - add additional escape words for profile questions
 - return to previous chat after questions
 - focus on fields for sign up and sign in
-
+- editing conversation names doesn't allow for spaces
+- Analyze https://manus.im/
+    - 
+    - 
 
 zep fixes:
 - extremely long chat delay
+
+deployment testing:
+- ✅ Test new GitHub Actions development deployment workflow

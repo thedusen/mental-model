@@ -39,6 +39,36 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
+// Helper function to ensure Zep user exists after authentication
+const ensureZepUserExists = async (userId) => {
+  try {
+    console.log('🔧 POST-AUTH: Creating Zep user for', userId);
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+    
+    const response = await fetch(`${API_URL}/api/users/ensure-zep-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_id: userId })
+    });
+    
+    const result = await response.json();
+    
+    if (result.created) {
+      console.log('✅ POST-AUTH: Zep user created successfully for', userId);
+    } else {
+      console.log('ℹ️ POST-AUTH: Zep user already existed or creation skipped for', userId);
+    }
+    
+    return result;
+  } catch (error) {
+    console.warn('⚠️ POST-AUTH: Zep user creation failed (non-critical):', error);
+    // Don't throw - this is non-critical for auth flow
+    return { created: false, error: error.message };
+  }
+};
+
 // Auth helper functions
 export const auth = {
   // Sign up with email and password
@@ -50,6 +80,14 @@ export const auth = {
         data: metadata
       }
     });
+    
+    // Create Zep user after successful signup (non-blocking)
+    if (data?.user?.id && !error) {
+      ensureZepUserExists(data.user.id).catch(err => 
+        console.warn('POST-AUTH: Zep user creation failed for signup:', err)
+      );
+    }
+    
     return { data, error };
   },
 
@@ -59,6 +97,14 @@ export const auth = {
       email,
       password
     });
+    
+    // Create Zep user after successful signin (non-blocking)
+    if (data?.user?.id && !error) {
+      ensureZepUserExists(data.user.id).catch(err => 
+        console.warn('POST-AUTH: Zep user creation failed for signin:', err)
+      );
+    }
+    
     return { data, error };
   },
 
@@ -129,6 +175,12 @@ export const auth = {
       
       if (session?.user) {
         console.log('✅ Auth refresh successful, user found:', session.user.email);
+        
+        // Create Zep user after successful OAuth callback (non-blocking)
+        ensureZepUserExists(session.user.id).catch(err => 
+          console.warn('POST-AUTH: Zep user creation failed for OAuth callback:', err)
+        );
+        
         return { user: session.user, error: null };
       } else {
         console.log('ℹ️ No user session found during refresh');

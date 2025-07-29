@@ -12,6 +12,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasMessagesEver, setHasMessagesEver] = useState(false);
@@ -253,6 +254,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       console.error('❌ Error status:', error.response?.status);
     } finally {
       setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -297,6 +299,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       console.error('Error handling questionnaire command:', error);
     } finally {
       setLoading(false);
+      setIsSubmitting(false);
     }
   };
   // Nudge dismissal state management
@@ -1009,8 +1012,10 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
 
 
   const sendMessage = async () => {
-    if (!input.trim() || loading) return;
+    if (!input.trim() || loading || isSubmitting) return;
 
+    // Immediately disable submit functionality
+    setIsSubmitting(true);
     const currentInput = input.trim();
     
     // Check if we're in questionnaire mode
@@ -1227,11 +1232,12 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       }
     } finally {
       setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !loading && !isSubmitting) {
       e.preventDefault();
       sendMessage();
     }
@@ -1426,13 +1432,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholderText}
-              disabled={loading}
+              disabled={loading || isSubmitting}
               rows={1}
               aria-label="Chat message input"
             />
             <button 
               onClick={sendMessage} 
-              disabled={loading || !input.trim()} 
+              disabled={loading || isSubmitting || !input.trim()} 
               title="Send message" 
               aria-label="Send message"
             >

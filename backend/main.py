@@ -755,10 +755,33 @@ async def chat(query: ChatQuery):
                 "⚠️ No user_id provided in chat request - skipping Zep user creation"
             )
 
-        # Generate embedding for the current question
-        embedding = generate_query_embedding(query.question)
+        # Get optimized user context from Zep FIRST (business profile + conversational memory)
+        user_context_str = ""
+        if query.session_id and query.user_id:
+            user_context_str = await get_optimized_user_context(
+                user_id=query.user_id, session_id=query.session_id, query=query.question
+            )
 
-        # Retrieve relevant context from expert knowledge graph
+        # Create enhanced search query combining user question with Zep context for better semantic matching
+        enhanced_search_query = query.question
+        if user_context_str:
+            # Extract key context elements for search enhancement (limit to avoid token overflow)
+            context_for_search = user_context_str[
+                :500
+            ]  # Limit context for search embedding
+            enhanced_search_query = (
+                f"{query.question}\n\nRelevant context: {context_for_search}"
+            )
+            logger.info(
+                f"🔍 Enhanced search query with Zep context for better semantic matching"
+            )
+        else:
+            logger.info(f"🔍 Using original question only (no Zep context available)")
+
+        # Generate embedding for the enhanced search query (includes both question + Zep context)
+        embedding = generate_query_embedding(enhanced_search_query)
+
+        # Retrieve relevant context from expert knowledge graph using enhanced query
         with get_db_session() as session:
             result = session.run(
                 """
@@ -784,15 +807,6 @@ async def chat(query: ChatQuery):
         else:
             expert_context_str = (
                 "No specific expert knowledge graph context found for this question."
-            )
-
-        # User already created at the beginning of the function
-
-        # Get optimized user context from Zep (business profile + conversational memory)
-        user_context_str = ""
-        if query.session_id and query.user_id:
-            user_context_str = await get_optimized_user_context(
-                user_id=query.user_id, session_id=query.session_id, query=query.question
             )
 
         # Apply intelligent context length management
@@ -850,6 +864,29 @@ async def chat(query: ChatQuery):
             if block.type == "text":
                 answer_text = block.text
                 break
+
+        # Store the conversation in Zep for future context retrieval
+        if query.user_id and query.session_id:
+            try:
+                # Add both user question and assistant response to Zep memory
+                conversation_messages = [
+                    {"role": "user", "content": query.question},
+                    {"role": "assistant", "content": answer_text},
+                ]
+
+                zep_memory.add_conversation_memory(
+                    user_id=query.user_id,
+                    session_id=query.session_id,
+                    messages=conversation_messages,
+                )
+                logger.info(
+                    f"✅ Successfully stored chat conversation in Zep for user {query.user_id}, session {query.session_id}"
+                )
+            except Exception as zep_storage_error:
+                logger.warning(
+                    f"⚠️ Failed to store conversation in Zep: {zep_storage_error}"
+                )
+                # Continue without failing the chat response
 
         return {
             "answer": answer_text,
@@ -1448,55 +1485,45 @@ async def create_chat_session(request: CreateSessionRequest):
     )
 
     try:
-        # Ensure user exists in Zep when they start their first chat session
-        # This handles users who chat without completing the questionnaire
-        zep_user_creation_start = time.time()
-        zep_user = None
-        zep_creation_success = False
+        # Quick check if Zep user exists (should exist from post-auth creation)
+        zep_user_check_start = time.time()
+        zep_user_exists = False
 
         try:
-            logger.info(f"🔍 ZEP USER CREATION: Starting for user {request.user_id}")
+            logger.info(f"🔍 FAST ZEP CHECK: Verifying user {request.user_id} exists")
 
-            # Use centralized user creation with metadata from Supabase
-            user_metadata = {"source": "chat_session", "created_via": "chat_only"}
-            logger.debug(f"📋 ZEP USER CREATION: Using metadata {user_metadata}")
-
-            zep_user = await zep_memory.ensure_user_exists_coordinated(
-                request.user_id, user_metadata
-            )
-
-            zep_creation_time = time.time() - zep_user_creation_start
-
-            if zep_user:
-                logger.info(
-                    f"✅ ZEP USER CREATION SUCCESS: User {request.user_id} created/verified in {zep_creation_time:.2f}s"
-                )
-                logger.info(
-                    f"📝 ZEP USER DETAILS: ID={zep_user.user_id if hasattr(zep_user, 'user_id') else 'unknown'}"
-                )
-                zep_creation_success = True
+            # Quick existence check without heavy coordination
+            existing_user = zep_memory._get_user_with_circuit_breaker(request.user_id)
+            if existing_user:
+                logger.info(f"✅ FAST ZEP CHECK: User {request.user_id} exists")
+                zep_user_exists = True
             else:
-                logger.error(
-                    f"❌ ZEP USER CREATION FAILED: ensure_user_exists_coordinated returned None for {request.user_id} after {zep_creation_time:.2f}s"
+                logger.warning(
+                    f"⚠️ FAST ZEP CHECK: User {request.user_id} doesn't exist - likely missed post-auth creation"
                 )
-                logger.error(
-                    f"🔍 ZEP USER CREATION FAILED CONTEXT: This means Zep user was NOT created"
+                # Create user in background without blocking session creation
+                import asyncio
+
+                asyncio.create_task(
+                    zep_memory.ensure_user_exists_coordinated(
+                        request.user_id,
+                        {
+                            "source": "session_fallback",
+                            "created_via": "session_creation_fallback",
+                        },
+                    )
                 )
+
+            zep_check_time = time.time() - zep_user_check_start
+            logger.info(f"⚡ FAST ZEP CHECK: Completed in {zep_check_time:.3f}s")
 
         except Exception as user_error:
-            zep_creation_time = time.time() - zep_user_creation_start
-            logger.error(
-                f"❌ ZEP USER CREATION EXCEPTION: {user_error} for user {request.user_id} after {zep_creation_time:.2f}s"
+            zep_check_time = time.time() - zep_user_check_start
+            logger.warning(
+                f"⚠️ FAST ZEP CHECK: Failed for user {request.user_id} in {zep_check_time:.3f}s: {user_error}"
             )
-            logger.error(
-                f"📋 ZEP USER CREATION EXCEPTION TYPE: {type(user_error).__name__}"
-            )
-            logger.error(
-                f"🔍 ZEP USER CREATION EXCEPTION CONTEXT: This means Zep user was NOT created due to exception"
-            )
-            import traceback
-
-            logger.error(f"📊 ZEP USER CREATION STACK TRACE: {traceback.format_exc()}")
+            # Continue with session creation anyway - Zep user can be created later
+            zep_user_exists = False
 
         # Create Supabase session regardless of Zep user creation result
         logger.info(f"📝 SUPABASE SESSION: Creating session for user {request.user_id}")
@@ -1522,14 +1549,12 @@ async def create_chat_session(request: CreateSessionRequest):
 
         # Log comprehensive session creation summary
         logger.info(f"🏁 SESSION CREATION COMPLETE for user {request.user_id}:")
-        logger.info(f"   📊 Total time: {total_time:.2f}s")
+        logger.info(f"   📊 Total time: {total_time:.2f}s (FAST MODE)")
         logger.info(
-            f"   🎯 Zep user creation: {'SUCCESS' if zep_creation_success else 'FAILED'}"
+            f"   🎯 Zep user check: {'EXISTS' if zep_user_exists else 'MISSING (background creation started)'}"
         )
         logger.info(f"   📝 Supabase session: SUCCESS ({session_data['id']})")
-        logger.info(
-            f"   ⚠️  Impact: {'Full functionality' if zep_creation_success else 'Limited functionality - no Zep memory'}"
-        )
+        logger.info(f"   ⚡ Performance: Optimized for instant session creation")
 
         return SessionResponse(
             id=session_data["id"],
@@ -2188,6 +2213,76 @@ async def delete_user_data(user_id: str):
     except Exception as e:
         logger.error(f"Error deleting user data: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete user data")
+
+
+class EnsureZepUserRequest(BaseModel):
+    user_id: str
+
+
+@app.post("/api/users/ensure-zep-user")
+async def ensure_zep_user(request: EnsureZepUserRequest):
+    """Lightweight endpoint to ensure Zep user exists after authentication"""
+    try:
+        logger.info(f"🔧 POST-AUTH ZEP USER: Creating Zep user for {request.user_id}")
+
+        # Simple user creation without heavy coordination - this is non-blocking
+        try:
+            # Check if user already exists first
+            existing_user = zep_memory._get_user_with_circuit_breaker(request.user_id)
+            if existing_user:
+                logger.info(
+                    f"✅ POST-AUTH ZEP USER: User {request.user_id} already exists"
+                )
+                return {
+                    "message": "User already exists",
+                    "user_id": request.user_id,
+                    "created": False,
+                }
+        except Exception:
+            # User doesn't exist, continue with creation
+            pass
+
+        # Create user with proper email extraction from Supabase auth
+        user_metadata = {
+            "source": "post_auth",
+            "created_via": "authentication_flow",
+            "created_at": datetime.now().isoformat(),
+        }
+
+        # Use ensure_user_exists which properly extracts email from Supabase auth
+        user = zep_memory.ensure_user_exists(
+            user_id=request.user_id, user_metadata=user_metadata
+        )
+
+        if user:
+            logger.info(
+                f"✅ POST-AUTH ZEP USER: Successfully created {request.user_id}"
+            )
+            return {
+                "message": "Zep user created successfully",
+                "user_id": request.user_id,
+                "created": True,
+            }
+        else:
+            logger.warning(
+                f"⚠️ POST-AUTH ZEP USER: Creation returned None for {request.user_id}"
+            )
+            return {
+                "message": "User creation returned None",
+                "user_id": request.user_id,
+                "created": False,
+            }
+
+    except Exception as e:
+        logger.error(
+            f"❌ POST-AUTH ZEP USER: Error creating user {request.user_id}: {e}"
+        )
+        # Don't fail the request - this is non-critical for auth flow
+        return {
+            "message": f"User creation failed: {str(e)}",
+            "user_id": request.user_id,
+            "created": False,
+        }
 
 
 # ===== CHAT-INTEGRATED QUESTIONNAIRE ENDPOINTS =====

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+// Branch A: Enhanced Zep integration with improved GraphRAG semantic search
 import GraphView from './components/GraphView';
 import ChatPanel from './components/ChatPanel';
 import NodeDetailsPanel from './components/NodeDetailsPanel';

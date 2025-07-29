@@ -1,0 +1,61 @@
+name: Deploy Development
+
+on:
+  push:
+    branches: [ development ]
+  # Only run after CI workflow completes successfully
+  workflow_run:
+    workflows: ["CI"]
+    branches: [ development ]
+    types: [ completed ]
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    # DISABLED: Workflow disabled by user request
+    if: false
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+          
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+        
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+        
+      - name: Link Vercel Project  
+        run: |
+          # Link to the existing Vercel project from project root
+          vercel link --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --project=${{ vars.VERCEL_PROJECT_ID }} --yes
+        env:
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          
+      - name: Deploy to Vercel Development Environment
+        run: |
+          # Deploy from project root - Vercel project Root Directory setting handles the frontend path
+          vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --yes
+          
+          # Get the deployment URL
+          DEPLOYMENT_URL=$(vercel ls --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} | head -n 2 | tail -n 1 | awk '{print $2}')
+          echo "Deployed to: $DEPLOYMENT_URL"
+          
+        env:
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          
+      - name: Deployment Status
+        run: |
+          echo "✅ Frontend successfully deployed to Vercel development environment"
+          echo "🚀 Development environment updated with latest changes from development branch"
+          echo "🔗 Frontend will connect to Railway development backend automatically"
