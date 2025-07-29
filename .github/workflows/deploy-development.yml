@@ -15,10 +15,6 @@ jobs:
     # Only run if the CI workflow was successful
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
     
-    defaults:
-      run:
-        working-directory: ./frontend
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,12 +27,14 @@ jobs:
           cache-dependency-path: 'frontend/package-lock.json'
           
       - name: Install dependencies
+        working-directory: ./frontend
         run: npm ci
         
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
         
       - name: Deploy to Vercel Development Environment
+        working-directory: ./frontend
         run: |
           # Deploy to development environment
           vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --yes
