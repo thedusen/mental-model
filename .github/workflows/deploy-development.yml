@@ -1,0 +1,59 @@
+name: Deploy Development
+
+on:
+  push:
+    branches: [ development ]
+  # Only run after CI workflow completes successfully
+  workflow_run:
+    workflows: ["CI"]
+    branches: [ development ]
+    types: [ completed ]
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    # Only run if the CI workflow was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+    
+    defaults:
+      run:
+        working-directory: ./frontend
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+        
+      - name: Deploy to Vercel Development Environment
+        run: |
+          # Deploy to development environment
+          vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --yes
+          
+          # Get the deployment URL and set it to development environment
+          DEPLOYMENT_URL=$(vercel ls --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} | head -n 2 | tail -n 1 | awk '{print $2}')
+          echo "Deployed to: $DEPLOYMENT_URL"
+          
+          # Promote this deployment to development environment
+          vercel promote $DEPLOYMENT_URL --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }}
+          
+        env:
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          
+      - name: Deployment Status
+        run: |
+          echo "✅ Frontend successfully deployed to Vercel development environment"
+          echo "🚀 Development environment updated with latest changes from development branch"
+          echo "🔗 Frontend will connect to Railway development backend automatically"

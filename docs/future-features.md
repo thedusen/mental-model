@@ -2,6 +2,31 @@
 
 This document outlines the evolution of the mental model system from a knowledge exploration tool into a comprehensive cognitive intelligence platform. Features are organized by strategic importance and implementation complexity.
 
+## Mitch Notes
+
+1. ** The ability to create a "notebook" with the advice given.  The model would decide if something is "advice worthy" and put it in there so people can see them later
+  - organizee by chronology
+  - organize by tags or categories
+2. ** The ability to create "projects" so that if people have different businesses and/or internal projects
+3.  ** Adding different "modes" to the model.  Think unique system prompts for different Dan "personalities" or outputs.  
+4. Ability to upload documents, images, pdfs, etc.
+5. A way to edit the responses to the 11 questions
+6. A way to download and share chats
+7. When the model answers a response and searches the knowledge graph, the nodes it uses should pop up on the screen, so there's more direct connection between the visualization and their experience
+8. Add integrations with things like google docs, drive, etc.
+9. "Incognito mode" where all of the user's context, history, are not added to the chat.  A blank slate for specific conversations where they might not want that being included
+10. Voice integration, so users can interact with you by talking, not typing
+11. Screenshare
+
+## Dan notes
+
+1. Giving owners someone to talk to, ask questions, etc. "I have to do X, what do I do?" or "I have a meeting with X, what questions should I ask?"
+2. On right third - showing thought process, nodes used, memory about user, etc.
+
+MARKETING: 
+- "You give me the CONFIDENCE to do X"
+- Being a business owner is the loneliest job in the world.  Can't talk to family, can't talk to employees."
+
 ## 🎯 **Strategic Framework**
 
 **Difficulty Scale:**
