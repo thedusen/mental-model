@@ -128,7 +128,17 @@ class ZepMemoryManager:
 
             supabase = SupabaseService()
 
-            # First try to get existing user profile
+            # First try to get email from Supabase auth system (this is where email is actually stored)
+            user_email = None
+            try:
+                auth_user = supabase.client.auth.admin.get_user_by_id(user_id)
+                if auth_user and hasattr(auth_user, 'user') and auth_user.user:
+                    user_email = auth_user.user.email
+                    logger.debug(f"Retrieved email from Supabase auth for {user_id}: {user_email}")
+            except Exception as auth_error:
+                logger.debug(f"Could not retrieve email from Supabase auth for {user_id}: {auth_error}")
+
+            # Then try to get existing user profile for other data
             try:
                 user_response = (
                     supabase.client.table("user_profiles")
@@ -169,9 +179,13 @@ class ZepMemoryManager:
                 "supabase_user_id": user_id,
             }
 
-            # Add profile data if available
-            if user_profile.get("email"):
+            # Add email from auth system (priority) or profile fallback
+            if user_email:
+                metadata["email"] = user_email
+            elif user_profile.get("email"):
                 metadata["email"] = user_profile["email"]
+                
+            # Add other profile data if available
             if user_profile.get("first_name"):
                 metadata["first_name"] = user_profile["first_name"]
             if user_profile.get("last_name"):
