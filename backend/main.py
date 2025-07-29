@@ -1454,20 +1454,28 @@ async def create_chat_session(request: CreateSessionRequest):
 
         try:
             logger.info(f"🔍 FAST ZEP CHECK: Verifying user {request.user_id} exists")
-            
+
             # Quick existence check without heavy coordination
             existing_user = zep_memory._get_user_with_circuit_breaker(request.user_id)
             if existing_user:
                 logger.info(f"✅ FAST ZEP CHECK: User {request.user_id} exists")
                 zep_user_exists = True
             else:
-                logger.warning(f"⚠️ FAST ZEP CHECK: User {request.user_id} doesn't exist - likely missed post-auth creation")
+                logger.warning(
+                    f"⚠️ FAST ZEP CHECK: User {request.user_id} doesn't exist - likely missed post-auth creation"
+                )
                 # Create user in background without blocking session creation
                 import asyncio
-                asyncio.create_task(zep_memory.ensure_user_exists_coordinated(
-                    request.user_id, 
-                    {"source": "session_fallback", "created_via": "session_creation_fallback"}
-                ))
+
+                asyncio.create_task(
+                    zep_memory.ensure_user_exists_coordinated(
+                        request.user_id,
+                        {
+                            "source": "session_fallback",
+                            "created_via": "session_creation_fallback",
+                        },
+                    )
+                )
 
             zep_check_time = time.time() - zep_user_check_start
             logger.info(f"⚡ FAST ZEP CHECK: Completed in {zep_check_time:.3f}s")
@@ -1509,9 +1517,7 @@ async def create_chat_session(request: CreateSessionRequest):
             f"   🎯 Zep user check: {'EXISTS' if zep_user_exists else 'MISSING (background creation started)'}"
         )
         logger.info(f"   📝 Supabase session: SUCCESS ({session_data['id']})")
-        logger.info(
-            f"   ⚡ Performance: Optimized for instant session creation"
-        )
+        logger.info(f"   ⚡ Performance: Optimized for instant session creation")
 
         return SessionResponse(
             id=session_data["id"],
@@ -2181,42 +2187,65 @@ async def ensure_zep_user(request: EnsureZepUserRequest):
     """Lightweight endpoint to ensure Zep user exists after authentication"""
     try:
         logger.info(f"🔧 POST-AUTH ZEP USER: Creating Zep user for {request.user_id}")
-        
+
         # Simple user creation without heavy coordination - this is non-blocking
         try:
             # Check if user already exists first
             existing_user = zep_memory._get_user_with_circuit_breaker(request.user_id)
             if existing_user:
-                logger.info(f"✅ POST-AUTH ZEP USER: User {request.user_id} already exists")
-                return {"message": "User already exists", "user_id": request.user_id, "created": False}
+                logger.info(
+                    f"✅ POST-AUTH ZEP USER: User {request.user_id} already exists"
+                )
+                return {
+                    "message": "User already exists",
+                    "user_id": request.user_id,
+                    "created": False,
+                }
         except Exception:
             # User doesn't exist, continue with creation
             pass
-        
+
         # Create user with minimal metadata for post-auth flow
         user_metadata = {
             "source": "post_auth",
             "created_via": "authentication_flow",
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
-        
+
         # Use the simple creation method without distributed locking
         user = zep_memory._create_user_idempotent(
-            user_id=request.user_id,
-            metadata=user_metadata
+            user_id=request.user_id, metadata=user_metadata
         )
-        
+
         if user:
-            logger.info(f"✅ POST-AUTH ZEP USER: Successfully created {request.user_id}")
-            return {"message": "Zep user created successfully", "user_id": request.user_id, "created": True}
+            logger.info(
+                f"✅ POST-AUTH ZEP USER: Successfully created {request.user_id}"
+            )
+            return {
+                "message": "Zep user created successfully",
+                "user_id": request.user_id,
+                "created": True,
+            }
         else:
-            logger.warning(f"⚠️ POST-AUTH ZEP USER: Creation returned None for {request.user_id}")
-            return {"message": "User creation returned None", "user_id": request.user_id, "created": False}
-            
+            logger.warning(
+                f"⚠️ POST-AUTH ZEP USER: Creation returned None for {request.user_id}"
+            )
+            return {
+                "message": "User creation returned None",
+                "user_id": request.user_id,
+                "created": False,
+            }
+
     except Exception as e:
-        logger.error(f"❌ POST-AUTH ZEP USER: Error creating user {request.user_id}: {e}")
+        logger.error(
+            f"❌ POST-AUTH ZEP USER: Error creating user {request.user_id}: {e}"
+        )
         # Don't fail the request - this is non-critical for auth flow
-        return {"message": f"User creation failed: {str(e)}", "user_id": request.user_id, "created": False}
+        return {
+            "message": f"User creation failed: {str(e)}",
+            "user_id": request.user_id,
+            "created": False,
+        }
 
 
 # ===== CHAT-INTEGRATED QUESTIONNAIRE ENDPOINTS =====
