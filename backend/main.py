@@ -1443,18 +1443,20 @@ async def search_nodes(
 async def create_chat_session(request: CreateSessionRequest):
     """Create a new chat session for a user"""
     session_start_time = time.time()
-    logger.info(f"🚀 SESSION CREATION STARTED for user: {request.user_id}, title: {request.title}")
-    
+    logger.info(
+        f"🚀 SESSION CREATION STARTED for user: {request.user_id}, title: {request.title}"
+    )
+
     try:
         # Ensure user exists in Zep when they start their first chat session
         # This handles users who chat without completing the questionnaire
         zep_user_creation_start = time.time()
         zep_user = None
         zep_creation_success = False
-        
+
         try:
             logger.info(f"🔍 ZEP USER CREATION: Starting for user {request.user_id}")
-            
+
             # Use centralized user creation with metadata from Supabase
             user_metadata = {"source": "chat_session", "created_via": "chat_only"}
             logger.debug(f"📋 ZEP USER CREATION: Using metadata {user_metadata}")
@@ -1462,49 +1464,72 @@ async def create_chat_session(request: CreateSessionRequest):
             zep_user = await zep_memory.ensure_user_exists_coordinated(
                 request.user_id, user_metadata
             )
-            
+
             zep_creation_time = time.time() - zep_user_creation_start
-            
+
             if zep_user:
-                logger.info(f"✅ ZEP USER CREATION SUCCESS: User {request.user_id} created/verified in {zep_creation_time:.2f}s")
-                logger.info(f"📝 ZEP USER DETAILS: ID={zep_user.user_id if hasattr(zep_user, 'user_id') else 'unknown'}")
+                logger.info(
+                    f"✅ ZEP USER CREATION SUCCESS: User {request.user_id} created/verified in {zep_creation_time:.2f}s"
+                )
+                logger.info(
+                    f"📝 ZEP USER DETAILS: ID={zep_user.user_id if hasattr(zep_user, 'user_id') else 'unknown'}"
+                )
                 zep_creation_success = True
             else:
-                logger.error(f"❌ ZEP USER CREATION FAILED: ensure_user_exists_coordinated returned None for {request.user_id} after {zep_creation_time:.2f}s")
-                logger.error(f"🔍 ZEP USER CREATION FAILED CONTEXT: This means Zep user was NOT created")
-                
+                logger.error(
+                    f"❌ ZEP USER CREATION FAILED: ensure_user_exists_coordinated returned None for {request.user_id} after {zep_creation_time:.2f}s"
+                )
+                logger.error(
+                    f"🔍 ZEP USER CREATION FAILED CONTEXT: This means Zep user was NOT created"
+                )
+
         except Exception as user_error:
             zep_creation_time = time.time() - zep_user_creation_start
-            logger.error(f"❌ ZEP USER CREATION EXCEPTION: {user_error} for user {request.user_id} after {zep_creation_time:.2f}s")
-            logger.error(f"📋 ZEP USER CREATION EXCEPTION TYPE: {type(user_error).__name__}")
-            logger.error(f"🔍 ZEP USER CREATION EXCEPTION CONTEXT: This means Zep user was NOT created due to exception")
+            logger.error(
+                f"❌ ZEP USER CREATION EXCEPTION: {user_error} for user {request.user_id} after {zep_creation_time:.2f}s"
+            )
+            logger.error(
+                f"📋 ZEP USER CREATION EXCEPTION TYPE: {type(user_error).__name__}"
+            )
+            logger.error(
+                f"🔍 ZEP USER CREATION EXCEPTION CONTEXT: This means Zep user was NOT created due to exception"
+            )
             import traceback
+
             logger.error(f"📊 ZEP USER CREATION STACK TRACE: {traceback.format_exc()}")
 
         # Create Supabase session regardless of Zep user creation result
         logger.info(f"📝 SUPABASE SESSION: Creating session for user {request.user_id}")
         supabase_session_start = time.time()
-        
+
         session_data = await supabase_service.create_chat_session(
             user_id=request.user_id, title=request.title
         )
-        
+
         supabase_session_time = time.time() - supabase_session_start
-        
+
         if not session_data:
-            logger.error(f"❌ SUPABASE SESSION FAILED: No session data returned for user {request.user_id}")
+            logger.error(
+                f"❌ SUPABASE SESSION FAILED: No session data returned for user {request.user_id}"
+            )
             raise HTTPException(status_code=500, detail="Failed to create session")
 
-        logger.info(f"✅ SUPABASE SESSION SUCCESS: Session {session_data['id']} created in {supabase_session_time:.2f}s")
-        
+        logger.info(
+            f"✅ SUPABASE SESSION SUCCESS: Session {session_data['id']} created in {supabase_session_time:.2f}s"
+        )
+
         total_time = time.time() - session_start_time
-        
+
         # Log comprehensive session creation summary
         logger.info(f"🏁 SESSION CREATION COMPLETE for user {request.user_id}:")
         logger.info(f"   📊 Total time: {total_time:.2f}s")
-        logger.info(f"   🎯 Zep user creation: {'SUCCESS' if zep_creation_success else 'FAILED'}")
+        logger.info(
+            f"   🎯 Zep user creation: {'SUCCESS' if zep_creation_success else 'FAILED'}"
+        )
         logger.info(f"   📝 Supabase session: SUCCESS ({session_data['id']})")
-        logger.info(f"   ⚠️  Impact: {'Full functionality' if zep_creation_success else 'Limited functionality - no Zep memory'}")
+        logger.info(
+            f"   ⚠️  Impact: {'Full functionality' if zep_creation_success else 'Limited functionality - no Zep memory'}"
+        )
 
         return SessionResponse(
             id=session_data["id"],
@@ -1516,9 +1541,12 @@ async def create_chat_session(request: CreateSessionRequest):
         )
     except Exception as e:
         total_time = time.time() - session_start_time
-        logger.error(f"💥 SESSION CREATION CRITICAL FAILURE for user {request.user_id}: {e} after {total_time:.2f}s")
+        logger.error(
+            f"💥 SESSION CREATION CRITICAL FAILURE for user {request.user_id}: {e} after {total_time:.2f}s"
+        )
         logger.error(f"📋 FAILURE TYPE: {type(e).__name__}")
         import traceback
+
         logger.error(f"📊 FAILURE STACK TRACE: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail="Failed to create chat session")
 
@@ -1874,34 +1902,40 @@ async def get_business_profile_questions():
 async def get_business_profile_progress(user_id: str):
     """Get user's business profile progress and existing answers"""
     logger.info(f"Getting business profile progress for user {user_id}")
-    
+
     try:
         # Validate user_id format
         if not user_id or len(user_id.strip()) == 0:
             logger.warning(f"Invalid user_id provided: '{user_id}'")
             raise HTTPException(status_code=400, detail="Invalid user ID")
-        
+
         # Try to get progress with individual error handling
         progress = None
         answers = []
-        
+
         try:
             progress = await supabase_service.get_business_profile_progress(user_id)
-            logger.debug(f"Retrieved progress for user {user_id}: {progress is not None}")
+            logger.debug(
+                f"Retrieved progress for user {user_id}: {progress is not None}"
+            )
         except Exception as progress_error:
-            logger.warning(f"Failed to get progress for user {user_id}: {progress_error}")
+            logger.warning(
+                f"Failed to get progress for user {user_id}: {progress_error}"
+            )
             # Continue without progress data
-        
+
         try:
             answers = await supabase_service.get_business_profile_answers(user_id)
             logger.debug(f"Retrieved {len(answers or [])} answers for user {user_id}")
         except Exception as answers_error:
             logger.warning(f"Failed to get answers for user {user_id}: {answers_error}")
             # Continue with empty answers
-        
+
         # Handle new users who don't have any business profile progress yet
         if progress is None:
-            logger.info(f"No business profile progress found for user {user_id}, returning defaults")
+            logger.info(
+                f"No business profile progress found for user {user_id}, returning defaults"
+            )
             return {
                 "progress": None,
                 "answers": answers or [],
@@ -1922,23 +1956,27 @@ async def get_business_profile_progress(user_id: str):
                 "answers": answers or [],
             }
         except (KeyError, TypeError) as data_error:
-            logger.error(f"Invalid progress data structure for user {user_id}: {data_error}")
+            logger.error(
+                f"Invalid progress data structure for user {user_id}: {data_error}"
+            )
             # Return default structure for corrupted data
             return {
                 "progress": None,
                 "answers": answers or [],
             }
-            
+
     except HTTPException:
         # Re-raise HTTP exceptions as-is
         raise
     except Exception as e:
-        logger.error(f"Unexpected error getting business profile progress for user {user_id}: {e}")
+        logger.error(
+            f"Unexpected error getting business profile progress for user {user_id}: {e}"
+        )
         # Return graceful fallback instead of 500 error
         return {
             "progress": None,
             "answers": [],
-            "error": "Could not load business profile data"
+            "error": "Could not load business profile data",
         }
 
 

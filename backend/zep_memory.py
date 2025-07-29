@@ -218,10 +218,14 @@ class ZepMemoryManager:
         Uses distributed locking to coordinate across Railway containers
         """
         coordination_start_time = time.time()
-        logger.info(f"🎯 ZEP COORDINATION STARTED: ensure_user_exists_coordinated for {user_id}")
-        
+        logger.info(
+            f"🎯 ZEP COORDINATION STARTED: ensure_user_exists_coordinated for {user_id}"
+        )
+
         if not self.enabled:
-            logger.warning(f"⚠️ ZEP DISABLED: ensure_user_exists_coordinated returning None for {user_id}")
+            logger.warning(
+                f"⚠️ ZEP DISABLED: ensure_user_exists_coordinated returning None for {user_id}"
+            )
             return None
 
         # First try to get existing user (fast path)
@@ -230,83 +234,123 @@ class ZepMemoryManager:
             logger.debug(f"🔍 ZEP FAST PATH: Checking for existing user {user_id}")
             user = self._get_user_with_circuit_breaker(user_id)
             existing_user_check_time = time.time() - existing_user_check_start
-            logger.info(f"✅ ZEP FAST PATH SUCCESS: Found existing user {user_id} in {existing_user_check_time:.2f}s")
+            logger.info(
+                f"✅ ZEP FAST PATH SUCCESS: Found existing user {user_id} in {existing_user_check_time:.2f}s"
+            )
             return user
         except CircuitBreakerOpenError:
             existing_user_check_time = time.time() - existing_user_check_start
-            logger.warning(f"⚠️ ZEP CIRCUIT BREAKER OPEN: Cannot check/create user {user_id} after {existing_user_check_time:.2f}s")
+            logger.warning(
+                f"⚠️ ZEP CIRCUIT BREAKER OPEN: Cannot check/create user {user_id} after {existing_user_check_time:.2f}s"
+            )
             return None
         except Exception as check_error:
             existing_user_check_time = time.time() - existing_user_check_start
             # User doesn't exist, proceed with coordinated creation
-            logger.info(f"🔍 ZEP FAST PATH: User {user_id} doesn't exist ({check_error}), proceeding with coordinated creation after {existing_user_check_time:.2f}s")
+            logger.info(
+                f"🔍 ZEP FAST PATH: User {user_id} doesn't exist ({check_error}), proceeding with coordinated creation after {existing_user_check_time:.2f}s"
+            )
 
         # Use distributed coordination for user creation
         lock_key = f"zep_user_creation_{user_id}"
-        logger.debug(f"🔒 ZEP LOCKING: Attempting distributed lock for {user_id} with key {lock_key}")
+        logger.debug(
+            f"🔒 ZEP LOCKING: Attempting distributed lock for {user_id} with key {lock_key}"
+        )
 
         lock_acquisition_start = time.time()
         try:
-            logger.debug(f"🔒 ZEP LOCK ATTEMPT: Acquiring distributed lock for {user_id}")
+            logger.debug(
+                f"🔒 ZEP LOCK ATTEMPT: Acquiring distributed lock for {user_id}"
+            )
             async with self._get_distributed_lock(lock_key):
                 lock_acquisition_time = time.time() - lock_acquisition_start
-                logger.info(f"✅ ZEP LOCK ACQUIRED: Got distributed lock for {user_id} in {lock_acquisition_time:.2f}s")
-                
+                logger.info(
+                    f"✅ ZEP LOCK ACQUIRED: Got distributed lock for {user_id} in {lock_acquisition_time:.2f}s"
+                )
+
                 # Double-check after acquiring distributed lock
                 double_check_start = time.time()
                 try:
-                    logger.debug(f"🔍 ZEP DOUBLE CHECK: Re-checking user existence after lock for {user_id}")
+                    logger.debug(
+                        f"🔍 ZEP DOUBLE CHECK: Re-checking user existence after lock for {user_id}"
+                    )
                     user = self._get_user_with_circuit_breaker(user_id)
                     double_check_time = time.time() - double_check_start
                     total_coordination_time = time.time() - coordination_start_time
-                    logger.info(f"✅ ZEP DOUBLE CHECK SUCCESS: Found existing user {user_id} after lock in {double_check_time:.2f}s (total: {total_coordination_time:.2f}s)")
+                    logger.info(
+                        f"✅ ZEP DOUBLE CHECK SUCCESS: Found existing user {user_id} after lock in {double_check_time:.2f}s (total: {total_coordination_time:.2f}s)"
+                    )
                     return user
                 except Exception as double_check_error:
                     double_check_time = time.time() - double_check_start
-                    logger.info(f"🔍 ZEP DOUBLE CHECK: User {user_id} still doesn't exist after lock ({double_check_error}), proceeding with creation after {double_check_time:.2f}s")
-                    
+                    logger.info(
+                        f"🔍 ZEP DOUBLE CHECK: User {user_id} still doesn't exist after lock ({double_check_error}), proceeding with creation after {double_check_time:.2f}s"
+                    )
+
                     # User still doesn't exist, safe to create
                     creation_start = time.time()
                     try:
-                        logger.info(f"🏗️ ZEP USER CREATION: Starting coordinated creation for {user_id}")
-                        new_user = await self._create_user_with_coordination(user_id, user_metadata)
+                        logger.info(
+                            f"🏗️ ZEP USER CREATION: Starting coordinated creation for {user_id}"
+                        )
+                        new_user = await self._create_user_with_coordination(
+                            user_id, user_metadata
+                        )
                         creation_time = time.time() - creation_start
                         total_coordination_time = time.time() - coordination_start_time
-                        
+
                         if new_user:
-                            logger.info(f"✅ ZEP CREATION SUCCESS: User {user_id} created in {creation_time:.2f}s (total: {total_coordination_time:.2f}s)")
+                            logger.info(
+                                f"✅ ZEP CREATION SUCCESS: User {user_id} created in {creation_time:.2f}s (total: {total_coordination_time:.2f}s)"
+                            )
                         else:
-                            logger.error(f"❌ ZEP CREATION FAILED: _create_user_with_coordination returned None for {user_id} after {creation_time:.2f}s")
-                        
+                            logger.error(
+                                f"❌ ZEP CREATION FAILED: _create_user_with_coordination returned None for {user_id} after {creation_time:.2f}s"
+                            )
+
                         return new_user
                     except Exception as creation_error:
                         creation_time = time.time() - creation_start
                         total_coordination_time = time.time() - coordination_start_time
-                        logger.error(f"❌ ZEP CREATION EXCEPTION: {creation_error} for user {user_id} after {creation_time:.2f}s (total: {total_coordination_time:.2f}s)")
+                        logger.error(
+                            f"❌ ZEP CREATION EXCEPTION: {creation_error} for user {user_id} after {creation_time:.2f}s (total: {total_coordination_time:.2f}s)"
+                        )
                         raise
 
         except Exception as lock_error:
             lock_acquisition_time = time.time() - lock_acquisition_start
             total_coordination_time = time.time() - coordination_start_time
-            logger.error(f"❌ ZEP LOCK FAILED: Could not acquire distributed lock for {user_id}: {lock_error} after {lock_acquisition_time:.2f}s (total: {total_coordination_time:.2f}s)")
-            logger.warning(f"⚠️ ZEP FALLBACK: Attempting non-coordinated creation for {user_id}")
-            
+            logger.error(
+                f"❌ ZEP LOCK FAILED: Could not acquire distributed lock for {user_id}: {lock_error} after {lock_acquisition_time:.2f}s (total: {total_coordination_time:.2f}s)"
+            )
+            logger.warning(
+                f"⚠️ ZEP FALLBACK: Attempting non-coordinated creation for {user_id}"
+            )
+
             # Fallback to regular creation (with idempotent handling)
             try:
                 fallback_start = time.time()
-                fallback_user = self.ensure_user_exists(user_id, user_metadata, retry_count)
+                fallback_user = self.ensure_user_exists(
+                    user_id, user_metadata, retry_count
+                )
                 fallback_time = time.time() - fallback_start
                 total_coordination_time = time.time() - coordination_start_time
-                
+
                 if fallback_user:
-                    logger.info(f"✅ ZEP FALLBACK SUCCESS: User {user_id} created via fallback in {fallback_time:.2f}s (total: {total_coordination_time:.2f}s)")
+                    logger.info(
+                        f"✅ ZEP FALLBACK SUCCESS: User {user_id} created via fallback in {fallback_time:.2f}s (total: {total_coordination_time:.2f}s)"
+                    )
                 else:
-                    logger.error(f"❌ ZEP FALLBACK FAILED: Non-coordinated creation also failed for {user_id} after {fallback_time:.2f}s")
-                
+                    logger.error(
+                        f"❌ ZEP FALLBACK FAILED: Non-coordinated creation also failed for {user_id} after {fallback_time:.2f}s"
+                    )
+
                 return fallback_user
             except Exception as fallback_error:
                 total_coordination_time = time.time() - coordination_start_time
-                logger.error(f"💥 ZEP TOTAL FAILURE: Both coordinated and fallback creation failed for {user_id}: {fallback_error} after {total_coordination_time:.2f}s")
+                logger.error(
+                    f"💥 ZEP TOTAL FAILURE: Both coordinated and fallback creation failed for {user_id}: {fallback_error} after {total_coordination_time:.2f}s"
+                )
                 return None
 
     async def _create_user_with_coordination(
@@ -314,7 +358,9 @@ class ZepMemoryManager:
     ) -> User:
         """Create user with local coordination (called within distributed lock)"""
         creation_method_start = time.time()
-        logger.info(f"🏗️ ZEP COORDINATION METHOD: Starting _create_user_with_coordination for {user_id}")
+        logger.info(
+            f"🏗️ ZEP COORDINATION METHOD: Starting _create_user_with_coordination for {user_id}"
+        )
 
         # Get metadata from Supabase if not provided
         metadata_start = time.time()
@@ -322,15 +368,21 @@ class ZepMemoryManager:
             logger.debug(f"📋 ZEP METADATA: Extracting Supabase metadata for {user_id}")
             user_metadata = self._extract_user_metadata_from_supabase(user_id)
             metadata_time = time.time() - metadata_start
-            logger.debug(f"📋 ZEP METADATA: Using extracted Supabase metadata for {user_id} ({metadata_time:.2f}s): {user_metadata}")
+            logger.debug(
+                f"📋 ZEP METADATA: Using extracted Supabase metadata for {user_id} ({metadata_time:.2f}s): {user_metadata}"
+            )
         else:
-            logger.debug(f"📋 ZEP METADATA: Merging provided metadata with Supabase data for {user_id}")
+            logger.debug(
+                f"📋 ZEP METADATA: Merging provided metadata with Supabase data for {user_id}"
+            )
             # Merge provided metadata with Supabase data for completeness
             supabase_metadata = self._extract_user_metadata_from_supabase(user_id)
             merged_metadata = {**supabase_metadata, **user_metadata}
             user_metadata = merged_metadata
             metadata_time = time.time() - metadata_start
-            logger.debug(f"📋 ZEP METADATA: Using merged metadata for {user_id} ({metadata_time:.2f}s): {user_metadata}")
+            logger.debug(
+                f"📋 ZEP METADATA: Using merged metadata for {user_id} ({metadata_time:.2f}s): {user_metadata}"
+            )
 
         # Build user creation parameters using extracted metadata
         param_build_start = time.time()
@@ -348,25 +400,38 @@ class ZepMemoryManager:
             user_params["last_name"] = user_metadata["last_name"]
 
         param_build_time = time.time() - param_build_start
-        logger.info(f"📋 ZEP PARAMS: Built user creation params for {user_id} in {param_build_time:.2f}s: {user_params}")
+        logger.info(
+            f"📋 ZEP PARAMS: Built user creation params for {user_id} in {param_build_time:.2f}s: {user_params}"
+        )
 
         # Create user with idempotent handling
         user_creation_start = time.time()
         try:
-            logger.info(f"👤 ZEP USER API: Calling _create_user_idempotent for {user_id}")
+            logger.info(
+                f"👤 ZEP USER API: Calling _create_user_idempotent for {user_id}"
+            )
             user = self._create_user_idempotent(**user_params)
             user_creation_time = time.time() - user_creation_start
-            
+
             if user:
-                logger.info(f"✅ ZEP USER API SUCCESS: User {user_id} created via API in {user_creation_time:.2f}s")
-                logger.debug(f"👤 ZEP USER OBJECT: {type(user).__name__} with ID {getattr(user, 'user_id', 'unknown')}")
+                logger.info(
+                    f"✅ ZEP USER API SUCCESS: User {user_id} created via API in {user_creation_time:.2f}s"
+                )
+                logger.debug(
+                    f"👤 ZEP USER OBJECT: {type(user).__name__} with ID {getattr(user, 'user_id', 'unknown')}"
+                )
             else:
-                logger.error(f"❌ ZEP USER API FAILED: _create_user_idempotent returned None for {user_id} after {user_creation_time:.2f}s")
-                
+                logger.error(
+                    f"❌ ZEP USER API FAILED: _create_user_idempotent returned None for {user_id} after {user_creation_time:.2f}s"
+                )
+
         except Exception as user_creation_error:
             user_creation_time = time.time() - user_creation_start
-            logger.error(f"❌ ZEP USER API EXCEPTION: {user_creation_error} for user {user_id} after {user_creation_time:.2f}s")
+            logger.error(
+                f"❌ ZEP USER API EXCEPTION: {user_creation_error} for user {user_id} after {user_creation_time:.2f}s"
+            )
             import traceback
+
             logger.error(f"📊 ZEP USER API TRACE: {traceback.format_exc()}")
             raise
 
@@ -374,17 +439,25 @@ class ZepMemoryManager:
         session_creation_start = time.time()
         try:
             session_id = f"main_session_{user_id}"
-            logger.debug(f"🔗 ZEP SESSION: Creating main session {session_id} for user {user_id}")
+            logger.debug(
+                f"🔗 ZEP SESSION: Creating main session {session_id} for user {user_id}"
+            )
             self.client.memory.add_session(session_id=session_id, user_id=user_id)
             session_creation_time = time.time() - session_creation_start
-            logger.info(f"✅ ZEP SESSION SUCCESS: Created main session for user {user_id}: {session_id} in {session_creation_time:.2f}s")
+            logger.info(
+                f"✅ ZEP SESSION SUCCESS: Created main session for user {user_id}: {session_id} in {session_creation_time:.2f}s"
+            )
         except Exception as session_error:
             session_creation_time = time.time() - session_creation_start
-            logger.warning(f"⚠️ ZEP SESSION FAILED: Could not create main session for user {user_id}: {session_error} after {session_creation_time:.2f}s")
+            logger.warning(
+                f"⚠️ ZEP SESSION FAILED: Could not create main session for user {user_id}: {session_error} after {session_creation_time:.2f}s"
+            )
             # Don't fail user creation if session creation fails
 
         total_method_time = time.time() - creation_method_start
-        logger.info(f"🏁 ZEP COORDINATION METHOD COMPLETE: User {user_id} creation method finished in {total_method_time:.2f}s")
+        logger.info(
+            f"🏁 ZEP COORDINATION METHOD COMPLETE: User {user_id} creation method finished in {total_method_time:.2f}s"
+        )
         return user
 
     def ensure_user_exists(
@@ -1046,13 +1119,13 @@ class ZepMemoryManager:
 
     @circuit_breaker_decorator(
         failure_threshold=3,  # More tolerant for user creation - critical operation
-        recovery_timeout=10,  # Longer recovery for user creation - more conservative  
+        recovery_timeout=10,  # Longer recovery for user creation - more conservative
         expected_exception=(Exception,),
         circuit_name="zep_user_operations",  # Unified: single circuit for coordination
     )
     def _create_user_with_circuit_breaker(self, **user_params) -> User:
         """Create user with circuit breaker protection"""
-        user_id = user_params.get('user_id', 'unknown')
+        user_id = user_params.get("user_id", "unknown")
         logger.info(f"👤 CIRCUIT BREAKER: Attempting user creation for {user_id}")
         try:
             result = self.client.user.add(**user_params)
