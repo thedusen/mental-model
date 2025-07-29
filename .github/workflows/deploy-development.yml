@@ -33,19 +33,17 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
         
-      - name: Link Vercel Project
-        working-directory: ./frontend
+      - name: Link Vercel Project  
         run: |
-          # Link to the existing Vercel project
+          # Link to the existing Vercel project from project root
           vercel link --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --project=${{ vars.VERCEL_PROJECT_ID }} --yes
         env:
           VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
           
       - name: Deploy to Vercel Development Environment
-        working-directory: ./frontend
         run: |
-          # Deploy from the frontend directory (matches Vercel project Root Directory setting)
+          # Deploy from project root - Vercel project Root Directory setting handles the frontend path
           vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --yes
           
           # Get the deployment URL
