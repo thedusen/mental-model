@@ -4,7 +4,7 @@ A Neo4j-based knowledge graph system for building and exploring mental models.
 
 [![GitHub](https://img.shields.io/badge/GitHub-thedusen/mental--model-blue?logo=github)](https://github.com/thedusen/mental-model)
 
-## Quick Start
+## Quick Start G
 
 1. **Launch Neo4j database:**
    ```bash
