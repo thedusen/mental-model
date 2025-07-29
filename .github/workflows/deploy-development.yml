@@ -34,17 +34,13 @@ jobs:
         run: npm install --global vercel@latest
         
       - name: Deploy to Vercel Development Environment
-        working-directory: ./frontend
         run: |
-          # Deploy to development environment
-          vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --yes
+          # Deploy from the frontend directory
+          vercel deploy ./frontend --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} --yes
           
-          # Get the deployment URL and set it to development environment
+          # Get the deployment URL
           DEPLOYMENT_URL=$(vercel ls --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }} | head -n 2 | tail -n 1 | awk '{print $2}')
           echo "Deployed to: $DEPLOYMENT_URL"
-          
-          # Promote this deployment to development environment
-          vercel promote $DEPLOYMENT_URL --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_ORG_ID }}
           
         env:
           VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
