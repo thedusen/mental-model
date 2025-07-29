@@ -2205,16 +2205,16 @@ async def ensure_zep_user(request: EnsureZepUserRequest):
             # User doesn't exist, continue with creation
             pass
 
-        # Create user with minimal metadata for post-auth flow
+        # Create user with proper email extraction from Supabase auth
         user_metadata = {
             "source": "post_auth",
             "created_via": "authentication_flow",
             "created_at": datetime.now().isoformat(),
         }
 
-        # Use the simple creation method without distributed locking
-        user = zep_memory._create_user_idempotent(
-            user_id=request.user_id, metadata=user_metadata
+        # Use ensure_user_exists which properly extracts email from Supabase auth
+        user = zep_memory.ensure_user_exists(
+            user_id=request.user_id, user_metadata=user_metadata
         )
 
         if user:
