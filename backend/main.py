@@ -244,7 +244,9 @@ async def get_optimized_user_context(user_id: str, session_id: str, query: str) 
             logger.debug(f"Zep memory context not available: {memory_error}")
             # Fallback to basic recent facts if memory.context fails
             try:
-                user_memory = zep_memory.get_relevant_memory(session_id, query, limit=3, user_id=user_id)
+                user_memory = zep_memory.get_relevant_memory(
+                    session_id, query, limit=3, user_id=user_id
+                )
                 if user_memory and user_memory.get("facts"):
                     facts_context = "Recent Facts:\n" + "\n".join(
                         [f"- {fact}" for fact in user_memory["facts"][:3]]

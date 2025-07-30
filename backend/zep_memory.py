@@ -718,7 +718,7 @@ class ZepMemoryManager:
         Returns memory object if successful, None if failed (but doesn't raise exceptions)
 
         Args:
-            user_id: User identifier  
+            user_id: User identifier
             session_id: Session/conversation identifier
         """
         if not self.enabled:
@@ -734,7 +734,9 @@ class ZepMemoryManager:
                 logger.error(
                     f"User {user_id} does not exist in Zep, cannot retrieve memory: {user_error}"
                 )
-                return None  # Fail safely - don't try to get memory for non-existent user
+                return (
+                    None  # Fail safely - don't try to get memory for non-existent user
+                )
 
             # Check if session exists, create if it doesn't
             try:
@@ -744,15 +746,19 @@ class ZepMemoryManager:
             except Exception:
                 # Session doesn't exist, create it
                 try:
-                    logger.info(f"Session {session_id} doesn't exist, creating it for user {user_id}")
+                    logger.info(
+                        f"Session {session_id} doesn't exist, creating it for user {user_id}"
+                    )
                     self.client.memory.add_session(
                         session_id=session_id, user_id=user_id
                     )
                     logger.info(f"Created session {session_id} for user {user_id}")
-                    
+
                     # Now try to get memory again (should work with empty session)
                     memory = self._get_memory_with_circuit_breaker(session_id)
-                    logger.debug(f"Retrieved memory for newly created session {session_id}")
+                    logger.debug(
+                        f"Retrieved memory for newly created session {session_id}"
+                    )
                     return memory
                 except Exception as session_error:
                     logger.error(
@@ -761,7 +767,9 @@ class ZepMemoryManager:
                     return None
 
         except Exception as e:
-            logger.error(f"Error in get_memory_safe for user {user_id}, session {session_id}: {str(e)}")
+            logger.error(
+                f"Error in get_memory_safe for user {user_id}, session {session_id}: {str(e)}"
+            )
             return None
 
     def add_business_data(
@@ -835,7 +843,11 @@ class ZepMemoryManager:
             return f"Business data of type {data_type}: {str(data)[:200]}..."
 
     def get_relevant_memory(
-        self, session_id: str, query: Optional[str] = None, limit: int = 10, user_id: Optional[str] = None
+        self,
+        session_id: str,
+        query: Optional[str] = None,
+        limit: int = 10,
+        user_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Retrieve relevant memory context for GraphRAG using optimized Zep API
@@ -855,17 +867,21 @@ class ZepMemoryManager:
                 memory = self.get_memory_safe(user_id, session_id)
                 if not memory:
                     # Safe retrieval failed, return empty result
-                    logger.debug(f"Safe memory retrieval failed for session {session_id}, user {user_id}")
+                    logger.debug(
+                        f"Safe memory retrieval failed for session {session_id}, user {user_id}"
+                    )
                     return {
                         "context": None,
                         "facts": [],
                         "session_id": session_id,
                         "has_memory": False,
-                        "error": "Memory retrieval failed"
+                        "error": "Memory retrieval failed",
                     }
             else:
                 # Legacy fallback for backward compatibility
-                logger.warning(f"Using unsafe memory retrieval for session {session_id} - consider providing user_id")
+                logger.warning(
+                    f"Using unsafe memory retrieval for session {session_id} - consider providing user_id"
+                )
                 memory = self.client.memory.get(session_id=session_id)
 
             if hasattr(memory, "context") and memory.context:
@@ -971,7 +987,9 @@ class ZepMemoryManager:
 
             try:
                 memory = self.client.memory.get(session_id=business_session_id)
-                logger.debug(f"Successfully retrieved business profile memory for user {user_id}")
+                logger.debug(
+                    f"Successfully retrieved business profile memory for user {user_id}"
+                )
                 if hasattr(memory, "context") and memory.context:
                     # Parse business profile from context if it contains structured data
                     context = memory.context
@@ -1345,7 +1363,9 @@ class ZepMemoryService:
         try:
             session_id = f"business_profile_{user_id}"
             memory = self.client.memory.get(session_id=session_id)
-            logger.debug(f"Successfully retrieved business profile context for user {user_id}")
+            logger.debug(
+                f"Successfully retrieved business profile context for user {user_id}"
+            )
 
             if hasattr(memory, "context") and memory.context:
                 return memory.context
@@ -1412,7 +1432,9 @@ class ZepMemoryService:
             # Get memory from the business profile session
             try:
                 memory = self.client.memory.get(session_id=session_id)
-                logger.debug(f"Successfully retrieved questionnaire entities memory for user {user_id}")
+                logger.debug(
+                    f"Successfully retrieved questionnaire entities memory for user {user_id}"
+                )
             except Exception as session_error:
                 logger.debug(
                     f"Memory session not found for {session_id}: {session_error}"
