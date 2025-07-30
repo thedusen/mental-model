@@ -8,6 +8,7 @@ import NodeTypesPanel from './components/NodeTypesPanel';
 import SearchBar from './components/SearchBar';
 import IntroductionPanel from './components/IntroductionPanel';
 import LeftSidebar from './components/LeftSidebar';
+import ConnectionStatus from './components/ConnectionStatus';
 
 function App() {
   console.log('App component rendering...');
@@ -399,6 +400,9 @@ function App() {
       <div className="app" role="application" aria-label="Mental Model Knowledge Graph">
         {/* Skip link for keyboard users */}
         <a href="#main-content" className="sr-only">Skip to main content</a>
+        
+        {/* Connection status indicator */}
+        <ConnectionStatus />
         
         {/* Hidden live region for chat context announcements */}
         <div 

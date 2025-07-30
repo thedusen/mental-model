@@ -58,10 +58,9 @@ const GraphView = React.forwardRef(({
     setError(null);
     try {
       const response = await axios.get(`${API_URL}/api/graph`, {
-        // Add timeout and headers for better performance
+        // Add timeout for better performance
         timeout: 10000,
         headers: {
-          'Accept-Encoding': 'gzip, deflate',
           'Accept': 'application/json'
         }
       });

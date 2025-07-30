@@ -258,22 +258,48 @@ export const chat = {
     }
   },
 
-  // Get user's chat sessions
-  getSessions: async (limit = 50, offset = 0) => {
+  // Get user's chat sessions with retry logic
+  getSessions: async (limit = 50, offset = 0, retries = 3) => {
     console.log('🎯 getSessions called');
     const user = await auth.getUser();
     console.log('🎯 getSessions user:', user);
     if (!user) throw new Error('User not authenticated');
 
-    const { data, error } = await supabase
-      .from('chat_sessions')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+    let lastError = null;
+    
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const { data, error } = await supabase
+          .from('chat_sessions')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('updated_at', { ascending: false })
+          .range(offset, offset + limit - 1);
 
-    console.log('🎯 getSessions query result:', { data, error });
-    return { data, error };
+        console.log('🎯 getSessions query result:', { data, error });
+        
+        if (error) {
+          lastError = error;
+          if (attempt < retries) {
+            console.log(`⚠️ Attempt ${attempt} failed, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
+            continue;
+          }
+        }
+        
+        return { data, error };
+      } catch (err) {
+        lastError = err;
+        if (attempt < retries) {
+          console.log(`⚠️ Attempt ${attempt} failed with error:`, err.message);
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          continue;
+        }
+      }
+    }
+    
+    console.error('❌ All retry attempts failed');
+    return { data: null, error: lastError };
   },
 
   // Get messages for a session

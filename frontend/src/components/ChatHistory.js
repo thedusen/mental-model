@@ -57,9 +57,9 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   }, [isLoading]);
 
   // Memoized loadSessions function to prevent recreation on every render
-  const loadSessions = useCallback(async (userToCheck = null) => {
+  const loadSessions = useCallback(async (userToCheck = null, isRetry = false) => {
     const currentUser = userToCheck || user;
-    console.log('🔍 loadSessions called - user:', currentUser);
+    console.log('🔍 loadSessions called - user:', currentUser, 'isRetry:', isRetry);
     if (!currentUser) {
       setIsLoading(false);
       return;
@@ -74,7 +74,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
       
       // Add timeout to prevent infinite loading with better error handling
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Request timeout - please check your internet connection')), 15000);
+        setTimeout(() => reject(new Error('Request timeout - please check your internet connection')), 10000);
       });
       
       const sessionPromise = chat.getSessions();
@@ -585,7 +585,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                       e.stopPropagation();
                       setShowRefreshButton(false);
                       setError(null);
-                      loadSessions();
+                      loadSessions(null, true);
                     }} 
                     className="loading-refresh-button"
                     style={{ marginTop: '30px', display: 'block', margin: '30px auto 0' }}
