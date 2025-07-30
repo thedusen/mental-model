@@ -785,24 +785,11 @@ async def chat(query: ChatQuery):
                 user_id=query.user_id, session_id=query.session_id, query=query.question
             )
 
-        # Create enhanced search query combining user question with Zep context for better semantic matching
-        enhanced_search_query = query.question
-        if user_context_str:
-            # Extract key context elements for search enhancement (limit to avoid token overflow)
-            context_for_search = user_context_str[
-                :500
-            ]  # Limit context for search embedding
-            enhanced_search_query = (
-                f"{query.question}\n\nRelevant context: {context_for_search}"
-            )
-            logger.info(
-                f"🔍 Enhanced search query with Zep context for better semantic matching"
-            )
-        else:
-            logger.info(f"🔍 Using original question only (no Zep context available)")
-
-        # Generate embedding for the enhanced search query (includes both question + Zep context)
-        embedding = generate_query_embedding(enhanced_search_query)
+        # Generate embedding for the user's question only (clean search without context mixing)
+        embedding = generate_query_embedding(query.question)
+        logger.info(
+            f"🔍 Searching expert knowledge with clean query: {query.question[:50]}..."
+        )
 
         # Retrieve relevant context from expert knowledge graph using enhanced query
         with get_db_session() as session:
@@ -822,23 +809,37 @@ async def chat(query: ChatQuery):
             )
             context_data = [dict(record) for record in result]
 
-        # Build expert knowledge graph context string
+        # Build expert knowledge graph context string with clear header
         if context_data:
-            expert_context_str = "Expert Knowledge Graph Context:\n" + "\n".join(
-                [f"- {item['entity']}: {item['description']}" for item in context_data]
+            expert_context_str = (
+                "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\n"
+                + "\n".join(
+                    [
+                        f"- {item['entity']}: {item['description']}"
+                        for item in context_data
+                    ]
+                )
             )
         else:
-            expert_context_str = (
-                "No specific expert knowledge graph context found for this question."
+            expert_context_str = "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\nNo specific expert knowledge found for this question."
+
+        # Format user context with clear header
+        if user_context_str:
+            formatted_user_context = (
+                f"\n\n=== YOUR BUSINESS CONTEXT ===\n{user_context_str}"
+            )
+        else:
+            formatted_user_context = (
+                "\n\n=== YOUR BUSINESS CONTEXT ===\nNo business context available yet."
             )
 
         # Apply intelligent context length management
         managed_expert_context, managed_user_context = manage_context_length(
-            expert_context_str, user_context_str, max_tokens=2000
+            expert_context_str, formatted_user_context, max_tokens=2000
         )
 
-        # Combine managed contexts
-        context_str = managed_expert_context + managed_user_context
+        # Combine managed contexts with source reminder
+        context_str = f"{managed_expert_context}{managed_user_context}\n\nRemember: Expert knowledge comes from Dan's experience, user context is specific to this user's business."
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
@@ -975,7 +976,14 @@ async def chat_stream(query: ChatQuery):
                 "⚠️ No user_id provided in streaming chat request - skipping Zep user creation"
             )
 
-        # Generate embedding for the current question
+        # Get optimized user context from Zep (business profile + conversational memory)
+        user_context_str = ""
+        if query.session_id and query.user_id:
+            user_context_str = await get_optimized_user_context(
+                user_id=query.user_id, session_id=query.session_id, query=query.question
+            )
+
+        # Generate embedding for the user's question only (clean search without context mixing)
         embedding = generate_query_embedding(query.question)
 
         # Retrieve relevant context from knowledge graph
@@ -996,32 +1004,37 @@ async def chat_stream(query: ChatQuery):
             )
             context_data = [dict(record) for record in result]
 
-        # Build expert knowledge graph context string
+        # Build expert knowledge graph context string with clear header
         if context_data:
-            expert_context_str = "Expert Knowledge Graph Context:\n" + "\n".join(
-                [f"- {item['entity']}: {item['description']}" for item in context_data]
+            expert_context_str = (
+                "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\n"
+                + "\n".join(
+                    [
+                        f"- {item['entity']}: {item['description']}"
+                        for item in context_data
+                    ]
+                )
             )
         else:
-            expert_context_str = (
-                "No specific expert knowledge graph context found for this question."
+            expert_context_str = "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\nNo specific expert knowledge found for this question."
+
+        # Format user context with clear header
+        if user_context_str:
+            formatted_user_context = (
+                f"\n\n=== YOUR BUSINESS CONTEXT ===\n{user_context_str}"
             )
-
-        # User already created at the beginning of the function
-
-        # Get optimized user context from Zep (business profile + conversational memory)
-        user_context_str = ""
-        if query.session_id and query.user_id:
-            user_context_str = await get_optimized_user_context(
-                user_id=query.user_id, session_id=query.session_id, query=query.question
+        else:
+            formatted_user_context = (
+                "\n\n=== YOUR BUSINESS CONTEXT ===\nNo business context available yet."
             )
 
         # Apply intelligent context length management for streaming
         managed_expert_context, managed_user_context = manage_context_length(
-            expert_context_str, user_context_str, max_tokens=2000
+            expert_context_str, formatted_user_context, max_tokens=2000
         )
 
-        # Combine managed contexts
-        context_str = managed_expert_context + managed_user_context
+        # Combine managed contexts with source reminder
+        context_str = f"{managed_expert_context}{managed_user_context}\n\nRemember: Expert knowledge comes from Dan's experience, user context is specific to this user's business."
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
