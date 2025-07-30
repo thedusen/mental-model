@@ -228,20 +228,12 @@ async def get_optimized_user_context(user_id: str, session_id: str, query: str) 
                         f"Added fallback business context with {len(relevant_elements)} elements"
                     )
 
-        # Get conversational memory context using optimized Zep approach
+        # Get conversational memory context using safe Zep approach
         try:
-            # Only verify user exists, don't create to prevent duplicates
-            # User should already exist from questionnaire flow
-            try:
-                existing_user = zep_memory.client.user.get(user_id)
-                logger.debug(f"Confirmed user {user_id} exists for chat context")
-            except Exception as user_check_error:
-                logger.debug(f"User {user_id} may not exist in Zep: {user_check_error}")
-                # Skip memory retrieval if user doesn't exist
+            # Use safe memory retrieval that handles user/session existence
+            memory = zep_memory.get_memory_safe(user_id, session_id)
 
-            memory = zep_memory.client.memory.get(session_id=session_id)
-
-            if hasattr(memory, "context") and memory.context:
+            if memory and hasattr(memory, "context") and memory.context:
                 conversational_context = (
                     f"Conversation Context:\n{memory.context[:800]}"  # Limit length
                 )
@@ -252,7 +244,7 @@ async def get_optimized_user_context(user_id: str, session_id: str, query: str) 
             logger.debug(f"Zep memory context not available: {memory_error}")
             # Fallback to basic recent facts if memory.context fails
             try:
-                user_memory = zep_memory.get_relevant_memory(session_id, query, limit=3)
+                user_memory = zep_memory.get_relevant_memory(session_id, query, limit=3, user_id=user_id)
                 if user_memory and user_memory.get("facts"):
                     facts_context = "Recent Facts:\n" + "\n".join(
                         [f"- {fact}" for fact in user_memory["facts"][:3]]
@@ -2188,7 +2180,7 @@ async def get_session_memory(
     """Get relevant memory context for a session"""
     try:
         memory_context = zep_memory.get_relevant_memory(
-            session_id=session_id, query=query, limit=10
+            session_id=session_id, query=query, limit=10, user_id=user_id
         )
         return {
             "user_id": user_id,
