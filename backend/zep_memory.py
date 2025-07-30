@@ -714,7 +714,7 @@ class ZepMemoryManager:
 
     def get_memory_safe(self, user_id: str, session_id: str):
         """
-        Get memory from Zep with safety checks - ensures user and session exist
+        Get memory from Zep with safety checks - simplified to prevent performance issues
         Returns memory object if successful, None if failed (but doesn't raise exceptions)
 
         Args:
@@ -725,50 +725,140 @@ class ZepMemoryManager:
             logger.warning("Zep is disabled - get_memory_safe returning None")
             return None
 
+        logger.info(
+            f"🔍 get_memory_safe called: user_id={user_id}, session_id={session_id}"
+        )
+
         try:
             # Verify user exists first - critical safety check
             try:
                 self._get_user_with_circuit_breaker(user_id)
-                logger.debug(f"Confirmed user {user_id} exists for memory retrieval")
+                logger.debug(f"✅ Confirmed user {user_id} exists for memory retrieval")
             except Exception as user_error:
                 logger.error(
-                    f"User {user_id} does not exist in Zep, cannot retrieve memory: {user_error}"
+                    f"❌ User {user_id} does not exist in Zep, cannot retrieve memory: {user_error}"
                 )
-                return (
-                    None  # Fail safely - don't try to get memory for non-existent user
-                )
+                return None
 
-            # Check if session exists, create if it doesn't
+            # Try to get memory from session - if it doesn't exist, return None gracefully
             try:
                 memory = self._get_memory_with_circuit_breaker(session_id)
-                logger.debug(f"Successfully retrieved memory for session {session_id}")
+                logger.info(
+                    f"✅ Successfully retrieved memory for session {session_id}"
+                )
                 return memory
-            except Exception:
-                # Session doesn't exist, create it
-                try:
-                    logger.info(
-                        f"Session {session_id} doesn't exist, creating it for user {user_id}"
-                    )
-                    self.client.memory.add_session(
-                        session_id=session_id, user_id=user_id
-                    )
-                    logger.info(f"Created session {session_id} for user {user_id}")
+            except Exception as session_error:
+                logger.info(
+                    f"🔍 Session {session_id} not found in Zep: {session_error}"
+                )
+                # Don't create new sessions - return None and let higher-level code handle it
+                return None
 
-                    # Now try to get memory again (should work with empty session)
-                    memory = self._get_memory_with_circuit_breaker(session_id)
-                    logger.debug(
-                        f"Retrieved memory for newly created session {session_id}"
+        except Exception as e:
+            logger.error(
+                f"❌ Error in get_memory_safe for user {user_id}, session {session_id}: {str(e)}"
+            )
+            return None
+
+    def get_user_recent_context(self, user_id: str, limit: int = 5) -> Optional[str]:
+        """
+        Get recent context from across ALL user sessions to solve session continuity issues
+        This addresses the problem where context is saved in one session but retrieved from another
+
+        Args:
+            user_id: User identifier
+            limit: Maximum number of recent facts/memories to retrieve
+
+        Returns:
+            String containing recent user context from all sessions, or None if not found
+        """
+        if not self.enabled:
+            logger.debug("Zep is disabled - get_user_recent_context returning None")
+            return None
+
+        logger.info(
+            f"🔍 get_user_recent_context called: user_id={user_id}, limit={limit}"
+        )
+
+        try:
+            # Verify user exists
+            try:
+                user = self._get_user_with_circuit_breaker(user_id)
+                logger.debug(
+                    f"✅ Confirmed user {user_id} exists for user-level context retrieval"
+                )
+            except Exception as user_error:
+                logger.info(f"🔍 User {user_id} not found in Zep: {user_error}")
+                return None
+
+            # Try to get user-level memory/context
+            # This searches across all sessions for the user
+            try:
+                # Use Zep's user-level memory retrieval if available
+                # This should aggregate context from all user sessions
+                user_memory = self.client.memory.search(user_id=user_id, limit=limit)
+
+                if user_memory and len(user_memory) > 0:
+                    # Extract context from the search results
+                    context_parts = []
+                    for memory_item in user_memory:
+                        if hasattr(memory_item, "content") and memory_item.content:
+                            # Limit each item to prevent token bloat
+                            content = (
+                                memory_item.content[:200]
+                                if len(memory_item.content) > 200
+                                else memory_item.content
+                            )
+                            context_parts.append(content)
+
+                    if context_parts:
+                        combined_context = "\n".join(context_parts)
+                        logger.info(
+                            f"✅ Retrieved user-level context: {len(context_parts)} items, {len(combined_context)} chars"
+                        )
+                        return combined_context
+
+                logger.info(f"🔍 No user-level context found for user {user_id}")
+                return None
+
+            except Exception as memory_error:
+                logger.info(
+                    f"🔍 User-level memory search failed for user {user_id}: {memory_error}"
+                )
+
+                # Fallback: try to get context from user's knowledge graph
+                try:
+                    knowledge_graph = self.get_user_knowledge_graph(user_id)
+                    if knowledge_graph and knowledge_graph.get("edges"):
+                        # Extract recent facts from knowledge graph
+                        recent_facts = []
+                        for edge in knowledge_graph["edges"][:limit]:
+                            if isinstance(edge, dict) and edge.get("fact"):
+                                recent_facts.append(edge["fact"])
+
+                        if recent_facts:
+                            context = "Recent User Context:\n" + "\n".join(
+                                [f"- {fact}" for fact in recent_facts]
+                            )
+                            logger.info(
+                                f"✅ Retrieved context from knowledge graph: {len(recent_facts)} facts"
+                            )
+                            return context
+
+                    logger.info(
+                        f"🔍 No knowledge graph context found for user {user_id}"
                     )
-                    return memory
-                except Exception as session_error:
-                    logger.error(
-                        f"Failed to create session {session_id} for user {user_id}: {session_error}"
+                    return None
+
+                except Exception as graph_error:
+                    logger.debug(
+                        f"Knowledge graph fallback failed for user {user_id}: {graph_error}"
                     )
                     return None
 
         except Exception as e:
             logger.error(
-                f"Error in get_memory_safe for user {user_id}, session {session_id}: {str(e)}"
+                f"❌ Error in get_user_recent_context for user {user_id}: {str(e)}"
             )
             return None
 
