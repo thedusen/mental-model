@@ -58,10 +58,9 @@ const GraphView = React.forwardRef(({
     setError(null);
     try {
       const response = await axios.get(`${API_URL}/api/graph`, {
-        // Add timeout and headers for better performance
+        // Add timeout for better performance
         timeout: 10000,
         headers: {
-          'Accept-Encoding': 'gzip, deflate',
           'Accept': 'application/json'
         }
       });
@@ -619,7 +618,7 @@ const GraphView = React.forwardRef(({
                 top: ${screenY}px;
                 transform: translate(-50%, -50%);
                 pointer-events: none;
-                z-index: 9999;
+                z-index: 1000;
               `;
               
               // Create the pulsing circle
@@ -937,12 +936,12 @@ const GraphView = React.forwardRef(({
             maxZoom: 8,
             renderer: 'canvas', // Explicitly set canvas renderer
             // New options to control the NVL legend
-            legend: {
-              enabled: true,
-              orientation: 'top-left', // Move legend to top-left
-              isCollapsed: isLegendMinimized, // Control collapse state
-              onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
-            },
+            // legend: {
+            //   enabled: true,
+            //   orientation: 'top-left', // Move legend to top-left
+            //   isCollapsed: isLegendMinimized, // Control collapse state
+            //   onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
+            // },
           }}
           layoutOptions={{
             // Reduced spacing parameters by 15% from extreme values

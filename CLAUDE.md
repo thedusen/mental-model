@@ -18,6 +18,11 @@ cd backend && flake8 .
 
 # Install dependencies
 cd backend && pip install -r requirements.txt
+
+# IMPORTANT: Always run Black before committing Python changes
+cd backend && black --check .
+# If changes needed, format with:
+cd backend && black .
 ```
 
 ### Frontend (React)
@@ -74,6 +79,18 @@ cd backend && python import_data.py
 # The pre-push hook will automatically check if CI workflow needs updating
 # To bypass the hook if needed: git push --no-verify
 ```
+
+## Code Quality Checklist
+
+### Before Committing Python Code
+**ALWAYS** run Black formatter before committing any Python changes:
+```bash
+cd backend && black --check .
+# If formatting needed:
+cd backend && black .
+```
+
+The CI pipeline will fail if Python code is not formatted with Black. Save time by formatting locally first!
 
 ## High-Level Architecture
 
@@ -232,3 +249,8 @@ ZEP_API_URL=https://api.getzep.com  # or http://localhost:8000 for self-hosted
 - Conversation history limited to 15 messages to manage token usage
 - Prompt caching reduces Claude API costs for repeated system prompts
 - Keep-warm service prevents cold starts in cloud environments
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
