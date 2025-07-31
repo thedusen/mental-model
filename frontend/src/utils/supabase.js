@@ -311,6 +311,44 @@ export const chat = {
       .order('timestamp', { ascending: true })
       .limit(limit);
 
+    // Debug logging to understand what's being returned
+    if (data && data.length > 0) {
+      console.log('🔍 getMessages returned:', data.length, 'messages for session:', sessionId);
+      console.log('🔍 First message structure:', {
+        id: data[0].id,
+        hasId: !!data[0].id,
+        idType: typeof data[0].id,
+        role: data[0].role,
+        timestamp: data[0].timestamp,
+        content_preview: data[0].content?.substring(0, 50) + '...'
+      });
+      console.log('🔍 All message details:', data.map(m => ({ 
+        id: m.id, 
+        role: m.role, 
+        timestamp: m.timestamp,
+        content_preview: m.content?.substring(0, 30) + '...'
+      })));
+      
+      // Check for potential duplicates in the database
+      const contentMap = new Map();
+      const duplicates = [];
+      data.forEach((msg, index) => {
+        const key = `${msg.role}-${msg.content}`;
+        if (contentMap.has(key)) {
+          duplicates.push({ original: contentMap.get(key), duplicate: { index, id: msg.id, role: msg.role } });
+        } else {
+          contentMap.set(key, { index, id: msg.id, role: msg.role });
+        }
+      });
+      
+      if (duplicates.length > 0) {
+        console.warn('🚨 DATABASE DUPLICATES DETECTED:', duplicates);
+        console.warn('🚨 These messages appear to be duplicated in the database already');
+      }
+    } else {
+      console.log('🔍 getMessages returned empty or error:', { data, error });
+    }
+
     return { data, error };
   },
 

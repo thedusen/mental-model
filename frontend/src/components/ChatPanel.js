@@ -340,13 +340,22 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     API_URL = `https://${API_URL}`;
   }
 
+  // Track whether we're currently loading a session to prevent save operations
+  const [isLoadingSession, setIsLoadingSession] = useState(false);
+
   // Expose methods to parent component
   useImperativeHandle(ref, () => ({
     handleSessionSelect: (session, sessionMessages) => {
       console.log('🔄 handleSessionSelect called:', session.id, 'messages:', sessionMessages?.length);
+      console.log('🔄 Raw sessionMessages from database:', sessionMessages);
+      
+      // Set loading flag to prevent save operations during session loading
+      setIsLoadingSession(true);
+      console.log('🔄 Set isLoadingSession to true');
       
       // Always clear messages first to prevent any potential duplicates
       setMessages([]);
+      console.log('🔄 Cleared existing messages');
       
       setCurrentSession(session);
       if (onSessionChange) {
@@ -359,16 +368,39 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
           id: msg.id || `loaded-${session.id}-${index}`, // Ensure every message has an ID
           role: msg.role,
           content: msg.content,
-          context: msg.metadata?.context || []
+          context: msg.metadata?.context || [],
+          isLoadedFromDatabase: true // Mark as loaded to prevent re-saving
         }));
         
-        console.log('🔄 Setting formatted messages:', formattedMessages.length, 'message IDs:', formattedMessages.map(m => m.id));
-        setMessages(formattedMessages);
+        // TEMPORARY FIX: Deduplicate messages in case database already has duplicates
+        const uniqueMessages = [];
+        const seenContent = new Set();
+        
+        formattedMessages.forEach(msg => {
+          const contentKey = `${msg.role}-${msg.content}`;
+          if (!seenContent.has(contentKey)) {
+            seenContent.add(contentKey);
+            uniqueMessages.push(msg);
+          } else {
+            console.warn('🚨 Filtered out duplicate message:', { role: msg.role, content: msg.content.substring(0, 50) + '...' });
+          }
+        });
+        
+        console.log('🔄 Formatted messages:', formattedMessages.length, 'unique messages:', uniqueMessages.length);
+        console.log('🔄 Setting deduplicated messages:', uniqueMessages.length, 'message IDs:', uniqueMessages.map(m => ({ id: m.id, isLoadedFromDB: m.isLoadedFromDatabase })));
+        setMessages(uniqueMessages);
         setHasMessagesEver(true);
+        console.log('🔄 Messages set in state');
       } else {
         console.log('🔄 No messages to load, keeping empty state');
         setMessages([]);
       }
+      
+      // Clear loading flag after a brief delay to ensure state updates are complete
+      setTimeout(() => {
+        setIsLoadingSession(false);
+        console.log('🔄 Session loading complete, save operations re-enabled');
+      }, 100);
     },
     handleNewChat: () => {
       setCurrentSession(null);
@@ -562,17 +594,51 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   // Save messages to current session when they change
   useEffect(() => {
     const saveMessages = async () => {
+      // Skip saving if we don't have the required conditions
       if (!user || !currentSession || messages.length === 0) return;
+      
+      // Skip saving if we're currently loading a session
+      if (isLoadingSession) {
+        console.log('⏸️ Skipping message save - session is loading');
+        return;
+      }
 
       try {
         // Get the last two messages (user and assistant)
         const recentMessages = messages.slice(-2);
         
-        // Filter out messages that already have IDs (already saved)
-        const unsavedMessages = recentMessages.filter(msg => !msg.id);
+        // Filter out messages that:
+        // 1. Already have database IDs (already saved)
+        // 2. Were loaded from the database (marked with isLoadedFromDatabase)
+        // 3. Have synthetic IDs starting with "loaded-" (from session loading)
+        const unsavedMessages = recentMessages.filter(msg => {
+          // Skip if message was loaded from database
+          if (msg.isLoadedFromDatabase) {
+            return false;
+          }
+          
+          // Skip if message has a synthetic ID from loading
+          if (msg.id && typeof msg.id === 'string' && msg.id.startsWith('loaded-')) {
+            return false;
+          }
+          
+          // Skip if message already has a real database ID
+          if (msg.id && typeof msg.id === 'string' && !msg.id.startsWith('loaded-')) {
+            return false;
+          }
+          
+          // This is a new message that needs saving
+          return !msg.id;
+        });
         
         console.log('💾 Save check - total messages:', messages.length, 'recent:', recentMessages.length, 'unsaved:', unsavedMessages.length);
-        console.log('💾 Recent message IDs:', recentMessages.map(m => ({ role: m.role, id: m.id })));
+        console.log('💾 Recent message info:', recentMessages.map(m => ({ 
+          role: m.role, 
+          id: m.id, 
+          isLoadedFromDB: m.isLoadedFromDatabase,
+          hasId: !!m.id,
+          isLoadedId: m.id && m.id.toString().startsWith('loaded-')
+        })));
         
         if (unsavedMessages.length === 0) {
           console.log('⏸️ No unsaved messages to save');
@@ -603,13 +669,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     };
 
     // Only save if we have new messages and a current session
-    if (messages.length > 0 && currentSession && user) {
+    if (messages.length > 0 && currentSession && user && !isLoadingSession) {
       console.log('💾 Attempting to save messages:', messages.length, 'messages to session:', currentSession.id);
       saveMessages();
     } else {
-      console.log('⏸️ Skipping message save - messages:', messages.length, 'session:', !!currentSession, 'user:', !!user);
+      console.log('⏸️ Skipping message save - messages:', messages.length, 'session:', !!currentSession, 'user:', !!user, 'isLoading:', isLoadingSession);
     }
-  }, [messages, currentSession, user]);
+  }, [messages, currentSession, user, isLoadingSession]);
 
 
   // Create a new session when user starts typing (if not authenticated, show auth)

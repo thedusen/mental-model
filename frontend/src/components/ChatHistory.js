@@ -243,11 +243,15 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
 
   const handleSessionClick = async (session) => {
     try {
+      console.log('🎯 handleSessionClick called for session:', session.id);
       const { data: messages, error: messagesError } = await chat.getMessages(session.id);
       
       if (messagesError) {
         throw messagesError;
       }
+      
+      console.log('🎯 handleSessionClick retrieved messages:', messages?.length, 'messages');
+      console.log('🎯 Message data structure:', messages?.map(m => ({ id: m.id, role: m.role, hasId: !!m.id })));
       
       onSessionSelect(session, messages || []);
       setIsExpanded(false); // Collapse after selection
