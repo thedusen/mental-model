@@ -618,7 +618,7 @@ const GraphView = React.forwardRef(({
                 top: ${screenY}px;
                 transform: translate(-50%, -50%);
                 pointer-events: none;
-                z-index: 9999;
+                z-index: 1000;
               `;
               
               // Create the pulsing circle

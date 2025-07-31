@@ -377,20 +377,30 @@ const BusinessProfileQuestionnaire = ({
   }
 
   return (
-    <div className={`business-profile-questionnaire ${mode}`}>
+    <div 
+      className={`business-profile-questionnaire ${mode}`}
+      role="dialog"
+      aria-labelledby="questionnaire-title"
+      aria-describedby="questionnaire-description"
+    >
       {/* Close button - always visible in top right */}
       <button 
         onClick={onClose} 
         className="questionnaire-close-button"
-        aria-label="Close questionnaire"
-        disabled={isSaving}
+        aria-label="Close questionnaire and save progress"
+        title="Close questionnaire (you can resume later)"
+        type="button"
       >
         ✕
       </button>
 
       {mode === 'modal' && (
         <div className="questionnaire-header">
-          <h2>Build Your Business Profile</h2>
+          <h2 id="questionnaire-title">Build Your Business Profile</h2>
+          <p id="questionnaire-description" className="visually-hidden">
+            Interactive questionnaire to help personalize your AI chat experience. 
+            You can pause and resume at any time.
+          </p>
         </div>
       )}
 
@@ -425,23 +435,26 @@ const BusinessProfileQuestionnaire = ({
         isFirst={currentQuestionIndex === 0}
       />
 
-      <div className="questionnaire-navigation">
+      <div className="questionnaire-navigation" role="navigation" aria-label="Questionnaire navigation">
         {currentQuestionIndex > 0 && (
           <button 
             onClick={handlePrevious}
             className="nav-button previous"
             disabled={isSaving}
+            aria-label={`Go to previous question (${currentQuestionIndex} of ${progress?.total || 11})`}
+            type="button"
           >
             ← Previous Question
           </button>
         )}
-        
 
         {mode === 'modal' && (
           <button 
             onClick={onClose}
             className="nav-button pause"
             disabled={isSaving}
+            aria-label="Pause questionnaire and continue later"
+            type="button"
           >
             Pause & Continue Later
           </button>

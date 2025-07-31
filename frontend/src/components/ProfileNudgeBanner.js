@@ -60,7 +60,6 @@ const ProfileNudgeBanner = ({
     switch (userType) {
       case 'guest':
         return {
-          icon: '🚀',
           title: 'Get Personalized Business Insights',
           message: 'Sign up to build your business profile and receive tailored advice specific to your challenges and goals.',
           ctaText: 'Sign Up Free',
@@ -69,7 +68,6 @@ const ProfileNudgeBanner = ({
 
       case 'not_started':
         return {
-          icon: '💡',
           title: 'Get Better Answers Tailored to Your Business',
           message: preferredMode === 'chat' 
             ? 'I\'ll ask you some quick questions here in chat to understand your business better and provide personalized insights.'
@@ -81,7 +79,6 @@ const ProfileNudgeBanner = ({
       case 'in_progress':
         const questionsLeft = progress ? (progress.total_questions - progress.questions_completed) : 0;
         return {
-          icon: '⏳',
           title: `You Have ${questionsLeft} Questions Left`,
           message: preferredMode === 'chat'
             ? 'Let\'s continue building your business profile right here in our conversation.'
@@ -92,7 +89,6 @@ const ProfileNudgeBanner = ({
 
       case 'completed':
         return {
-          icon: '✅',
           title: 'Profile Complete!',
           message: 'Your business profile is helping me provide more personalized insights.',
           ctaText: 'Update Profile',
@@ -101,7 +97,6 @@ const ProfileNudgeBanner = ({
 
       default:
         return {
-          icon: '🎯',
           title: 'Build Your Business Profile',
           message: 'Get personalized insights by telling me about your business.',
           ctaText: 'Get Started',
@@ -116,7 +111,7 @@ const ProfileNudgeBanner = ({
     return (
       <div className={`profile-nudge-banner compact ${isAnimatingOut ? 'animating-out' : ''}`}>
         <div className="nudge-content-compact">
-          <span className="nudge-icon">{content.icon}</span>
+          {content.icon && <span className="nudge-icon">{content.icon}</span>}
           <span className="nudge-message-compact">{content.message}</span>
           <button 
             onClick={handleCTAClick}
@@ -149,7 +144,7 @@ const ProfileNudgeBanner = ({
       <div className={`profile-nudge-banner prominent ${isAnimatingOut ? 'animating-out' : ''}`}>
         <div className="nudge-content-prominent">
           <div className="nudge-header">
-            <div className="nudge-icon-large">{content.icon}</div>
+            {content.icon && <div className="nudge-icon-large">{content.icon}</div>}
             <div className="nudge-text">
               <h3 className="nudge-title">{content.title}</h3>
               <p className="nudge-message">{content.message}</p>
@@ -164,17 +159,6 @@ const ProfileNudgeBanner = ({
               </button>
             )}
           </div>
-          
-          {userType === 'in_progress' && progress && (
-            <div className="progress-section">
-              <ProfileProgressIndicator
-                current={progress.questions_completed}
-                total={progress.total_questions}
-                variant="compact"
-                size="small"
-              />
-            </div>
-          )}
           
           <div className="nudge-actions">
             <button 
@@ -216,24 +200,12 @@ const ProfileNudgeBanner = ({
       )}
       <div className="nudge-content">
         <div className="nudge-main">
-          <span className="nudge-icon">{content.icon}</span>
+          {content.icon && <span className="nudge-icon">{content.icon}</span>}
           <div className="nudge-text">
             <h4 className="nudge-title">{content.title}</h4>
             <p className="nudge-message">{content.message}</p>
           </div>
         </div>
-        
-        {userType === 'in_progress' && progress && (
-          <div className="progress-section">
-            <ProfileProgressIndicator
-              current={progress.questions_completed}
-              total={progress.total_questions}
-              variant="compact"
-              size="small"
-              showLabels={false}
-            />
-          </div>
-        )}
         
         <div className="nudge-actions">
           <button 

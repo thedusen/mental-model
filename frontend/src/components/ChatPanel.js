@@ -343,6 +343,11 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   // Expose methods to parent component
   useImperativeHandle(ref, () => ({
     handleSessionSelect: (session, sessionMessages) => {
+      console.log('🔄 handleSessionSelect called:', session.id, 'messages:', sessionMessages?.length);
+      
+      // Always clear messages first to prevent any potential duplicates
+      setMessages([]);
+      
       setCurrentSession(session);
       if (onSessionChange) {
         onSessionChange(session);
@@ -350,15 +355,18 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       
       if (sessionMessages && sessionMessages.length > 0) {
         // Convert session messages to the format expected by the chat panel
-        const formattedMessages = sessionMessages.map(msg => ({
-          id: msg.id,
+        const formattedMessages = sessionMessages.map((msg, index) => ({
+          id: msg.id || `loaded-${session.id}-${index}`, // Ensure every message has an ID
           role: msg.role,
           content: msg.content,
           context: msg.metadata?.context || []
         }));
+        
+        console.log('🔄 Setting formatted messages:', formattedMessages.length, 'message IDs:', formattedMessages.map(m => m.id));
         setMessages(formattedMessages);
         setHasMessagesEver(true);
       } else {
+        console.log('🔄 No messages to load, keeping empty state');
         setMessages([]);
       }
     },
@@ -782,6 +790,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('🚀 handleStartQuestionnaire called with mode:', mode, 'user:', user);
     console.log('🔍 Current businessProfileProgress:', businessProfileProgress);
     
+    // Dismiss the nudge when questionnaire starts (same as if user clicked the X)
+    await handleNudgeDismiss();
+    
     if (mode === 'modal') {
       setShowQuestionnaire(true);
       return;
@@ -1059,7 +1070,12 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       return;
     }
 
-    // Create session if needed (will show auth if not logged in)
+    const userMessage = { role: 'user', content: currentInput };
+    setInput('');
+    setMessages(prev => [...prev, userMessage]);
+    setLoading(true);
+
+    // Create session if needed (will show auth if not logged in) - only after we have actual content to send
     console.log('🎯 REGULAR CHAT FLOW: Direct typing flow: about to create session for user:', user?.id);
     console.log('🔍 REGULAR CHAT FLOW: This should create Zep user if successful');
     const activeSession = await createNewSessionIfNeeded();
@@ -1069,6 +1085,10 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       console.error('❌ REGULAR CHAT FLOW: session creation failed - cannot proceed');
       console.error('❌ REGULAR CHAT FLOW: Zep user was NOT created');
       setLoading(false);
+      setIsSubmitting(false);
+      
+      // Remove the user message we just added since session creation failed
+      setMessages(prev => prev.filter(msg => msg !== userMessage));
       
       // Show error message to user instead of creating temporary session
       const errorMessage = {
@@ -1082,11 +1102,6 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     
     console.log('✅ REGULAR CHAT FLOW: session ready, proceeding with chat request');
     console.log('✅ REGULAR CHAT FLOW: Zep user should have been created successfully');
-
-    const userMessage = { role: 'user', content: currentInput };
-    setInput('');
-    setMessages(prev => [...prev, userMessage]);
-    setLoading(true);
 
     // Hide nudge when user starts regular chatting
     if (user) {
@@ -1269,7 +1284,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     <>
       {/* Focus Mode Overlay */}
       
-      <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
+      <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''} ${shouldShowNudge() ? 'has-nudge' : ''}`}>
       {/* Authentication Modal */}
       {showAuth && (
         <Authentication 
@@ -1294,7 +1309,26 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       {/* Chat-integrated questionnaire progress indicator */}
       {questionnaireActive && !isCollapsed && (
         <div className="questionnaire-progress-indicator">
-          <span>Business Profile Question {questionnaireProgress.current} of {questionnaireProgress.total}</span>
+          <div className="questionnaire-controls">
+            <span className="progress-text">
+              Business Profile Question {questionnaireProgress.current} of {questionnaireProgress.total}
+            </span>
+            <div className="questionnaire-actions">
+              <button
+                type="button"
+                className="questionnaire-btn close-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleQuestionnaireCommand('pause');
+                }}
+                title="Close questionnaire"
+                aria-label="Close questionnaire"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
           <div className="progress-bar">
             <div 
               className="progress-fill" 
@@ -1355,6 +1389,21 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       )}
       {(!isCollapsed || messages.length === 0) && (
         <>
+          {/* Business Profile Nudge Banner - moved to top */}
+          {shouldShowNudge() && (
+            <ProfileNudgeBanner
+              user={user}
+              progress={businessProfileProgress}
+              onStartQuestionnaire={handleStartQuestionnaire}
+              onDismiss={handleNudgeDismiss}
+              onOpenAuth={onOpenSidebarAuth || (() => setShowAuth(true))}
+              userType={getNudgeUserType()}
+              variant="default"
+              isVisible={true}
+              canDismiss={true}
+              preferredMode="chat"
+            />
+          )}
           {messages.length > 0 && (
             <div className="messages" aria-live="polite">
               {messages.map((msg, idx) => (
@@ -1383,21 +1432,6 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
             </div>
           )}
 
-          {/* Business Profile Nudge Banner */}
-          {shouldShowNudge() && (
-            <ProfileNudgeBanner
-              user={user}
-              progress={businessProfileProgress}
-              onStartQuestionnaire={handleStartQuestionnaire}
-              onDismiss={handleNudgeDismiss}
-              onOpenAuth={onOpenSidebarAuth || (() => setShowAuth(true))}
-              userType={getNudgeUserType()}
-              variant="default"
-              isVisible={true}
-              canDismiss={true}
-              preferredMode="chat"
-            />
-          )}
           
           {/* Context Pills Container - NEW */}
           <div 

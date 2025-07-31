@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10000;
+  z-index: 999999; /* Force modal above all elements */
   padding: 20px;
 }
 
@@ -16,6 +16,7 @@
   align-items: center;
   justify-content: center;
   transition: opacity 0.3s ease;
+  z-index: 999999; /* Ensure modal mode also has high z-index */
 }
 
 .auth-overlay.modal-mode.closing {
@@ -30,6 +31,7 @@
   justify-content: flex-end;
   padding: 0;
   transition: opacity 0.3s ease;
+  z-index: 999999; /* Ensure slide mode also has high z-index */
 }
 
 .auth-overlay.slide-mode.closing {

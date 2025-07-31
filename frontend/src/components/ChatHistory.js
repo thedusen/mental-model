@@ -25,6 +25,8 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   // Session editing state
   const [editingSessionId, setEditingSessionId] = useState(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [originalTitle, setOriginalTitle] = useState('');
+  const [isCanceling, setIsCanceling] = useState(false);
   
   // Ref to track if component is mounted to prevent stuck loading
   const isMountedRef = useRef(true);
@@ -422,18 +424,21 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   const startEditingSession = (session, event) => {
     event.stopPropagation(); // Prevent session selection
     setEditingSessionId(session.id);
-    setEditingTitle(session.title || '');
+    const currentTitle = session.title || '';
+    setEditingTitle(currentTitle);
+    setOriginalTitle(currentTitle); // Store original title for cancel functionality
   };
 
   const saveSessionTitle = async (sessionId) => {
-    if (!editingTitle.trim()) {
+    const trimmedTitle = editingTitle.trim();
+    if (!trimmedTitle) {
       setError('Session title cannot be empty');
       return;
     }
 
     try {
       const { error: updateError } = await chat.updateSession(sessionId, { 
-        title: editingTitle.trim() 
+        title: trimmedTitle 
       });
       
       if (updateError) {
@@ -446,6 +451,8 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
       // Exit edit mode
       setEditingSessionId(null);
       setEditingTitle('');
+      setOriginalTitle(''); // Clear original title storage
+      setIsCanceling(false); // Reset canceling flag
       
     } catch (err) {
       console.error('Error updating session title:', err);
@@ -454,8 +461,20 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   };
 
   const cancelEditingSession = () => {
+    setIsCanceling(true);
+    
+    // Immediately restore the original title to prevent any saving
+    setEditingTitle(originalTitle);
+    
+    // Exit edit mode
     setEditingSessionId(null);
     setEditingTitle('');
+    setOriginalTitle(''); // Clear original title storage
+    
+    // Reset canceling flag after a longer delay to ensure onBlur doesn't interfere
+    setTimeout(() => {
+      setIsCanceling(false);
+    }, 200);
   };
 
   const handleEditKeyPress = (e, sessionId) => {
@@ -605,7 +624,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                 {sessions.map((session) => (
                   <div 
                     key={session.id}
-                    className={`session-item ${currentSessionId === session.id ? 'active' : ''}`}
+                    className={`session-item ${currentSessionId === session.id ? 'active' : ''} ${editingSessionId === session.id ? 'editing' : ''}`}
                     onClick={() => handleSessionClick(session)}
                     role="button"
                     tabIndex={0}
@@ -624,16 +643,37 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                             type="text"
                             className="session-title-input"
                             value={editingTitle}
-                            onChange={(e) => setEditingTitle(e.target.value)}
-                            onKeyDown={(e) => handleEditKeyPress(e, session.id)}
-                            onBlur={() => saveSessionTitle(session.id)}
+                            onChange={(e) => {
+                              setEditingTitle(e.target.value);
+                            }}
+                            onKeyDown={(e) => {
+                              e.stopPropagation(); // Prevent session click on any key press
+                              handleEditKeyPress(e, session.id);
+                            }}
+                            onKeyPress={(e) => {
+                              e.stopPropagation(); // Prevent session click on key press (especially space)
+                            }}
+                            onBlur={() => {
+                              // Add a small delay to allow cancel button to set the flag
+                              setTimeout(() => {
+                                // Don't save if we're in the process of canceling
+                                if (isCanceling) return;
+                                
+                                // Only save if the title has actually changed
+                                if (editingTitle !== originalTitle) {
+                                  saveSessionTitle(session.id);
+                                } else {
+                                  cancelEditingSession();
+                                }
+                              }, 100);
+                            }}
                             autoFocus
                             onClick={(e) => e.stopPropagation()}
                           />
                         ) : (
                           <span 
                             onDoubleClick={(e) => startEditingSession(session, e)}
-                            title="Double-click to edit"
+                            title={`${session.title || 'Untitled conversation'} (Double-click to edit)`}
                           >
                             {truncateTitle(session.title)}
                           </span>
@@ -662,8 +702,13 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                           </button>
                           <button
                             className="cancel-button"
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // Prevent input from losing focus
+                              e.stopPropagation();
+                            }}
                             onClick={(e) => {
                               e.stopPropagation();
+                              e.preventDefault();
                               cancelEditingSession();
                             }}
                             aria-label="Cancel editing"
@@ -771,7 +816,7 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
               {sessions.map((session) => (
                 <div 
                   key={session.id}
-                  className={`session-item ${currentSessionId === session.id ? 'active' : ''}`}
+                  className={`session-item ${currentSessionId === session.id ? 'active' : ''} ${editingSessionId === session.id ? 'editing' : ''}`}
                   onClick={() => handleSessionClick(session)}
                   role="button"
                   tabIndex={0}
@@ -790,16 +835,37 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                           type="text"
                           className="session-title-input"
                           value={editingTitle}
-                          onChange={(e) => setEditingTitle(e.target.value)}
-                          onKeyDown={(e) => handleEditKeyPress(e, session.id)}
-                          onBlur={() => saveSessionTitle(session.id)}
+                          onChange={(e) => {
+                            setEditingTitle(e.target.value);
+                          }}
+                          onKeyDown={(e) => {
+                            e.stopPropagation(); // Prevent session click on any key press
+                            handleEditKeyPress(e, session.id);
+                          }}
+                          onKeyPress={(e) => {
+                            e.stopPropagation(); // Prevent session click on key press (especially space)
+                          }}
+                          onBlur={() => {
+                            // Add a small delay to allow cancel button to set the flag
+                            setTimeout(() => {
+                              // Don't save if we're in the process of canceling
+                              if (isCanceling) return;
+                              
+                              // Only save if the title has actually changed
+                              if (editingTitle !== originalTitle) {
+                                saveSessionTitle(session.id);
+                              } else {
+                                cancelEditingSession();
+                              }
+                            }, 100);
+                          }}
                           autoFocus
                           onClick={(e) => e.stopPropagation()}
                         />
                       ) : (
                         <span 
                           onDoubleClick={(e) => startEditingSession(session, e)}
-                          title="Double-click to edit"
+                          title={`${session.title || 'Untitled conversation'} (Double-click to edit)`}
                         >
                           {truncateTitle(session.title)}
                         </span>
@@ -828,8 +894,13 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                         </button>
                         <button
                           className="cancel-button"
+                          onMouseDown={(e) => {
+                            e.preventDefault(); // Prevent input from losing focus
+                            e.stopPropagation();
+                          }}
                           onClick={(e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                             cancelEditingSession();
                           }}
                           aria-label="Cancel editing"
