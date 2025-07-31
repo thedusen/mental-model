@@ -6,15 +6,23 @@ import { auth, chat } from '../utils/supabase';
 import Authentication from './Authentication';
 import BusinessProfileQuestionnaire from './BusinessProfileQuestionnaire';
 import ProfileNudgeBanner from './ProfileNudgeBanner';
+import FullscreenModal from './FullscreenModal';
 import './ChatPanel.css';
 
-const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange, onOpenSidebarAuth }, ref) => {
+const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange, onOpenSidebarAuth, nudgeDismissalData, onNudgeDismiss }, ref) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenMode, setFullscreenMode] = useState('none'); // 'none' | 'theater' | 'focus' | 'zen'
+  const [preferredFullscreenMode, setPreferredFullscreenMode] = useState(() => {
+    try {
+      return localStorage.getItem('preferred-fullscreen-mode') || 'theater';
+    } catch {
+      return 'theater';
+    }
+  });
   const [hasMessagesEver, setHasMessagesEver] = useState(false);
   const textareaRef = useRef(null);
 
@@ -302,35 +310,6 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       setIsSubmitting(false);
     }
   };
-  // Nudge dismissal state management
-  const [nudgeDismissalData, setNudgeDismissalData] = useState(() => {
-    try {
-      const stored = localStorage.getItem('nudge-dismissal-data');
-      if (stored) {
-        return JSON.parse(stored);
-      }
-      
-      // Migration: check for old dismissal key
-      const oldDismissed = localStorage.getItem('business-profile-dismissed') === 'true';
-      const initialData = {
-        guest: { count: oldDismissed ? 1 : 0, lastDismissed: oldDismissed ? Date.now() : null },
-        authenticated: { dismissed: false }
-      };
-      
-      // Clean up old key
-      if (oldDismissed) {
-        localStorage.removeItem('business-profile-dismissed');
-        localStorage.setItem('nudge-dismissal-data', JSON.stringify(initialData));
-      }
-      
-      return initialData;
-    } catch {
-      return {
-        guest: { count: 0, lastDismissed: null },
-        authenticated: { dismissed: false }
-      };
-    }
-  });
 
   // Use environment variable for API URL, fallback to localhost for development
   let API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -441,9 +420,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   // Notify parent component when fullscreen state changes
   useEffect(() => {
     if (onFullscreenChange) {
-      onFullscreenChange(isFullscreen);
+      onFullscreenChange(fullscreenMode !== 'none');
     }
-  }, [isFullscreen, onFullscreenChange]);
+  }, [fullscreenMode, onFullscreenChange]);
 
   // Handle external input from suggestion buttons
   useEffect(() => {
@@ -579,17 +558,18 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     loadBusinessProfileData();
   }, [user, API_URL]);
 
-  // Reset authenticated dismissal when user logs in (show nudge even if dismissed as guest)
+  // Listen for questionnaire start from sidebar
   useEffect(() => {
-    if (user && nudgeDismissalData.authenticated.dismissed) {
-      const newDismissalData = {
-        ...nudgeDismissalData,
-        authenticated: { dismissed: false }
-      };
-      setNudgeDismissalData(newDismissalData);
-      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
-    }
-  }, [user?.id]); // Only run when user ID changes (login/logout)
+    const handleQuestionnaireFromSidebar = (event) => {
+      console.log('🔄 Questionnaire start triggered from sidebar:', event.detail);
+      handleStartQuestionnaire(event.detail.mode);
+    };
+
+    window.addEventListener('startQuestionnaireFromSidebar', handleQuestionnaireFromSidebar);
+    return () => {
+      window.removeEventListener('startQuestionnaireFromSidebar', handleQuestionnaireFromSidebar);
+    };
+  }, []); // Empty dependency array, access function via closure
 
   // Save messages to current session when they change
   useEffect(() => {
@@ -966,58 +946,24 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
   };
 
-  const handleNudgeDismiss = async () => {
-    const now = Date.now();
-    let newDismissalData;
-    
-    if (user) {
-      // Authenticated user dismissal - only dismiss until they complete profile
-      newDismissalData = {
-        ...nudgeDismissalData,
-        authenticated: { dismissed: true, lastDismissed: now }
-      };
-      
-      // Record dismissal on backend
-      try {
-        await fetch(`${API_URL}/api/business-profile/nudge-dismissed`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ user_id: user.id }),
-        });
-      } catch (error) {
-        console.error('Error recording nudge dismissal:', error);
-      }
-    } else {
-      // Guest user dismissal - track count and implement 3-strike rule
-      const newCount = nudgeDismissalData.guest.count + 1;
-      newDismissalData = {
-        ...nudgeDismissalData,
-        guest: { 
-          count: newCount, 
-          lastDismissed: now 
-        }
-      };
-    }
-    
-    setNudgeDismissalData(newDismissalData);
-    localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+  // Handle nudge dismissal - now uses parent handler
+  const handleNudgeDismiss = () => {
+    onNudgeDismiss?.(user);
   };
 
   const shouldShowNudge = () => {
+    
     if (showQuestionnaire || questionnaireActive) return false;
+    
+    // Ensure nudgeDismissalData is available
+    if (!nudgeDismissalData) {
+      return false;
+    }
     
     if (!user) {
       // Guest user logic - implement 3-strike rule with cooldown
-      const guestData = nudgeDismissalData.guest;
+      const guestData = nudgeDismissalData.guest || { count: 0, lastDismissed: null };
       
-      console.log('🎯 Guest nudge check:', { 
-        count: guestData.count, 
-        lastDismissed: guestData.lastDismissed,
-        shouldShow: guestData.count < 3 || (guestData.count >= 3 && 
-          (Date.now() - guestData.lastDismissed) / (1000 * 60 * 60) >= 24)
-      });
       
       // If dismissed 3+ times, check cooldown (24 hours)
       if (guestData.count >= 3) {
@@ -1030,13 +976,8 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
     
     // Authenticated user logic
-    const authData = nudgeDismissalData.authenticated;
+    const authData = nudgeDismissalData.authenticated || { dismissed: false, lastDismissed: null };
     
-    console.log('🔐 Auth nudge check:', { 
-      dismissed: authData.dismissed,
-      userType: nudgeStatus?.user_type,
-      shouldShowFromStatus: nudgeStatus?.should_show_nudge
-    });
     
     // Use the new questionnaire progress status
     if (businessProfileProgress) {
@@ -1345,12 +1286,34 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     setShowAuth(false);
   };
 
+  // Handle fullscreen mode change with preference saving
+  const handleFullscreenModeChange = (mode) => {
+    setFullscreenMode(mode);
+    if (mode !== 'none') {
+      setPreferredFullscreenMode(mode);
+      try {
+        localStorage.setItem('preferred-fullscreen-mode', mode);
+      } catch (error) {
+        console.warn('Failed to save fullscreen preference:', error);
+      }
+    }
+  };
+
+  // Toggle fullscreen using preferred mode
+  const toggleFullscreen = () => {
+    if (fullscreenMode === 'none') {
+      setFullscreenMode(preferredFullscreenMode);
+    } else {
+      setFullscreenMode('none');
+    }
+  };
+
 
   return (
     <>
       {/* Focus Mode Overlay */}
       
-      <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''} ${shouldShowNudge() ? 'has-nudge' : ''}`}>
+      <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''} ${shouldShowNudge() ? 'has-nudge' : ''}`}>
       {/* Authentication Modal */}
       {showAuth && (
         <Authentication 
@@ -1410,9 +1373,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       {messages.length > 0 && (
         <div className="chat-header" onClick={() => {
           setIsCollapsed(!isCollapsed);
-          if (!isCollapsed && isFullscreen) {
+          if (!isCollapsed && fullscreenMode !== 'none') {
             // Exit fullscreen when collapsing
-            setIsFullscreen(false);
+            setFullscreenMode('none');
           }
         }}>
           <h3 className="chat-title">Chat</h3>
@@ -1422,13 +1385,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               className="chat-toggle fullscreen-toggle" 
               onClick={(e) => {
                 e.stopPropagation();
-                setIsFullscreen(!isFullscreen);
+                toggleFullscreen();
                 if (isCollapsed) setIsCollapsed(false); // Expand if collapsed when going fullscreen
               }}
-              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              aria-label={fullscreenMode !== 'none' ? 'Exit fullscreen' : 'Enter fullscreen'}
             >
-              <span>{isFullscreen ? 'Exit Full Screen' : 'Full Screen'}</span>
-              {isFullscreen ? (
+              <span>{fullscreenMode !== 'none' ? 'Exit Full Screen' : 'Full Screen'}</span>
+              {fullscreenMode !== 'none' ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
                   <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
@@ -1552,6 +1515,145 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         </>
       )}
     </div>
+
+    {/* Fullscreen Modal */}
+    <FullscreenModal
+      mode={fullscreenMode === 'none' ? preferredFullscreenMode : fullscreenMode}
+      isOpen={fullscreenMode !== 'none'}
+      onClose={() => setFullscreenMode('none')}
+      onModeChange={handleFullscreenModeChange}
+    >
+      {/* Clone the chat content for fullscreen mode */}
+      <div className={`chat-panel-fullscreen ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
+        {/* Chat-integrated questionnaire progress indicator */}
+        {questionnaireActive && (
+          <div className="questionnaire-progress-indicator">
+            <div className="questionnaire-controls">
+              <span className="progress-text">
+                Business Profile Question {questionnaireProgress.current} of {questionnaireProgress.total}
+              </span>
+              <div className="questionnaire-actions">
+                <button
+                  type="button"
+                  className="questionnaire-btn close-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleQuestionnaireCommand('pause');
+                  }}
+                  title="Close questionnaire"
+                  aria-label="Close questionnaire"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="progress-bar">
+              <div 
+                className="progress-fill" 
+                style={{ width: `${(questionnaireProgress.current / questionnaireProgress.total) * 100}%` }}
+              />
+            </div>
+            <div className="questionnaire-commands">
+              <span>Type "skip" or "previous" to navigate. Type "pause" to exit and finish later.</span>
+            </div>
+          </div>
+        )}
+
+        {/* Business Profile Nudge Banner - moved to top */}
+        {shouldShowNudge() && (
+          <ProfileNudgeBanner
+            user={user}
+            progress={businessProfileProgress}
+            onStartQuestionnaire={handleStartQuestionnaire}
+            onDismiss={handleNudgeDismiss}
+            onOpenAuth={onOpenSidebarAuth || (() => setShowAuth(true))}
+            userType={getNudgeUserType()}
+            variant="default"
+            isVisible={true}
+            canDismiss={true}
+            preferredMode="chat"
+          />
+        )}
+
+        {messages.length > 0 && (
+          <div className="messages" aria-live="polite">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`message-wrapper ${msg.role}`}>
+                <div className="message">
+                  <div className="message-content">
+                    {(msg.role === 'assistant') ? (
+                      <div className="markdown-content">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      msg.content
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
+                <div className="message loading">
+                  <div className="dot-flashing"></div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+
+        {/* Context Pills Container */}
+        <div 
+          className="context-pills-container" 
+          aria-live="polite" 
+          aria-atomic="false"
+          role="region"
+          aria-label="Chat context nodes"
+        >
+          {chatContextNode && (
+            <div className="context-pill" role="group" aria-label={`Chat context: ${chatContextNode.properties?.name || chatContextNode.name || 'Unknown node'}`}>
+              <span className="pill-text">
+                {chatContextNode.properties?.name || chatContextNode.name || chatContextNode.properties?.label || chatContextNode.label || 'Unknown'}
+              </span>
+              <button 
+                className="pill-remove-btn"
+                onClick={onClearChatContext}
+                aria-label={`Remove "${chatContextNode.properties?.name || chatContextNode.name || 'this node'}" from chat context`}
+                title="Remove from chat context"
+              >
+                &times;
+              </button>
+            </div>
+          )}
+        </div>
+        
+        <div className="input-area">
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholderText}
+            disabled={loading || isSubmitting}
+            rows={1}
+            aria-label="Chat message input"
+          />
+          <button 
+            onClick={sendMessage} 
+            disabled={loading || isSubmitting || !input.trim()} 
+            title="Send message" 
+            aria-label="Send message"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </FullscreenModal>
     </>
   );
 });

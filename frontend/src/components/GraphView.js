@@ -936,12 +936,12 @@ const GraphView = React.forwardRef(({
             maxZoom: 8,
             renderer: 'canvas', // Explicitly set canvas renderer
             // New options to control the NVL legend
-            legend: {
-              enabled: true,
-              orientation: 'top-left', // Move legend to top-left
-              isCollapsed: isLegendMinimized, // Control collapse state
-              onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
-            },
+            // legend: {
+            //   enabled: true,
+            //   orientation: 'top-left', // Move legend to top-left
+            //   isCollapsed: isLegendMinimized, // Control collapse state
+            //   onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
+            // },
           }}
           layoutOptions={{
             // Reduced spacing parameters by 15% from extreme values

@@ -1,18 +1,20 @@
 - Backup model on anthropic API fail
 - remove"great next question"
 - Chat not submitting on enter key
-- double messages
+- ✅ double messages
 - immediately make enter button disabled on submitting
-- Don't save empty conversations
-- fix persistance of nudge "Let's chat!"
-- make question box disappear after immediately
-- add additional escape words for profile questions
+- ✅ Don't save empty conversations
+- ✅ fix persistance of nudge "Let's chat!"
+- ✅ make question box disappear after immediately
+- ✅ add additional escape words for profile questions
 - return to previous chat after questions
 - focus on fields for sign up and sign in
-- editing conversation names doesn't allow for spaces
+- ✅ editing conversation names doesn't allow for spaces
 - Analyze https://manus.im/
     - 
     - 
+- Fix loading issues with conversation history
+- ✅ Chats should load when clicking name.  Double click edits the name
 
 zep fixes:
 - extremely long chat delay

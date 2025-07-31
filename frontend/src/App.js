@@ -29,6 +29,25 @@ function App() {
   // Chat input state for passing messages from intro panel to chat
   const [chatInput, setChatInput] = useState('');
   
+  // Nudge dismissal state management - lifted from ChatPanel for sidebar integration
+  const [nudgeDismissalData, setNudgeDismissalData] = useState(() => {
+    try {
+      const stored = localStorage.getItem('nudge-dismissal-data');
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (error) {
+      console.error('Error loading nudge dismissal data:', error);
+    }
+    return {
+      guest: { count: 0, lastDismissed: null },
+      authenticated: { dismissed: false, lastDismissed: null }
+    };
+  });
+  
+  // Sidebar nudge visibility state - shows when chat nudge is dismissed
+  const [showSidebarNudge, setShowSidebarNudge] = useState(false);
+  
   // Authentication trigger ref - function to trigger auth sidebar
   const authTriggerRef = useRef(null);
 
@@ -178,6 +197,41 @@ function App() {
         chatInput.focus();
       }
     }, 100);
+  };
+
+  // Nudge dismissal handlers
+  const handleChatNudgeDismiss = (user) => {
+    const now = Date.now();
+    let newDismissalData;
+    
+    if (user) {
+      // Authenticated user dismissal - dismiss chat nudge and show sidebar nudge
+      newDismissalData = {
+        ...nudgeDismissalData,
+        authenticated: { dismissed: true, lastDismissed: now }
+      };
+      setShowSidebarNudge(true);
+    } else {
+      // Guest user dismissal - track count and show sidebar nudge
+      const newCount = nudgeDismissalData.guest.count + 1;
+      newDismissalData = {
+        ...nudgeDismissalData,
+        guest: { 
+          count: newCount, 
+          lastDismissed: now 
+        }
+      };
+      setShowSidebarNudge(true);
+    }
+    
+    setNudgeDismissalData(newDismissalData);
+    localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+  };
+
+  const handleSidebarNudgeDismiss = (user) => {
+    // Sidebar nudge dismissal - hide for current session only
+    setShowSidebarNudge(false);
+    // Note: we don't update the dismissal data here - sidebar nudges reappear in new sessions
   };
 
   // Search handlers
@@ -420,6 +474,9 @@ function App() {
           isCollapsed={isLeftSidebarCollapsed}
           onToggleCollapse={() => setIsLeftSidebarCollapsed(!isLeftSidebarCollapsed)}
           onAuthTrigger={(triggerFn) => { authTriggerRef.current = triggerFn; }}
+          showSidebarNudge={showSidebarNudge}
+          nudgeDismissalData={nudgeDismissalData}
+          onSidebarNudgeDismiss={handleSidebarNudgeDismiss}
         />
         
         <main className={`main-content ${isLeftSidebarCollapsed ? 'sidebar-collapsed' : ''}`} id="main-content" role="main">
@@ -442,7 +499,7 @@ function App() {
           
           <div className="graph-container">
             <div className="graph-view-area">
-              <NodeTypesPanel onFilterChange={setNodeFilters} />
+              {/* <NodeTypesPanel onFilterChange={setNodeFilters} /> */}
               <GraphView 
                 ref={graphViewRef}
                 onNodeSelect={(node) => {
@@ -475,6 +532,8 @@ function App() {
                 onExternalInputReceived={() => setChatInput('')}
                 onSessionChange={setCurrentChatSession}
                 onOpenSidebarAuth={() => authTriggerRef.current && authTriggerRef.current()}
+                nudgeDismissalData={nudgeDismissalData}
+                onNudgeDismiss={handleChatNudgeDismiss}
               />
             </div>
           </div>
