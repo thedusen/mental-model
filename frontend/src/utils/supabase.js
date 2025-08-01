@@ -142,10 +142,14 @@ export const auth = {
 
   // Sign in with Google
   signInWithGoogle: async () => {
+    // Get the current origin for redirect
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+    console.log('OAuth redirect URL:', redirectUrl);
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: redirectUrl
       }
     });
     return { data, error };
