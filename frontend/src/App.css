@@ -170,6 +170,11 @@
   flex-shrink: 0;
 }
 
+/* Increase container height when nudge banner is present */
+.chat-container.has-nudge {
+  max-height: 640px; /* 600px chat panel + 16px top padding + 24px bottom padding */
+}
+
 .chat-container.fullscreen {
   position: fixed;
   top: 0;
