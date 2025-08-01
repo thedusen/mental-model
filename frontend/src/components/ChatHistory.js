@@ -31,6 +31,11 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
   // Ref to track if component is mounted to prevent stuck loading
   const isMountedRef = useRef(true);
   
+  // Debouncing and deduplication refs
+  const debounceTimerRef = useRef(null);
+  const activeRequestRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
+  
   // Debug: Log when component mounts
   useEffect(() => {
     console.log('🎬 ChatHistory component mounted');
@@ -58,25 +63,50 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
     };
   }, [isLoading]);
 
-  // Memoized loadSessions function to prevent recreation on every render
-  const loadSessions = useCallback(async (userToCheck = null, isRetry = false) => {
+  // Memoized loadSessions function with debouncing and request deduplication
+  const loadSessions = useCallback(async (userToCheck = null, isRetry = false, skipDebounce = false) => {
     const currentUser = userToCheck || user;
-    console.log('🔍 loadSessions called - user:', currentUser, 'isRetry:', isRetry);
+    console.log('🔍 loadSessions called - user:', currentUser, 'isRetry:', isRetry, 'skipDebounce:', skipDebounce);
+    
     if (!currentUser) {
       setIsLoading(false);
       return;
     }
+
+    // If there's already an active request and this isn't a retry, skip this call
+    if (activeRequestRef.current && !isRetry) {
+      console.log('🔄 Skipping loadSessions - request already in progress');
+      return;
+    }
+
+    // Clear any existing debounce timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+
+    // If not skipping debounce and not a retry, debounce the call
+    if (!skipDebounce && !isRetry) {
+      console.log('⏳ Debouncing loadSessions call');
+      debounceTimerRef.current = setTimeout(() => {
+        loadSessions(userToCheck, isRetry, true);
+      }, 300); // 300ms debounce
+      return;
+    }
+
+    // Mark that we have an active request
+    activeRequestRef.current = Date.now();
     
     setIsLoading(true);
     setError(null);
-    setShowRefreshButton(false); // Restore proper state management
+    setShowRefreshButton(false);
     
     try {
       console.log('📞 Calling chat.getSessions()...');
       
       // Add timeout to prevent infinite loading with better error handling
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Request timeout - please check your internet connection')), 10000);
+        setTimeout(() => reject(new Error('Request timeout - please check your internet connection')), 30000);
       });
       
       const sessionPromise = chat.getSessions();
@@ -121,23 +151,31 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
       
       // Only update state if component is still mounted
       if (isMountedRef.current) {
-        // More specific error handling with better user messaging
+        // More specific error handling with better user messaging and retry instructions
         let errorMessage = 'Failed to load chat history';
         let shouldShowRetry = true;
         
         if (err.message && err.message.includes('JWT')) {
-          errorMessage = 'Authentication expired - please sign in again';
+          errorMessage = 'Authentication expired. Please sign in again to continue.';
           shouldShowRetry = false;
         } else if (err.message && err.message.includes('network')) {
-          errorMessage = 'Network error - please check your internet connection and try again';
+          errorMessage = 'Network connection issue. Check your internet connection and try again.';
         } else if (err.message && err.message.includes('timeout')) {
-          errorMessage = 'Connection timeout - the server is taking too long to respond';
+          errorMessage = 'Server response timeout. The server is taking too long - try again or check your connection.';
         } else if (err.message && err.message.includes('CORS')) {
-          errorMessage = 'Server connection issue - please try refreshing the page';
+          errorMessage = 'Server connection blocked. Try refreshing the page or check if you\'re behind a firewall.';
         } else if (err.message && err.message.includes('500')) {
-          errorMessage = 'Server error - please try again in a moment';
+          errorMessage = 'Server temporarily unavailable. Please wait a moment and try again.';
+        } else if (err.message && err.message.includes('400')) {
+          errorMessage = 'Invalid request. Try refreshing the page or signing out and back in.';
+        } else if (err.message && err.message.includes('403')) {
+          errorMessage = 'Access denied. Please check your permissions or sign in again.';
+        } else if (err.message && err.message.includes('404')) {
+          errorMessage = 'Chat service not found. The server may be under maintenance.';
         } else if (err.message) {
-          errorMessage = `Connection failed: ${err.message}`;
+          errorMessage = `Connection failed: ${err.message}. Try the refresh button below.`;
+        } else {
+          errorMessage = 'Unable to load chat history. Click refresh to try again.';
         }
         
         setError(errorMessage);
@@ -152,6 +190,8 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
       }
     } finally {
       console.log('🏁 Finally block reached - isMountedRef.current:', isMountedRef.current);
+      // Clear the active request marker
+      activeRequestRef.current = null;
       // Always set loading to false - React state updates are safe
       console.log('🏁 Setting isLoading to false');
       setIsLoading(false);
@@ -221,6 +261,21 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
     return () => {
       subscription.unsubscribe();
       isMountedRef.current = false;
+      
+      // Clear any pending debounce timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      
+      // Clear active request marker
+      activeRequestRef.current = null;
+      
+      // Clear search timeout
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+        searchTimeoutRef.current = null;
+      }
     };
   }, []);
 
@@ -333,7 +388,10 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
 
   // Search functionality
   const handleSearch = async (query) => {
+    console.log('🔍 handleSearch called with query:', query, 'user:', user?.id);
+    
     if (!user || !query || query.trim().length < 2) {
+      console.log('🔍 Search skipped - missing user or query too short');
       return;
     }
 
@@ -342,19 +400,23 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
 
     try {
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-      const response = await fetch(
-        `${API_URL}/api/chat/search?user_id=${encodeURIComponent(user.id)}&q=${encodeURIComponent(query.trim())}&limit=20`
-      );
+      const searchUrl = `${API_URL}/api/chat/search?user_id=${encodeURIComponent(user.id)}&q=${encodeURIComponent(query.trim())}&limit=20`;
+      console.log('🔍 Making search request to:', searchUrl);
+      
+      const response = await fetch(searchUrl);
 
       if (!response.ok) {
-        throw new Error(`Search failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error('🔍 Search request failed:', response.status, errorText);
+        throw new Error(`Search failed: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
+      console.log('🔍 Search response:', data);
       setSearchResults(data.results || []);
     } catch (err) {
-      console.error('Search error:', err);
-      setSearchError('Failed to search messages');
+      console.error('🔍 Search error:', err);
+      setSearchError(`Failed to search messages: ${err.message}`);
       setSearchResults([]);
     } finally {
       setIsSearchLoading(false);
@@ -365,15 +427,19 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
     const query = e.target.value;
     setSearchQuery(query);
     
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
     // Debounce search
     if (query.trim().length >= 2) {
-      setTimeout(() => {
-        if (query === searchQuery) { // Only search if query hasn't changed
-          handleSearch(query);
-        }
+      searchTimeoutRef.current = setTimeout(() => {
+        handleSearch(query);
       }, 300);
     } else {
       setSearchResults([]);
+      setSearchError(null);
     }
   };
 
@@ -654,9 +720,6 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                               e.stopPropagation(); // Prevent session click on any key press
                               handleEditKeyPress(e, session.id);
                             }}
-                            onKeyPress={(e) => {
-                              e.stopPropagation(); // Prevent session click on key press (especially space)
-                            }}
                             onBlur={() => {
                               // Add a small delay to allow cancel button to set the flag
                               setTimeout(() => {
@@ -845,9 +908,6 @@ const ChatHistory = ({ onSessionSelect, currentSessionId, sidebarMode = false })
                           onKeyDown={(e) => {
                             e.stopPropagation(); // Prevent session click on any key press
                             handleEditKeyPress(e, session.id);
-                          }}
-                          onKeyPress={(e) => {
-                            e.stopPropagation(); // Prevent session click on key press (especially space)
                           }}
                           onBlur={() => {
                             // Add a small delay to allow cancel button to set the flag

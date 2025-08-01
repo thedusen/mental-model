@@ -306,13 +306,12 @@
 }
 
 .chat-history.sidebar-mode .session-item {
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
   border: 1px solid #e9ecef;
   border-radius: 8px;
   padding: 16px;
   background: #fff;
   transition: all 0.2s ease;
-  border-bottom: none;
 }
 
 .chat-history.sidebar-mode .session-item:hover {

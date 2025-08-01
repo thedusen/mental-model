@@ -282,7 +282,11 @@ export const chat = {
           lastError = error;
           if (attempt < retries) {
             console.log(`⚠️ Attempt ${attempt} failed, retrying...`);
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
+            // Exponential backoff with jitter to prevent thundering herd
+            const baseDelay = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s, 8s...
+            const jitter = Math.random() * 500; // 0-500ms random jitter
+            const delay = Math.min(baseDelay + jitter, 10000); // Cap at 10 seconds
+            await new Promise(resolve => setTimeout(resolve, delay));
             continue;
           }
         }
@@ -292,7 +296,11 @@ export const chat = {
         lastError = err;
         if (attempt < retries) {
           console.log(`⚠️ Attempt ${attempt} failed with error:`, err.message);
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          // Exponential backoff with jitter for catch block too
+          const baseDelay = 1000 * Math.pow(2, attempt - 1);
+          const jitter = Math.random() * 500;
+          const delay = Math.min(baseDelay + jitter, 10000);
+          await new Promise(resolve => setTimeout(resolve, delay));
           continue;
         }
       }

@@ -10,6 +10,15 @@ import FullscreenModal from './FullscreenModal';
 import './ChatPanel.css';
 
 const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange, onOpenSidebarAuth, nudgeDismissalData, onNudgeDismiss }, ref) => {
+  // Validate required props to prevent runtime errors
+  React.useEffect(() => {
+    if (!onNudgeDismiss) {
+      console.warn('ChatPanel: onNudgeDismiss prop is missing - nudge dismissal will not work properly');
+    }
+    if (!nudgeDismissalData) {
+      console.warn('ChatPanel: nudgeDismissalData prop is missing - nudge display may not work properly');
+    }
+  }, [onNudgeDismiss, nudgeDismissalData]);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -379,7 +388,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       setTimeout(() => {
         setIsLoadingSession(false);
         console.log('🔄 Session loading complete, save operations re-enabled');
-      }, 100);
+        
+        // Focus the chat input after session is loaded
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          console.log('🔄 Chat input focused after session selection');
+        }
+      }, 150); // Slightly longer delay to ensure all DOM updates are complete
     },
     handleNewChat: () => {
       setCurrentSession(null);
@@ -388,6 +403,14 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       if (onSessionChange) {
         onSessionChange(null);
       }
+      
+      // Focus the chat input for new chat
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          console.log('🔄 Chat input focused for new chat');
+        }
+      }, 100);
     }
   }));
 
@@ -1110,27 +1133,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('✅ REGULAR CHAT FLOW: session ready, proceeding with chat request');
     console.log('✅ REGULAR CHAT FLOW: Zep user should have been created successfully');
 
-    // Hide nudge when user starts regular chatting
-    if (user) {
-      // For authenticated users, mark nudge as dismissed
-      const newDismissalData = {
-        ...nudgeDismissalData,
-        authenticated: { dismissed: true, lastDismissed: Date.now() }
-      };
-      setNudgeDismissalData(newDismissalData);
-      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
-    } else {
-      // For guest users, increment dismissal count
-      const newCount = nudgeDismissalData.guest.count + 1;
-      const newDismissalData = {
-        ...nudgeDismissalData,
-        guest: { 
-          count: newCount, 
-          lastDismissed: Date.now() 
-        }
-      };
-      setNudgeDismissalData(newDismissalData);
-      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+    // Hide nudge when user starts regular chatting - use callback to parent
+    if (onNudgeDismiss) {
+      onNudgeDismiss(user);
     }
 
     try {
@@ -1433,33 +1438,31 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               preferredMode="chat"
             />
           )}
-          {messages.length > 0 && (
-            <div className="messages" aria-live="polite">
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`message-wrapper ${msg.role}`}>
-                  <div className="message">
-                    <div className="message-content">
-                      {(msg.role === 'assistant') ? (
-                        <div className="markdown-content">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-                        </div>
-                      ) : (
-                        msg.content
-                      )}
-                    </div>
+          <div className="messages" aria-live="polite">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`message-wrapper ${msg.role}`}>
+                <div className="message">
+                  <div className="message-content">
+                    {(msg.role === 'assistant') ? (
+                      <div className="markdown-content">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      msg.content
+                    )}
                   </div>
                 </div>
-              ))}
-              {loading && (
-                <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
-                  <div className="message loading">
-                    <div className="dot-flashing"></div>
-                  </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
+                <div className="message loading">
+                  <div className="dot-flashing"></div>
                 </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-          )}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
 
           
           {/* Context Pills Container - NEW */}
@@ -1576,33 +1579,31 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
           />
         )}
 
-        {messages.length > 0 && (
-          <div className="messages" aria-live="polite">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`message-wrapper ${msg.role}`}>
-                <div className="message">
-                  <div className="message-content">
-                    {(msg.role === 'assistant') ? (
-                      <div className="markdown-content">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-                      </div>
-                    ) : (
-                      msg.content
-                    )}
-                  </div>
+        <div className="messages" aria-live="polite">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`message-wrapper ${msg.role}`}>
+              <div className="message">
+                <div className="message-content">
+                  {(msg.role === 'assistant') ? (
+                    <div className="markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    msg.content
+                  )}
                 </div>
               </div>
-            ))}
-            {loading && (
-              <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
-                <div className="message loading">
-                  <div className="dot-flashing"></div>
-                </div>
+            </div>
+          ))}
+          {loading && (
+            <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
+              <div className="message loading">
+                <div className="dot-flashing"></div>
               </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        )}
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
         {/* Context Pills Container */}
         <div 
