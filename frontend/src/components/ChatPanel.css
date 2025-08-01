@@ -251,7 +251,6 @@
 .chat-panel.has-nudge:not(.collapsed) .messages {
   max-height: calc(100vh - 400px); /* Account for nudge banner + other elements */
 }
-
 .chat-panel.no-messages {
   height: auto;
   min-height: auto;
