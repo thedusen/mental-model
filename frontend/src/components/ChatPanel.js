@@ -20,12 +20,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
   }, [onNudgeDismiss, nudgeDismissalData]);
   
-  // Notify parent component when nudge visibility changes
-  React.useEffect(() => {
-    if (onNudgeVisibilityChange) {
-      onNudgeVisibilityChange(shouldShowNudge());
-    }
-  }, [onNudgeVisibilityChange, user, businessProfileProgress, nudgeStatus, nudgeDismissalData, showQuestionnaire, questionnaireActive]);
+  // Notify parent component when nudge visibility changes - moved to after shouldShowNudge function definition
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -1043,6 +1038,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     
     return nudgeStatus?.should_show_nudge || false;
   };
+
+  // Notify parent component when nudge visibility changes
+  React.useEffect(() => {
+    if (onNudgeVisibilityChange) {
+      onNudgeVisibilityChange(shouldShowNudge());
+    }
+  }, [onNudgeVisibilityChange, user, businessProfileProgress, nudgeStatus, nudgeDismissalData, showQuestionnaire, questionnaireActive]);
 
   const getNudgeUserType = () => {
     if (!user) return 'guest';
