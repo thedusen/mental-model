@@ -165,7 +165,7 @@
   z-index: 1000;
   pointer-events: none;
   height: auto;
-  max-height: 400px;
+  max-height: 540px; /* 500px chat panel + 16px top padding + 24px bottom padding */
   transition: height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
   flex-shrink: 0;
 }
