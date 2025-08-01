@@ -1,16 +1,16 @@
 .chat-panel {
   display: flex;
   flex-direction: column;
-  background-color: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), 
+  transition: height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), 
+              min-height 0.3s ease,
+              max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
               border-radius 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
               border-color 0.3s ease;
   overflow: hidden;
-  height: 500px; /* Fixed height for consistent input positioning */
-  min-height: 500px;
-  max-height: 500px;
+  /* Dynamic height - no fixed height when empty */
+  height: auto;
+  min-height: auto;
   max-width: 40rem;
   margin: 0 auto;
 }
@@ -236,9 +236,20 @@
 
 /* When nudge banner is present in normal (non-collapsed) state, increase height */
 .chat-panel.has-nudge:not(.collapsed) {
+  /* Only apply fixed height if messages are present, otherwise keep dynamic */
+  min-height: 100px; /* Minimum to accommodate nudge banner */
+}
+
+/* When nudge banner AND messages are both present */
+.chat-panel.has-nudge.has-messages:not(.collapsed) {
   height: 600px !important;
   min-height: 600px !important;
   max-height: 600px !important;
+}
+
+/* Ensure nudge banner space is properly accounted for */
+.chat-panel.has-nudge:not(.collapsed) .messages {
+  max-height: calc(100vh - 400px); /* Account for nudge banner + other elements */
 }
 
 .chat-panel.no-messages {
@@ -247,8 +258,10 @@
 }
 
 .chat-panel.has-messages {
-  /* Smooth transition handled by main transition */
-  min-height: 120px; /* Ensure minimum space for messages */
+  /* Apply fixed height after first message for consistent input positioning */
+  height: 500px;
+  min-height: 500px;
+  max-height: 500px;
 }
 
 .chat-panel.collapsed {

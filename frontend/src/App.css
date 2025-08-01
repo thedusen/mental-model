@@ -175,6 +175,12 @@
   max-height: 640px; /* 600px chat panel + 16px top padding + 24px bottom padding */
 }
 
+/* Ensure chat-container positioning is not overridden */
+.chat-container:not(.fullscreen) {
+  position: absolute !important;
+  bottom: 0 !important;
+}
+
 .chat-container.fullscreen {
   position: fixed;
   top: 0;
@@ -210,7 +216,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .app {
     grid-template-columns: 1fr; /* Single column on mobile */
     grid-template-rows: auto 1fr auto;

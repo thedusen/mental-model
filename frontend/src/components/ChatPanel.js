@@ -977,26 +977,42 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   };
 
   const shouldShowNudge = () => {
+    console.log('🎯 shouldShowNudge debug:', {
+      showQuestionnaire,
+      questionnaireActive,
+      nudgeDismissalData,
+      user: user ? 'authenticated' : 'guest',
+      businessProfileProgress
+    });
     
-    if (showQuestionnaire || questionnaireActive) return false;
+    if (showQuestionnaire || questionnaireActive) {
+      console.log('🎯 Nudge hidden: questionnaire active');
+      return false;
+    }
     
     // Ensure nudgeDismissalData is available
     if (!nudgeDismissalData) {
+      console.log('🎯 Nudge hidden: no nudgeDismissalData');
       return false;
     }
     
     if (!user) {
       // Guest user logic - implement 3-strike rule with cooldown
       const guestData = nudgeDismissalData.guest || { count: 0, lastDismissed: null };
-      
+      console.log('🎯 Guest user nudge logic:', { guestData });
       
       // If dismissed 3+ times, check cooldown (24 hours)
-      if (guestData.count >= 3) {
+      // TEMPORARY: Ignore dismissal count in development
+      const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+      if (guestData.count >= 3 && !isDevelopment) {
         const hoursSinceLastDismissal = (Date.now() - guestData.lastDismissed) / (1000 * 60 * 60);
-        return hoursSinceLastDismissal >= 24; // Show again after 24 hours
+        const shouldShow = hoursSinceLastDismissal >= 24;
+        console.log('🎯 Guest user 3+ dismissals:', { hoursSinceLastDismissal, shouldShow });
+        return shouldShow; // Show again after 24 hours
       }
       
       // Show nudge if less than 3 dismissals
+      console.log('🎯 Guest user: showing nudge (less than 3 dismissals)');
       return true;
     }
     
@@ -1433,6 +1449,7 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       {(!isCollapsed || messages.length === 0) && (
         <>
           {/* Business Profile Nudge Banner - moved to top */}
+          {console.log('🎯 Rendering nudge check:', shouldShowNudge())}
           {shouldShowNudge() && (
             <ProfileNudgeBanner
               user={user}
