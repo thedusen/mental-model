@@ -48,6 +48,9 @@ function App() {
   // Sidebar nudge visibility state - shows when chat nudge is dismissed
   const [showSidebarNudge, setShowSidebarNudge] = useState(false);
   
+  // Chat nudge visibility state - determines container height
+  const [isChatNudgeVisible, setIsChatNudgeVisible] = useState(false);
+  
   // Authentication trigger ref - function to trigger auth sidebar
   const authTriggerRef = useRef(null);
 
@@ -521,7 +524,7 @@ function App() {
                 isLoadingSubgraph={isLoadingSubgraph}
               />
             </div>
-            <div className={`chat-container ${isChatFullscreen ? 'fullscreen' : ''}`}>
+            <div className={`chat-container ${isChatFullscreen ? 'fullscreen' : ''} ${isChatNudgeVisible ? 'has-nudge' : ''}`}>
               <ChatPanel 
                 ref={chatPanelRef}
                 selectedNode={selectedNode}
@@ -534,6 +537,7 @@ function App() {
                 onOpenSidebarAuth={() => authTriggerRef.current && authTriggerRef.current()}
                 nudgeDismissalData={nudgeDismissalData}
                 onNudgeDismiss={handleChatNudgeDismiss}
+                onNudgeVisibilityChange={setIsChatNudgeVisible}
               />
             </div>
           </div>

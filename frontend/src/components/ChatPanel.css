@@ -234,6 +234,13 @@
   max-height: none !important;
 }
 
+/* When nudge banner is present in normal (non-collapsed) state, increase height */
+.chat-panel.has-nudge:not(.collapsed) {
+  height: 600px !important;
+  min-height: 600px !important;
+  max-height: 600px !important;
+}
+
 .chat-panel.no-messages {
   height: auto;
   min-height: auto;
@@ -445,8 +452,26 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
-  min-height: 120px;
+  min-height: 0;
   max-height: calc(100vh - 300px);
+}
+
+/* Collapse messages container when empty */
+.chat-panel.no-messages .messages {
+  padding: 0;
+  min-height: 0;
+  height: 0;
+  flex: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* Expand messages container when messages are present */
+.chat-panel.has-messages .messages {
+  flex: 1;
+  opacity: 1;
+  transition: all 0.3s ease;
 }
 
 .chat-panel.fullscreen .messages {
