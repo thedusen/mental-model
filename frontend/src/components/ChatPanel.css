@@ -1,6 +1,7 @@
 .chat-panel {
   display: flex;
   flex-direction: column;
+  background-color: white;
   border-radius: 12px;
   transition: height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), 
               min-height 0.3s ease,
@@ -1059,7 +1060,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: transparent;
+  background-color: white;
   overflow: hidden;
   max-width: none;
   margin: 0;
