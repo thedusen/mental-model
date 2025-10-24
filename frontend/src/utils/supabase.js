@@ -142,10 +142,14 @@ export const auth = {
 
   // Sign in with Google
   signInWithGoogle: async () => {
+    // Get the current origin for redirect
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+    console.log('OAuth redirect URL:', redirectUrl);
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: redirectUrl
       }
     });
     return { data, error };
@@ -258,22 +262,56 @@ export const chat = {
     }
   },
 
-  // Get user's chat sessions
-  getSessions: async (limit = 50, offset = 0) => {
+  // Get user's chat sessions with retry logic
+  getSessions: async (limit = 50, offset = 0, retries = 3) => {
     console.log('🎯 getSessions called');
     const user = await auth.getUser();
     console.log('🎯 getSessions user:', user);
     if (!user) throw new Error('User not authenticated');
 
-    const { data, error } = await supabase
-      .from('chat_sessions')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+    let lastError = null;
+    
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const { data, error } = await supabase
+          .from('chat_sessions')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('updated_at', { ascending: false })
+          .range(offset, offset + limit - 1);
 
-    console.log('🎯 getSessions query result:', { data, error });
-    return { data, error };
+        console.log('🎯 getSessions query result:', { data, error });
+        
+        if (error) {
+          lastError = error;
+          if (attempt < retries) {
+            console.log(`⚠️ Attempt ${attempt} failed, retrying...`);
+            // Exponential backoff with jitter to prevent thundering herd
+            const baseDelay = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s, 8s...
+            const jitter = Math.random() * 500; // 0-500ms random jitter
+            const delay = Math.min(baseDelay + jitter, 10000); // Cap at 10 seconds
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
+        }
+        
+        return { data, error };
+      } catch (err) {
+        lastError = err;
+        if (attempt < retries) {
+          console.log(`⚠️ Attempt ${attempt} failed with error:`, err.message);
+          // Exponential backoff with jitter for catch block too
+          const baseDelay = 1000 * Math.pow(2, attempt - 1);
+          const jitter = Math.random() * 500;
+          const delay = Math.min(baseDelay + jitter, 10000);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          continue;
+        }
+      }
+    }
+    
+    console.error('❌ All retry attempts failed');
+    return { data: null, error: lastError };
   },
 
   // Get messages for a session
@@ -284,6 +322,44 @@ export const chat = {
       .eq('session_id', sessionId)
       .order('timestamp', { ascending: true })
       .limit(limit);
+
+    // Debug logging to understand what's being returned
+    if (data && data.length > 0) {
+      console.log('🔍 getMessages returned:', data.length, 'messages for session:', sessionId);
+      console.log('🔍 First message structure:', {
+        id: data[0].id,
+        hasId: !!data[0].id,
+        idType: typeof data[0].id,
+        role: data[0].role,
+        timestamp: data[0].timestamp,
+        content_preview: data[0].content?.substring(0, 50) + '...'
+      });
+      console.log('🔍 All message details:', data.map(m => ({ 
+        id: m.id, 
+        role: m.role, 
+        timestamp: m.timestamp,
+        content_preview: m.content?.substring(0, 30) + '...'
+      })));
+      
+      // Check for potential duplicates in the database
+      const contentMap = new Map();
+      const duplicates = [];
+      data.forEach((msg, index) => {
+        const key = `${msg.role}-${msg.content}`;
+        if (contentMap.has(key)) {
+          duplicates.push({ original: contentMap.get(key), duplicate: { index, id: msg.id, role: msg.role } });
+        } else {
+          contentMap.set(key, { index, id: msg.id, role: msg.role });
+        }
+      });
+      
+      if (duplicates.length > 0) {
+        console.warn('🚨 DATABASE DUPLICATES DETECTED:', duplicates);
+        console.warn('🚨 These messages appear to be duplicated in the database already');
+      }
+    } else {
+      console.log('🔍 getMessages returned empty or error:', { data, error });
+    }
 
     return { data, error };
   },

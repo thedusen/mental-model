@@ -12,8 +12,6 @@ on:
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
-    # DISABLED: Workflow disabled by user request
-    if: false
     
     steps:
       - name: Checkout code

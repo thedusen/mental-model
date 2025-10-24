@@ -228,39 +228,62 @@ async def get_optimized_user_context(user_id: str, session_id: str, query: str) 
                         f"Added fallback business context with {len(relevant_elements)} elements"
                     )
 
-        # Get conversational memory context using optimized Zep approach
+        # Get conversational memory context using safe Zep approach
+        conversational_context_found = False
         try:
-            # Only verify user exists, don't create to prevent duplicates
-            # User should already exist from questionnaire flow
-            try:
-                existing_user = zep_memory.client.user.get(user_id)
-                logger.debug(f"Confirmed user {user_id} exists for chat context")
-            except Exception as user_check_error:
-                logger.debug(f"User {user_id} may not exist in Zep: {user_check_error}")
-                # Skip memory retrieval if user doesn't exist
+            logger.info(
+                f"🔍 Attempting session-specific context retrieval: user_id={user_id}, session_id={session_id}"
+            )
+            # Use safe memory retrieval that handles user/session existence
+            memory = zep_memory.get_memory_safe(user_id, session_id)
 
-            memory = zep_memory.client.memory.get(session_id=session_id)
-
-            if hasattr(memory, "context") and memory.context:
+            if memory and hasattr(memory, "context") and memory.context:
                 conversational_context = (
-                    f"Conversation Context:\n{memory.context[:800]}"  # Limit length
+                    f"Session Context:\n{memory.context[:800]}"  # Limit length
                 )
                 context_parts.append(conversational_context)
-                logger.debug("Added conversational context from Zep memory.context")
+                logger.info("✅ Added session-specific context from Zep memory.context")
+                conversational_context_found = True
 
         except Exception as memory_error:
-            logger.debug(f"Zep memory context not available: {memory_error}")
-            # Fallback to basic recent facts if memory.context fails
+            logger.debug(f"Session-specific memory context failed: {memory_error}")
+
+        # If session-specific context failed, try user-level context retrieval
+        if not conversational_context_found:
             try:
-                user_memory = zep_memory.get_relevant_memory(session_id, query, limit=3)
+                logger.info(
+                    f"🔍 Attempting user-level context retrieval: user_id={user_id}"
+                )
+                user_context = zep_memory.get_user_recent_context(user_id, limit=5)
+
+                if user_context:
+                    context_parts.append(f"Recent User Context:\n{user_context[:800]}")
+                    logger.info("✅ Added user-level context from Zep")
+                    conversational_context_found = True
+
+            except Exception as user_context_error:
+                logger.debug(
+                    f"User-level context retrieval failed: {user_context_error}"
+                )
+
+        # Final fallback to legacy method if both approaches failed
+        if not conversational_context_found:
+            try:
+                logger.info(f"🔍 Attempting legacy fallback context retrieval")
+                user_memory = zep_memory.get_relevant_memory(
+                    session_id, query, limit=3, user_id=user_id
+                )
                 if user_memory and user_memory.get("facts"):
                     facts_context = "Recent Facts:\n" + "\n".join(
                         [f"- {fact}" for fact in user_memory["facts"][:3]]
                     )
                     context_parts.append(facts_context)
-                    logger.debug("Used fallback facts context")
-            except Exception:
-                pass  # No conversational context available
+                    logger.info("✅ Used legacy fallback facts context")
+                else:
+                    logger.info("🔍 No context found through any retrieval method")
+            except Exception as fallback_error:
+                logger.debug(f"Legacy fallback context failed: {fallback_error}")
+                logger.info("❌ All context retrieval methods failed")
 
     except Exception as e:
         logger.warning(f"Error getting optimized user context: {e}")
@@ -762,24 +785,11 @@ async def chat(query: ChatQuery):
                 user_id=query.user_id, session_id=query.session_id, query=query.question
             )
 
-        # Create enhanced search query combining user question with Zep context for better semantic matching
-        enhanced_search_query = query.question
-        if user_context_str:
-            # Extract key context elements for search enhancement (limit to avoid token overflow)
-            context_for_search = user_context_str[
-                :500
-            ]  # Limit context for search embedding
-            enhanced_search_query = (
-                f"{query.question}\n\nRelevant context: {context_for_search}"
-            )
-            logger.info(
-                f"🔍 Enhanced search query with Zep context for better semantic matching"
-            )
-        else:
-            logger.info(f"🔍 Using original question only (no Zep context available)")
-
-        # Generate embedding for the enhanced search query (includes both question + Zep context)
-        embedding = generate_query_embedding(enhanced_search_query)
+        # Generate embedding for the user's question only (clean search without context mixing)
+        embedding = generate_query_embedding(query.question)
+        logger.info(
+            f"🔍 Searching expert knowledge with clean query: {query.question[:50]}..."
+        )
 
         # Retrieve relevant context from expert knowledge graph using enhanced query
         with get_db_session() as session:
@@ -799,23 +809,37 @@ async def chat(query: ChatQuery):
             )
             context_data = [dict(record) for record in result]
 
-        # Build expert knowledge graph context string
+        # Build expert knowledge graph context string with clear header
         if context_data:
-            expert_context_str = "Expert Knowledge Graph Context:\n" + "\n".join(
-                [f"- {item['entity']}: {item['description']}" for item in context_data]
+            expert_context_str = (
+                "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\n"
+                + "\n".join(
+                    [
+                        f"- {item['entity']}: {item['description']}"
+                        for item in context_data
+                    ]
+                )
             )
         else:
-            expert_context_str = (
-                "No specific expert knowledge graph context found for this question."
+            expert_context_str = "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\nNo specific expert knowledge found for this question."
+
+        # Format user context with clear header
+        if user_context_str:
+            formatted_user_context = (
+                f"\n\n=== YOUR BUSINESS CONTEXT ===\n{user_context_str}"
+            )
+        else:
+            formatted_user_context = (
+                "\n\n=== YOUR BUSINESS CONTEXT ===\nNo business context available yet."
             )
 
         # Apply intelligent context length management
         managed_expert_context, managed_user_context = manage_context_length(
-            expert_context_str, user_context_str, max_tokens=2000
+            expert_context_str, formatted_user_context, max_tokens=2000
         )
 
-        # Combine managed contexts
-        context_str = managed_expert_context + managed_user_context
+        # Combine managed contexts with source reminder
+        context_str = f"{managed_expert_context}{managed_user_context}\n\nRemember: Expert knowledge comes from Dan's experience, user context is specific to this user's business."
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
@@ -844,7 +868,7 @@ async def chat(query: ChatQuery):
 
         # Call Claude with conversation history and prompt caching
         response = anthropic_client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=8192,  # Increased for large context windows and extended responses
             system=[
                 {
@@ -867,6 +891,9 @@ async def chat(query: ChatQuery):
 
         # Store the conversation in Zep for future context retrieval
         if query.user_id and query.session_id:
+            logger.info(
+                f"💾 Storing conversation in Zep: user_id={query.user_id}, session_id={query.session_id}"
+            )
             try:
                 # Add both user question and assistant response to Zep memory
                 conversation_messages = [
@@ -883,10 +910,14 @@ async def chat(query: ChatQuery):
                     f"✅ Successfully stored chat conversation in Zep for user {query.user_id}, session {query.session_id}"
                 )
             except Exception as zep_storage_error:
-                logger.warning(
-                    f"⚠️ Failed to store conversation in Zep: {zep_storage_error}"
+                logger.error(
+                    f"❌ Failed to store conversation in Zep for user {query.user_id}, session {query.session_id}: {zep_storage_error}"
                 )
                 # Continue without failing the chat response
+        else:
+            logger.warning(
+                f"⚠️ Cannot store conversation in Zep - missing user_id={query.user_id} or session_id={query.session_id}"
+            )
 
         return {
             "answer": answer_text,
@@ -945,7 +976,14 @@ async def chat_stream(query: ChatQuery):
                 "⚠️ No user_id provided in streaming chat request - skipping Zep user creation"
             )
 
-        # Generate embedding for the current question
+        # Get optimized user context from Zep (business profile + conversational memory)
+        user_context_str = ""
+        if query.session_id and query.user_id:
+            user_context_str = await get_optimized_user_context(
+                user_id=query.user_id, session_id=query.session_id, query=query.question
+            )
+
+        # Generate embedding for the user's question only (clean search without context mixing)
         embedding = generate_query_embedding(query.question)
 
         # Retrieve relevant context from knowledge graph
@@ -966,32 +1004,37 @@ async def chat_stream(query: ChatQuery):
             )
             context_data = [dict(record) for record in result]
 
-        # Build expert knowledge graph context string
+        # Build expert knowledge graph context string with clear header
         if context_data:
-            expert_context_str = "Expert Knowledge Graph Context:\n" + "\n".join(
-                [f"- {item['entity']}: {item['description']}" for item in context_data]
+            expert_context_str = (
+                "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\n"
+                + "\n".join(
+                    [
+                        f"- {item['entity']}: {item['description']}"
+                        for item in context_data
+                    ]
+                )
             )
         else:
-            expert_context_str = (
-                "No specific expert knowledge graph context found for this question."
+            expert_context_str = "=== EXPERT KNOWLEDGE (Dan Hackett's Mental Model) ===\nNo specific expert knowledge found for this question."
+
+        # Format user context with clear header
+        if user_context_str:
+            formatted_user_context = (
+                f"\n\n=== YOUR BUSINESS CONTEXT ===\n{user_context_str}"
             )
-
-        # User already created at the beginning of the function
-
-        # Get optimized user context from Zep (business profile + conversational memory)
-        user_context_str = ""
-        if query.session_id and query.user_id:
-            user_context_str = await get_optimized_user_context(
-                user_id=query.user_id, session_id=query.session_id, query=query.question
+        else:
+            formatted_user_context = (
+                "\n\n=== YOUR BUSINESS CONTEXT ===\nNo business context available yet."
             )
 
         # Apply intelligent context length management for streaming
         managed_expert_context, managed_user_context = manage_context_length(
-            expert_context_str, user_context_str, max_tokens=2000
+            expert_context_str, formatted_user_context, max_tokens=2000
         )
 
-        # Combine managed contexts
-        context_str = managed_expert_context + managed_user_context
+        # Combine managed contexts with source reminder
+        context_str = f"{managed_expert_context}{managed_user_context}\n\nRemember: Expert knowledge comes from Dan's experience, user context is specific to this user's business."
 
         # Build conversation messages with rolling window (last 15 messages)
         messages = []
@@ -1025,7 +1068,7 @@ async def chat_stream(query: ChatQuery):
 
                 # Stream response from Claude
                 with anthropic_client.messages.stream(
-                    model="claude-sonnet-4-20250514",
+                    model="claude-sonnet-4-5-20250929",
                     max_tokens=8192,
                     system=[
                         {
@@ -1792,7 +1835,7 @@ Title:"""
 
         # Use Anthropic to generate the title
         response = anthropic_client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=20,
             temperature=0.3,  # Lower temperature for more consistent titles
             messages=[{"role": "user", "content": title_prompt}],
@@ -2188,7 +2231,7 @@ async def get_session_memory(
     """Get relevant memory context for a session"""
     try:
         memory_context = zep_memory.get_relevant_memory(
-            session_id=session_id, query=query, limit=10
+            session_id=session_id, query=query, limit=10, user_id=user_id
         )
         return {
             "user_id": user_id,

@@ -6,15 +6,34 @@ import { auth, chat } from '../utils/supabase';
 import Authentication from './Authentication';
 import BusinessProfileQuestionnaire from './BusinessProfileQuestionnaire';
 import ProfileNudgeBanner from './ProfileNudgeBanner';
+import FullscreenModal from './FullscreenModal';
 import './ChatPanel.css';
 
-const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange, onOpenSidebarAuth }, ref) => {
+const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContext, onFullscreenChange, externalInput, onExternalInputReceived, onSessionChange, onOpenSidebarAuth, nudgeDismissalData, onNudgeDismiss, onNudgeVisibilityChange }, ref) => {
+  // Validate required props to prevent runtime errors
+  React.useEffect(() => {
+    if (!onNudgeDismiss) {
+      console.warn('ChatPanel: onNudgeDismiss prop is missing - nudge dismissal will not work properly');
+    }
+    if (!nudgeDismissalData) {
+      console.warn('ChatPanel: nudgeDismissalData prop is missing - nudge display may not work properly');
+    }
+  }, [onNudgeDismiss, nudgeDismissalData]);
+  
+  // Notify parent component when nudge visibility changes - moved to after shouldShowNudge function definition
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenMode, setFullscreenMode] = useState('none'); // 'none' | 'theater' | 'focus' | 'zen'
+  const [preferredFullscreenMode, setPreferredFullscreenMode] = useState(() => {
+    try {
+      return localStorage.getItem('preferred-fullscreen-mode') || 'theater';
+    } catch {
+      return 'theater';
+    }
+  });
   const [hasMessagesEver, setHasMessagesEver] = useState(false);
   const textareaRef = useRef(null);
 
@@ -302,35 +321,6 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       setIsSubmitting(false);
     }
   };
-  // Nudge dismissal state management
-  const [nudgeDismissalData, setNudgeDismissalData] = useState(() => {
-    try {
-      const stored = localStorage.getItem('nudge-dismissal-data');
-      if (stored) {
-        return JSON.parse(stored);
-      }
-      
-      // Migration: check for old dismissal key
-      const oldDismissed = localStorage.getItem('business-profile-dismissed') === 'true';
-      const initialData = {
-        guest: { count: oldDismissed ? 1 : 0, lastDismissed: oldDismissed ? Date.now() : null },
-        authenticated: { dismissed: false }
-      };
-      
-      // Clean up old key
-      if (oldDismissed) {
-        localStorage.removeItem('business-profile-dismissed');
-        localStorage.setItem('nudge-dismissal-data', JSON.stringify(initialData));
-      }
-      
-      return initialData;
-    } catch {
-      return {
-        guest: { count: 0, lastDismissed: null },
-        authenticated: { dismissed: false }
-      };
-    }
-  });
 
   // Use environment variable for API URL, fallback to localhost for development
   let API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -340,9 +330,23 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     API_URL = `https://${API_URL}`;
   }
 
+  // Track whether we're currently loading a session to prevent save operations
+  const [isLoadingSession, setIsLoadingSession] = useState(false);
+
   // Expose methods to parent component
   useImperativeHandle(ref, () => ({
     handleSessionSelect: (session, sessionMessages) => {
+      console.log('🔄 handleSessionSelect called:', session.id, 'messages:', sessionMessages?.length);
+      console.log('🔄 Raw sessionMessages from database:', sessionMessages);
+      
+      // Set loading flag to prevent save operations during session loading
+      setIsLoadingSession(true);
+      console.log('🔄 Set isLoadingSession to true');
+      
+      // Always clear messages first to prevent any potential duplicates
+      setMessages([]);
+      console.log('🔄 Cleared existing messages');
+      
       setCurrentSession(session);
       if (onSessionChange) {
         onSessionChange(session);
@@ -350,17 +354,49 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       
       if (sessionMessages && sessionMessages.length > 0) {
         // Convert session messages to the format expected by the chat panel
-        const formattedMessages = sessionMessages.map(msg => ({
-          id: msg.id,
+        const formattedMessages = sessionMessages.map((msg, index) => ({
+          id: msg.id || `loaded-${session.id}-${index}`, // Ensure every message has an ID
           role: msg.role,
           content: msg.content,
-          context: msg.metadata?.context || []
+          context: msg.metadata?.context || [],
+          isLoadedFromDatabase: true // Mark as loaded to prevent re-saving
         }));
-        setMessages(formattedMessages);
+        
+        // TEMPORARY FIX: Deduplicate messages in case database already has duplicates
+        const uniqueMessages = [];
+        const seenContent = new Set();
+        
+        formattedMessages.forEach(msg => {
+          const contentKey = `${msg.role}-${msg.content}`;
+          if (!seenContent.has(contentKey)) {
+            seenContent.add(contentKey);
+            uniqueMessages.push(msg);
+          } else {
+            console.warn('🚨 Filtered out duplicate message:', { role: msg.role, content: msg.content.substring(0, 50) + '...' });
+          }
+        });
+        
+        console.log('🔄 Formatted messages:', formattedMessages.length, 'unique messages:', uniqueMessages.length);
+        console.log('🔄 Setting deduplicated messages:', uniqueMessages.length, 'message IDs:', uniqueMessages.map(m => ({ id: m.id, isLoadedFromDB: m.isLoadedFromDatabase })));
+        setMessages(uniqueMessages);
         setHasMessagesEver(true);
+        console.log('🔄 Messages set in state');
       } else {
+        console.log('🔄 No messages to load, keeping empty state');
         setMessages([]);
       }
+      
+      // Clear loading flag after a brief delay to ensure state updates are complete
+      setTimeout(() => {
+        setIsLoadingSession(false);
+        console.log('🔄 Session loading complete, save operations re-enabled');
+        
+        // Focus the chat input after session is loaded
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          console.log('🔄 Chat input focused after session selection');
+        }
+      }, 150); // Slightly longer delay to ensure all DOM updates are complete
     },
     handleNewChat: () => {
       setCurrentSession(null);
@@ -369,6 +405,14 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       if (onSessionChange) {
         onSessionChange(null);
       }
+      
+      // Focus the chat input for new chat
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          console.log('🔄 Chat input focused for new chat');
+        }
+      }, 100);
     }
   }));
 
@@ -401,9 +445,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
   // Notify parent component when fullscreen state changes
   useEffect(() => {
     if (onFullscreenChange) {
-      onFullscreenChange(isFullscreen);
+      onFullscreenChange(fullscreenMode !== 'none');
     }
-  }, [isFullscreen, onFullscreenChange]);
+  }, [fullscreenMode, onFullscreenChange]);
 
   // Handle external input from suggestion buttons
   useEffect(() => {
@@ -539,32 +583,67 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     loadBusinessProfileData();
   }, [user, API_URL]);
 
-  // Reset authenticated dismissal when user logs in (show nudge even if dismissed as guest)
+  // Listen for questionnaire start from sidebar
   useEffect(() => {
-    if (user && nudgeDismissalData.authenticated.dismissed) {
-      const newDismissalData = {
-        ...nudgeDismissalData,
-        authenticated: { dismissed: false }
-      };
-      setNudgeDismissalData(newDismissalData);
-      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
-    }
-  }, [user?.id]); // Only run when user ID changes (login/logout)
+    const handleQuestionnaireFromSidebar = (event) => {
+      console.log('🔄 Questionnaire start triggered from sidebar:', event.detail);
+      handleStartQuestionnaire(event.detail.mode);
+    };
+
+    window.addEventListener('startQuestionnaireFromSidebar', handleQuestionnaireFromSidebar);
+    return () => {
+      window.removeEventListener('startQuestionnaireFromSidebar', handleQuestionnaireFromSidebar);
+    };
+  }, []); // Empty dependency array, access function via closure
 
   // Save messages to current session when they change
   useEffect(() => {
     const saveMessages = async () => {
+      // Skip saving if we don't have the required conditions
       if (!user || !currentSession || messages.length === 0) return;
+      
+      // Skip saving if we're currently loading a session
+      if (isLoadingSession) {
+        console.log('⏸️ Skipping message save - session is loading');
+        return;
+      }
 
       try {
         // Get the last two messages (user and assistant)
         const recentMessages = messages.slice(-2);
         
-        // Filter out messages that already have IDs (already saved)
-        const unsavedMessages = recentMessages.filter(msg => !msg.id);
+        // Filter out messages that:
+        // 1. Already have database IDs (already saved)
+        // 2. Were loaded from the database (marked with isLoadedFromDatabase)
+        // 3. Have synthetic IDs starting with "loaded-" (from session loading)
+        const unsavedMessages = recentMessages.filter(msg => {
+          // Skip if message was loaded from database
+          if (msg.isLoadedFromDatabase) {
+            return false;
+          }
+          
+          // Skip if message has a synthetic ID from loading
+          if (msg.id && typeof msg.id === 'string' && msg.id.startsWith('loaded-')) {
+            return false;
+          }
+          
+          // Skip if message already has a real database ID
+          if (msg.id && typeof msg.id === 'string' && !msg.id.startsWith('loaded-')) {
+            return false;
+          }
+          
+          // This is a new message that needs saving
+          return !msg.id;
+        });
         
         console.log('💾 Save check - total messages:', messages.length, 'recent:', recentMessages.length, 'unsaved:', unsavedMessages.length);
-        console.log('💾 Recent message IDs:', recentMessages.map(m => ({ role: m.role, id: m.id })));
+        console.log('💾 Recent message info:', recentMessages.map(m => ({ 
+          role: m.role, 
+          id: m.id, 
+          isLoadedFromDB: m.isLoadedFromDatabase,
+          hasId: !!m.id,
+          isLoadedId: m.id && m.id.toString().startsWith('loaded-')
+        })));
         
         if (unsavedMessages.length === 0) {
           console.log('⏸️ No unsaved messages to save');
@@ -595,13 +674,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     };
 
     // Only save if we have new messages and a current session
-    if (messages.length > 0 && currentSession && user) {
+    if (messages.length > 0 && currentSession && user && !isLoadingSession) {
       console.log('💾 Attempting to save messages:', messages.length, 'messages to session:', currentSession.id);
       saveMessages();
     } else {
-      console.log('⏸️ Skipping message save - messages:', messages.length, 'session:', !!currentSession, 'user:', !!user);
+      console.log('⏸️ Skipping message save - messages:', messages.length, 'session:', !!currentSession, 'user:', !!user, 'isLoading:', isLoadingSession);
     }
-  }, [messages, currentSession, user]);
+  }, [messages, currentSession, user, isLoadingSession]);
 
 
   // Create a new session when user starts typing (if not authenticated, show auth)
@@ -782,6 +861,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('🚀 handleStartQuestionnaire called with mode:', mode, 'user:', user);
     console.log('🔍 Current businessProfileProgress:', businessProfileProgress);
     
+    // Dismiss the nudge when questionnaire starts (same as if user clicked the X)
+    await handleNudgeDismiss();
+    
     if (mode === 'modal') {
       setShowQuestionnaire(true);
       return;
@@ -889,77 +971,54 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     }
   };
 
-  const handleNudgeDismiss = async () => {
-    const now = Date.now();
-    let newDismissalData;
-    
-    if (user) {
-      // Authenticated user dismissal - only dismiss until they complete profile
-      newDismissalData = {
-        ...nudgeDismissalData,
-        authenticated: { dismissed: true, lastDismissed: now }
-      };
-      
-      // Record dismissal on backend
-      try {
-        await fetch(`${API_URL}/api/business-profile/nudge-dismissed`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ user_id: user.id }),
-        });
-      } catch (error) {
-        console.error('Error recording nudge dismissal:', error);
-      }
-    } else {
-      // Guest user dismissal - track count and implement 3-strike rule
-      const newCount = nudgeDismissalData.guest.count + 1;
-      newDismissalData = {
-        ...nudgeDismissalData,
-        guest: { 
-          count: newCount, 
-          lastDismissed: now 
-        }
-      };
-    }
-    
-    setNudgeDismissalData(newDismissalData);
-    localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+  // Handle nudge dismissal - now uses parent handler
+  const handleNudgeDismiss = () => {
+    onNudgeDismiss?.(user);
   };
 
   const shouldShowNudge = () => {
-    if (showQuestionnaire || questionnaireActive) return false;
+    console.log('🎯 shouldShowNudge debug:', {
+      showQuestionnaire,
+      questionnaireActive,
+      nudgeDismissalData,
+      user: user ? 'authenticated' : 'guest',
+      businessProfileProgress
+    });
+    
+    if (showQuestionnaire || questionnaireActive) {
+      console.log('🎯 Nudge hidden: questionnaire active');
+      return false;
+    }
+    
+    // Ensure nudgeDismissalData is available
+    if (!nudgeDismissalData) {
+      console.log('🎯 Nudge hidden: no nudgeDismissalData');
+      return false;
+    }
     
     if (!user) {
       // Guest user logic - implement 3-strike rule with cooldown
-      const guestData = nudgeDismissalData.guest;
-      
-      console.log('🎯 Guest nudge check:', { 
-        count: guestData.count, 
-        lastDismissed: guestData.lastDismissed,
-        shouldShow: guestData.count < 3 || (guestData.count >= 3 && 
-          (Date.now() - guestData.lastDismissed) / (1000 * 60 * 60) >= 24)
-      });
+      const guestData = nudgeDismissalData.guest || { count: 0, lastDismissed: null };
+      console.log('🎯 Guest user nudge logic:', { guestData });
       
       // If dismissed 3+ times, check cooldown (24 hours)
-      if (guestData.count >= 3) {
+      // TEMPORARY: Ignore dismissal count in development
+      const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+      if (guestData.count >= 3 && !isDevelopment) {
         const hoursSinceLastDismissal = (Date.now() - guestData.lastDismissed) / (1000 * 60 * 60);
-        return hoursSinceLastDismissal >= 24; // Show again after 24 hours
+        const shouldShow = hoursSinceLastDismissal >= 24;
+        console.log('🎯 Guest user 3+ dismissals:', { hoursSinceLastDismissal, shouldShow });
+        return shouldShow; // Show again after 24 hours
       }
       
       // Show nudge if less than 3 dismissals
+      console.log('🎯 Guest user: showing nudge (less than 3 dismissals)');
       return true;
     }
     
     // Authenticated user logic
-    const authData = nudgeDismissalData.authenticated;
+    const authData = nudgeDismissalData.authenticated || { dismissed: false, lastDismissed: null };
     
-    console.log('🔐 Auth nudge check:', { 
-      dismissed: authData.dismissed,
-      userType: nudgeStatus?.user_type,
-      shouldShowFromStatus: nudgeStatus?.should_show_nudge
-    });
     
     // Use the new questionnaire progress status
     if (businessProfileProgress) {
@@ -995,6 +1054,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     
     return nudgeStatus?.should_show_nudge || false;
   };
+
+  // Notify parent component when nudge visibility changes
+  React.useEffect(() => {
+    if (onNudgeVisibilityChange) {
+      onNudgeVisibilityChange(shouldShowNudge());
+    }
+  }, [onNudgeVisibilityChange, user, businessProfileProgress, nudgeStatus, nudgeDismissalData, showQuestionnaire, questionnaireActive]);
 
   const getNudgeUserType = () => {
     if (!user) return 'guest';
@@ -1059,7 +1125,12 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       return;
     }
 
-    // Create session if needed (will show auth if not logged in)
+    const userMessage = { role: 'user', content: currentInput };
+    setInput('');
+    setMessages(prev => [...prev, userMessage]);
+    setLoading(true);
+
+    // Create session if needed (will show auth if not logged in) - only after we have actual content to send
     console.log('🎯 REGULAR CHAT FLOW: Direct typing flow: about to create session for user:', user?.id);
     console.log('🔍 REGULAR CHAT FLOW: This should create Zep user if successful');
     const activeSession = await createNewSessionIfNeeded();
@@ -1069,6 +1140,10 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       console.error('❌ REGULAR CHAT FLOW: session creation failed - cannot proceed');
       console.error('❌ REGULAR CHAT FLOW: Zep user was NOT created');
       setLoading(false);
+      setIsSubmitting(false);
+      
+      // Remove the user message we just added since session creation failed
+      setMessages(prev => prev.filter(msg => msg !== userMessage));
       
       // Show error message to user instead of creating temporary session
       const errorMessage = {
@@ -1083,32 +1158,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     console.log('✅ REGULAR CHAT FLOW: session ready, proceeding with chat request');
     console.log('✅ REGULAR CHAT FLOW: Zep user should have been created successfully');
 
-    const userMessage = { role: 'user', content: currentInput };
-    setInput('');
-    setMessages(prev => [...prev, userMessage]);
-    setLoading(true);
-
-    // Hide nudge when user starts regular chatting
-    if (user) {
-      // For authenticated users, mark nudge as dismissed
-      const newDismissalData = {
-        ...nudgeDismissalData,
-        authenticated: { dismissed: true, lastDismissed: Date.now() }
-      };
-      setNudgeDismissalData(newDismissalData);
-      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
-    } else {
-      // For guest users, increment dismissal count
-      const newCount = nudgeDismissalData.guest.count + 1;
-      const newDismissalData = {
-        ...nudgeDismissalData,
-        guest: { 
-          count: newCount, 
-          lastDismissed: Date.now() 
-        }
-      };
-      setNudgeDismissalData(newDismissalData);
-      localStorage.setItem('nudge-dismissal-data', JSON.stringify(newDismissalData));
+    // Hide nudge when user starts regular chatting - use callback to parent
+    if (onNudgeDismiss) {
+      onNudgeDismiss(user);
     }
 
     try {
@@ -1264,12 +1316,34 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
     setShowAuth(false);
   };
 
+  // Handle fullscreen mode change with preference saving
+  const handleFullscreenModeChange = (mode) => {
+    setFullscreenMode(mode);
+    if (mode !== 'none') {
+      setPreferredFullscreenMode(mode);
+      try {
+        localStorage.setItem('preferred-fullscreen-mode', mode);
+      } catch (error) {
+        console.warn('Failed to save fullscreen preference:', error);
+      }
+    }
+  };
+
+  // Toggle fullscreen using preferred mode
+  const toggleFullscreen = () => {
+    if (fullscreenMode === 'none') {
+      setFullscreenMode(preferredFullscreenMode);
+    } else {
+      setFullscreenMode('none');
+    }
+  };
+
 
   return (
     <>
       {/* Focus Mode Overlay */}
       
-      <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${isFullscreen ? 'fullscreen' : ''} ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
+      <div className={`chat-panel ${isCollapsed ? 'collapsed' : ''} ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''} ${shouldShowNudge() ? 'has-nudge' : ''}`}>
       {/* Authentication Modal */}
       {showAuth && (
         <Authentication 
@@ -1294,7 +1368,26 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       {/* Chat-integrated questionnaire progress indicator */}
       {questionnaireActive && !isCollapsed && (
         <div className="questionnaire-progress-indicator">
-          <span>Business Profile Question {questionnaireProgress.current} of {questionnaireProgress.total}</span>
+          <div className="questionnaire-controls">
+            <span className="progress-text">
+              Business Profile Question {questionnaireProgress.current} of {questionnaireProgress.total}
+            </span>
+            <div className="questionnaire-actions">
+              <button
+                type="button"
+                className="questionnaire-btn close-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleQuestionnaireCommand('pause');
+                }}
+                title="Close questionnaire"
+                aria-label="Close questionnaire"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
           <div className="progress-bar">
             <div 
               className="progress-fill" 
@@ -1310,9 +1403,9 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       {messages.length > 0 && (
         <div className="chat-header" onClick={() => {
           setIsCollapsed(!isCollapsed);
-          if (!isCollapsed && isFullscreen) {
+          if (!isCollapsed && fullscreenMode !== 'none') {
             // Exit fullscreen when collapsing
-            setIsFullscreen(false);
+            setFullscreenMode('none');
           }
         }}>
           <h3 className="chat-title">Chat</h3>
@@ -1322,13 +1415,13 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               className="chat-toggle fullscreen-toggle" 
               onClick={(e) => {
                 e.stopPropagation();
-                setIsFullscreen(!isFullscreen);
+                toggleFullscreen();
                 if (isCollapsed) setIsCollapsed(false); // Expand if collapsed when going fullscreen
               }}
-              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              aria-label={fullscreenMode !== 'none' ? 'Exit fullscreen' : 'Enter fullscreen'}
             >
-              <span>{isFullscreen ? 'Exit Full Screen' : 'Full Screen'}</span>
-              {isFullscreen ? (
+              <span>{fullscreenMode !== 'none' ? 'Exit Full Screen' : 'Full Screen'}</span>
+              {fullscreenMode !== 'none' ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
                   <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
@@ -1355,35 +1448,8 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
       )}
       {(!isCollapsed || messages.length === 0) && (
         <>
-          {messages.length > 0 && (
-            <div className="messages" aria-live="polite">
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`message-wrapper ${msg.role}`}>
-                  <div className="message">
-                    <div className="message-content">
-                      {(msg.role === 'assistant') ? (
-                        <div className="markdown-content">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-                        </div>
-                      ) : (
-                        msg.content
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {loading && (
-                <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
-                  <div className="message loading">
-                    <div className="dot-flashing"></div>
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-          )}
-
-          {/* Business Profile Nudge Banner */}
+          {/* Business Profile Nudge Banner - moved to top */}
+          {console.log('🎯 Rendering nudge check:', shouldShowNudge())}
           {shouldShowNudge() && (
             <ProfileNudgeBanner
               user={user}
@@ -1398,6 +1464,32 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
               preferredMode="chat"
             />
           )}
+          <div className="messages" aria-live="polite">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`message-wrapper ${msg.role}`}>
+                <div className="message">
+                  <div className="message-content">
+                    {(msg.role === 'assistant') ? (
+                      <div className="markdown-content">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      msg.content
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
+                <div className="message loading">
+                  <div className="dot-flashing"></div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
           
           {/* Context Pills Container - NEW */}
           <div 
@@ -1452,6 +1544,143 @@ const ChatPanel = forwardRef(({ selectedNode, chatContextNode, onClearChatContex
         </>
       )}
     </div>
+
+    {/* Fullscreen Modal */}
+    <FullscreenModal
+      mode={fullscreenMode === 'none' ? preferredFullscreenMode : fullscreenMode}
+      isOpen={fullscreenMode !== 'none'}
+      onClose={() => setFullscreenMode('none')}
+      onModeChange={handleFullscreenModeChange}
+    >
+      {/* Clone the chat content for fullscreen mode */}
+      <div className={`chat-panel-fullscreen ${questionnaireActive ? 'questionnaire-active' : ''} ${messages.length === 0 ? 'no-messages' : ''} ${hasMessagesEver && messages.length > 0 ? 'has-messages' : ''}`}>
+        {/* Chat-integrated questionnaire progress indicator */}
+        {questionnaireActive && (
+          <div className="questionnaire-progress-indicator">
+            <div className="questionnaire-controls">
+              <span className="progress-text">
+                Business Profile Question {questionnaireProgress.current} of {questionnaireProgress.total}
+              </span>
+              <div className="questionnaire-actions">
+                <button
+                  type="button"
+                  className="questionnaire-btn close-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleQuestionnaireCommand('pause');
+                  }}
+                  title="Close questionnaire"
+                  aria-label="Close questionnaire"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="progress-bar">
+              <div 
+                className="progress-fill" 
+                style={{ width: `${(questionnaireProgress.current / questionnaireProgress.total) * 100}%` }}
+              />
+            </div>
+            <div className="questionnaire-commands">
+              <span>Type "skip" or "previous" to navigate. Type "pause" to exit and finish later.</span>
+            </div>
+          </div>
+        )}
+
+        {/* Business Profile Nudge Banner - moved to top */}
+        {shouldShowNudge() && (
+          <ProfileNudgeBanner
+            user={user}
+            progress={businessProfileProgress}
+            onStartQuestionnaire={handleStartQuestionnaire}
+            onDismiss={handleNudgeDismiss}
+            onOpenAuth={onOpenSidebarAuth || (() => setShowAuth(true))}
+            userType={getNudgeUserType()}
+            variant="default"
+            isVisible={true}
+            canDismiss={true}
+            preferredMode="chat"
+          />
+        )}
+
+        <div className="messages" aria-live="polite">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`message-wrapper ${msg.role}`}>
+              <div className="message">
+                <div className="message-content">
+                  {(msg.role === 'assistant') ? (
+                    <div className="markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    msg.content
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <div className="message-wrapper assistant" aria-live="polite" aria-busy="true">
+              <div className="message loading">
+                <div className="dot-flashing"></div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Context Pills Container */}
+        <div 
+          className="context-pills-container" 
+          aria-live="polite" 
+          aria-atomic="false"
+          role="region"
+          aria-label="Chat context nodes"
+        >
+          {chatContextNode && (
+            <div className="context-pill" role="group" aria-label={`Chat context: ${chatContextNode.properties?.name || chatContextNode.name || 'Unknown node'}`}>
+              <span className="pill-text">
+                {chatContextNode.properties?.name || chatContextNode.name || chatContextNode.properties?.label || chatContextNode.label || 'Unknown'}
+              </span>
+              <button 
+                className="pill-remove-btn"
+                onClick={onClearChatContext}
+                aria-label={`Remove "${chatContextNode.properties?.name || chatContextNode.name || 'this node'}" from chat context`}
+                title="Remove from chat context"
+              >
+                &times;
+              </button>
+            </div>
+          )}
+        </div>
+        
+        <div className="input-area">
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholderText}
+            disabled={loading || isSubmitting}
+            rows={1}
+            aria-label="Chat message input"
+          />
+          <button 
+            onClick={sendMessage} 
+            disabled={loading || isSubmitting || !input.trim()} 
+            title="Send message" 
+            aria-label="Send message"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </FullscreenModal>
     </>
   );
 });

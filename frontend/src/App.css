@@ -147,6 +147,7 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
+  position: relative;
 }
 
 .graph-view-area {
@@ -156,16 +157,29 @@
 }
 
 .chat-container {
-  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: 16px 16px 24px 16px;
   z-index: 1000;
   pointer-events: none;
   height: auto;
-  max-height: 400px;
+  max-height: 540px; /* 500px chat panel + 16px top padding + 24px bottom padding */
   transition: height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
   flex-shrink: 0;
 }
 
+/* Increase container height when nudge banner is present */
+.chat-container.has-nudge {
+  max-height: 640px; /* 600px chat panel + 16px top padding + 24px bottom padding */
+}
+
+/* Ensure chat-container positioning is not overridden */
+.chat-container:not(.fullscreen) {
+  position: absolute !important;
+  bottom: 0 !important;
+}
 .chat-container.fullscreen {
   position: fixed;
   top: 0;
@@ -201,7 +215,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .app {
     grid-template-columns: 1fr; /* Single column on mobile */
     grid-template-rows: auto 1fr auto;

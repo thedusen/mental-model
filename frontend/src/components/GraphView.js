@@ -36,7 +36,6 @@ const GraphView = React.forwardRef(({
   onClearGraphFilter = null,
   isLoadingSubgraph = false
 }, ref) => {
-  console.log('GraphView render - searchResults:', searchResults);
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   // State to manage the legend's collapsed state
   const [isLegendMinimized, setIsLegendMinimized] = useState(false); 
@@ -48,29 +47,23 @@ const GraphView = React.forwardRef(({
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
-    console.log('GraphViewD3 useEffect running...');
     loadGraph();
   }, []);
 
   const loadGraph = useCallback(async () => {
-    console.log('Loading graph data...');
     setIsLoading(true);
     setError(null);
     try {
       const response = await axios.get(`${API_URL}/api/graph`, {
-        // Add timeout and headers for better performance
+        // Add timeout for better performance
         timeout: 10000,
         headers: {
-          'Accept-Encoding': 'gzip, deflate',
           'Accept': 'application/json'
         }
       });
-      console.log('API response:', response.data);
       const { nodes, edges } = response.data;
-      console.log('Processing nodes:', nodes?.length, 'edges:', edges?.length);
       setGraphData({ nodes, edges });
     } catch (error) {
-      console.error('Error loading graph:', error);
       setError(error.message);
     } finally {
       setIsLoading(false);
@@ -147,15 +140,8 @@ const GraphView = React.forwardRef(({
       
       const smartFontSize = Math.max(Math.round(baseFontSize * fontScale), 6); // Allow down to 6px
       
-      console.log(`📏 Text "${originalText}" (${labelLength} chars) -> font ${smartFontSize}px (scale: ${fontScale})`);
-      
       // Multi-line caption support using proper NVL captions format
       const createCaptions = (text) => {
-        // Debug long labels
-        if (text.length > 15) {
-          console.log('🏷️ Long label:', text, 'Length:', text.length);
-        }
-        
         if (text.length <= 30) {
           // Single caption with proper NVL format
           return [{ value: text, styles: [] }];
@@ -181,7 +167,6 @@ const GraphView = React.forwardRef(({
           value: line, 
           styles: [] // Empty styles array as required by NVL
         }));
-        console.log('📝 Multi-line captions for', text, ':', result);
         return result;
       };
       
@@ -273,19 +258,6 @@ const GraphView = React.forwardRef(({
         };
       }
       
-      // Debug ALL nodes to see what's happening with captions
-      if (labelLength > 5) {
-        console.log('🔍 Node structure:', {
-          id: finalNode.id,
-          caption: finalNode.caption,
-          captionSize: finalNode.captionSize,
-          captionAlign: finalNode.captionAlign,
-          size: finalNode.size,
-          fontSize: finalNode.fontSize,
-          font: finalNode.font
-        });
-      }
-      
       return finalNode;
     });
   }, [currentGraphData.nodes, chatContextNode, selectedNode, searchResultsMap, typeColors]);
@@ -327,7 +299,6 @@ const GraphView = React.forwardRef(({
   // references are stable across re-renders. This prevents the child component
   // from crashing due to unstable function references.
   const handleNodeClick = useCallback((node) => {
-    console.log('Node clicked:', node);
     if (onNodeSelect) {
       onNodeSelect(node);
       
@@ -344,59 +315,12 @@ const GraphView = React.forwardRef(({
   }, [onNodeSelect]);
 
   const handleCanvasClick = useCallback(() => {
-    console.log('Canvas clicked - deselecting node');
     if (onCanvasClick) {
       onCanvasClick();
     }
   }, [onCanvasClick]);
 
   const handleLayoutDone = useCallback((nodes, rels) => {
-    console.log('Layout computed');
-    
-    // Debug: Log all available methods on nvlRef
-    if (nvlRef.current) {
-      console.log('=== NVL REF DEBUG ===');
-      console.log('nvlRef.current:', nvlRef.current);
-      
-      // Check what renderer is actually being used
-      const container = nvlRef.current.getContainer();
-      if (container) {
-        const canvas = container.querySelector('canvas');
-        const svg = container.querySelector('svg');
-        console.log('🎨 Canvas element found:', !!canvas);
-        console.log('🖼️ SVG element found:', !!svg);
-        if (canvas) {
-          console.log('✅ Canvas renderer active');
-        } else if (svg) {
-          console.log('❌ SVG/WebGL renderer active - captions may not work');
-        }
-      }
-      
-      const allMethods = Object.getOwnPropertyNames(nvlRef.current).filter(name => typeof nvlRef.current[name] === 'function');
-      console.log('ALL METHODS:', allMethods);
-      
-      // Check specifically for zoom-related methods
-      const zoomMethods = allMethods.filter(name => 
-        name.toLowerCase().includes('zoom') || 
-        name.toLowerCase().includes('scale') ||
-        name.toLowerCase().includes('fit') ||
-        name.toLowerCase().includes('center') ||
-        name.toLowerCase().includes('focus')
-      );
-      console.log('ZOOM/FOCUS METHODS:', zoomMethods);
-      
-      // Try to access nested objects that might contain zoom methods
-      if (nvlRef.current.nvl) {
-        console.log('nvlRef.current.nvl methods:', Object.getOwnPropertyNames(nvlRef.current.nvl).filter(name => typeof nvlRef.current.nvl[name] === 'function'));
-      }
-      if (nvlRef.current.network) {
-        console.log('nvlRef.current.network methods:', Object.getOwnPropertyNames(nvlRef.current.network).filter(name => typeof nvlRef.current.network[name] === 'function'));
-      }
-      if (nvlRef.current.vis) {
-        console.log('nvlRef.current.vis methods:', Object.getOwnPropertyNames(nvlRef.current.vis).filter(name => typeof nvlRef.current.vis[name] === 'function'));
-      }
-      console.log('=== END DEBUG ===');
-    }
   }, []);
 
   const mouseEventCallbacks = useMemo(() => ({
@@ -404,13 +328,9 @@ const GraphView = React.forwardRef(({
     onCanvasClick: handleCanvasClick,
     onPan: (evt) => {
       // Pan interaction is handled automatically by the NVL library
-      // This callback is just for tracking if needed
-      console.log('Graph panned');
     },
     onZoom: (zoomLevel) => {
       // Zoom interaction is handled automatically by the NVL library
-      // This callback is just for tracking if needed
-      console.log('Graph zoomed to level:', zoomLevel);
     },
   }), [handleNodeClick, handleCanvasClick]);
 
@@ -419,9 +339,7 @@ const GraphView = React.forwardRef(({
   }), [handleLayoutDone]);
 
   const handleZoomIn = () => {
-    console.log('Zoom in button clicked');
     if (!nvlRef.current) {
-      console.log('nvlRef.current is null');
       return;
     }
     
@@ -431,19 +349,14 @@ const GraphView = React.forwardRef(({
         const currentScale = nvlRef.current.getScale();
         const newScale = currentScale * 1.3; // 30% zoom in
         nvlRef.current.setZoom(newScale);
-        console.log('Used setZoom method:', currentScale, '->', newScale);
-      } else {
-        console.warn('setZoom or getScale not available');
       }
     } catch (error) {
-      console.error('Error zooming in:', error);
+      // Silent fail
     }
   };
 
   const handleZoomOut = () => {
-    console.log('Zoom out button clicked');
     if (!nvlRef.current) {
-      console.log('nvlRef.current is null');
       return;
     }
     
@@ -453,43 +366,25 @@ const GraphView = React.forwardRef(({
         const currentScale = nvlRef.current.getScale();
         const newScale = currentScale * 0.77; // ~30% zoom out  
         nvlRef.current.setZoom(newScale);
-        console.log('Used setZoom method:', currentScale, '->', newScale);
-      } else {
-        console.warn('setZoom or getScale not available');
       }
     } catch (error) {
-      console.error('Error zooming out:', error);
+      // Silent fail
     }
   };
 
   // Function to focus on search results
   const zoomToSearchResults = useCallback((results = searchResults) => {
-    console.log('zoomToSearchResults called with:', results);
     if (!nvlRef.current || !results || results.length === 0) {
-      console.log('No nvlRef or no results to focus on');
       return;
     }
-    
-    const nodeIds = results.map(result => result.id);
-    console.log('Trying to focus on node IDs:', nodeIds);
-    const allMethods = Object.getOwnPropertyNames(nvlRef.current).filter(name => typeof nvlRef.current[name] === 'function');
-    console.log('ALL SEARCH FOCUS METHODS:', allMethods);
-    
-    const focusMethods = allMethods.filter(name => 
-      name.toLowerCase().includes('focus') || name.toLowerCase().includes('fit') || name.toLowerCase().includes('center')
-    );
-    console.log('FOCUS-RELATED METHODS:', focusMethods);
     
     try {
       // Use the available 'fit' method - this should work
       if (typeof nvlRef.current.fit === 'function') {
-        console.log('Using fit method to focus on search results');
         nvlRef.current.fit();
-      } else {
-        console.warn('fit method not available');
       }
     } catch (error) {
-      console.error('Error focusing on search results:', error);
+      // Silent fail
     }
   }, [searchResults]);
 
@@ -517,7 +412,6 @@ const GraphView = React.forwardRef(({
       // Only update if there's a meaningful change
       if (Math.abs(newZoom - currentZoom) > 0.001) {
         nvlRef.current.setZoom(newZoom);
-        console.log(`${isTrackpad ? 'Trackpad' : 'Mouse wheel'} zoom:`, currentZoom, '->', newZoom);
       }
     };
 
@@ -541,9 +435,7 @@ const GraphView = React.forwardRef(({
 
   // Function to jump to a specific node
   const jumpToNode = useCallback((nodeId) => {
-    console.log('🎯 jumpToNode called with:', nodeId);
     if (!nvlRef.current || !nodeId) {
-      console.log('❌ No nvlRef or nodeId provided');
       return;
     }
     
@@ -551,19 +443,14 @@ const GraphView = React.forwardRef(({
       // First, check if the node exists in the current graph data
       const nodeExists = currentGraphData.nodes?.some(node => node.id === nodeId);
       if (!nodeExists) {
-        console.warn('❌ Node not found in currentGraphData:', nodeId);
         return;
       }
-
-      console.log('✅ Node exists in graph data');
       
       // Wait a bit for layout to stabilize before getting position
       setTimeout(() => {
         try {
           // Use the fit method to actually move the viewport to the node
           if (typeof nvlRef.current.fit === 'function') {
-            console.log('🚀 Using fit() to jump to node');
-            
             // Call fit with the specific node ID
             nvlRef.current.fit([nodeId], {
               maxZoom: 2.0, // Don't zoom in too much
@@ -571,19 +458,15 @@ const GraphView = React.forwardRef(({
               animationDuration: 500 // Half second animation
             });
             
-            console.log('✅ Called fit() on node:', nodeId);
-            
             // After fit animation completes, show indicator
             setTimeout(() => {
               const nodePosition = nvlRef.current.getPositionById(nodeId);
               if (!nodePosition || nodePosition.x === undefined || nodePosition.y === undefined) {
-                console.error('❌ Cannot get node position after fit');
                 return;
               }
               
               const container = nvlRef.current.getContainer();
               if (!container) {
-                console.error('❌ Cannot get container');
                 return;
               }
               
@@ -592,19 +475,10 @@ const GraphView = React.forwardRef(({
               const currentZoom = nvlRef.current.getScale();
               const rect = container.getBoundingClientRect();
               
-              console.log('📊 Current viewport state:', {
-                pan: currentPan,
-                zoom: currentZoom,
-                nodePos: nodePosition,
-                container: { width: rect.width, height: rect.height }
-              });
-              
               // Calculate screen position from graph coordinates
               // Screen position = (graph position - pan) * zoom + container center
               const screenX = (nodePosition.x - currentPan.x) * currentZoom + rect.width / 2;
               const screenY = (nodePosition.y - currentPan.y) * currentZoom + rect.height / 2;
-              
-              console.log('📍 Screen position:', screenX, screenY);
               
               // Remove any existing indicators
               const existingIndicators = container.querySelectorAll('.node-jump-indicator');
@@ -619,7 +493,7 @@ const GraphView = React.forwardRef(({
                 top: ${screenY}px;
                 transform: translate(-50%, -50%);
                 pointer-events: none;
-                z-index: 9999;
+                z-index: 1000;
               `;
               
               // Create the pulsing circle
@@ -676,8 +550,6 @@ const GraphView = React.forwardRef(({
               wrapper.appendChild(label);
               container.appendChild(wrapper);
               
-              console.log('🎨 Created indicator at screen position');
-              
               // Remove after 3 seconds
               setTimeout(() => {
                 if (wrapper.parentNode) {
@@ -686,18 +558,13 @@ const GraphView = React.forwardRef(({
               }, 3000);
               
             }, 600); // Wait for fit animation to complete
-            
-          } else {
-            console.error('❌ fit() method not available on nvlRef');
           }
-          
         } catch (innerError) {
-          console.error('💥 Error in jumpToNode:', innerError);
+          // Silent fail
         }
       }, 200); // Initial delay for layout stability
-      
     } catch (error) {
-      console.error('💥 Error jumping to node:', error);
+      // Silent fail
     }
   }, [currentGraphData]);
   // Expose methods to parent component via ref
@@ -756,8 +623,6 @@ const GraphView = React.forwardRef(({
     );
   }
 
-  console.log('Rendering GraphView with data:', memoizedNodes.length, 'nodes');
-  console.log('🎨 Using canvas renderer - disableWebGL:', true);
 
   return (
     <div 
@@ -937,12 +802,12 @@ const GraphView = React.forwardRef(({
             maxZoom: 8,
             renderer: 'canvas', // Explicitly set canvas renderer
             // New options to control the NVL legend
-            legend: {
-              enabled: true,
-              orientation: 'top-left', // Move legend to top-left
-              isCollapsed: isLegendMinimized, // Control collapse state
-              onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
-            },
+            // legend: {
+            //   enabled: true,
+            //   orientation: 'top-left', // Move legend to top-left
+            //   isCollapsed: isLegendMinimized, // Control collapse state
+            //   onToggle: () => setIsLegendMinimized(!isLegendMinimized), // Handle toggle
+            // },
           }}
           layoutOptions={{
             // Reduced spacing parameters by 15% from extreme values

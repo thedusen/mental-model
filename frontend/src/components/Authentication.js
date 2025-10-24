@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { auth } from '../utils/supabase';
 import './Authentication.css';
 
@@ -110,7 +111,7 @@ const Authentication = ({ onAuthSuccess, onClose, mode = 'modal', initialMode = 
 
   const isSlideMode = mode === 'slide';
   
-  return (
+  const modalContent = (
     <div className={`auth-overlay ${isSlideMode ? 'slide-mode' : 'modal-mode'} ${isClosing ? 'closing' : ''}`} onClick={handleClose}>
       <div className={`auth-container ${isSlideMode ? 'auth-slide-panel' : 'auth-modal'} ${isClosing ? 'closing' : ''}`} 
            role="dialog" 
@@ -262,6 +263,9 @@ const Authentication = ({ onAuthSuccess, onClose, mode = 'modal', initialMode = 
       </div>
     </div>
   );
+
+  // Render the modal content using a portal to the document body
+  return createPortal(modalContent, document.body);
 };
 
 export default Authentication;

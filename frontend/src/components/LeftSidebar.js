@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth } from '../utils/supabase';
 import ChatHistory from './ChatHistory';
 import UserProfile from './UserProfile';
-import ProfileProgressIndicator from './ProfileProgressIndicator';
+import ProfileNudgeBanner from './ProfileNudgeBanner';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import './LeftSidebar.css';
 
@@ -12,13 +12,17 @@ const LeftSidebar = ({
   onNewChat,
   isCollapsed,
   onToggleCollapse,
-  onAuthTrigger
+  onAuthTrigger,
+  showSidebarNudge,
+  nudgeDismissalData,
+  onSidebarNudgeDismiss
 }) => {
   const [user, setUser] = useState(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [businessProfileProgress, setBusinessProfileProgress] = useState(null);
   
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  
   // Authentication state management
   useEffect(() => {
     const initializeAuth = async () => {
@@ -66,7 +70,7 @@ const LeftSidebar = ({
     initializeAuth();
   }, []);
 
-  // Load business profile progress when user changes
+  // Load business profile progress when user changes (needed for sidebar nudge)
   useEffect(() => {
     const loadBusinessProfileProgress = async () => {
       if (!user) {
@@ -88,6 +92,46 @@ const LeftSidebar = ({
     loadBusinessProfileProgress();
   }, [user, API_URL]);
 
+  // Helper function to determine user type for nudge
+  const getNudgeUserType = () => {
+    if (!user) return 'guest';
+    if (!businessProfileProgress) return 'not_started';
+    if (businessProfileProgress.completed_at) return 'completed';
+    if (businessProfileProgress.questions_completed > 0) return 'in_progress';
+    return 'not_started';
+  };
+
+  // Handle sidebar nudge dismissal
+  const handleSidebarNudgeDismiss = () => {
+    onSidebarNudgeDismiss?.(user);
+  };
+
+  // Handle sidebar nudge questionnaire start
+  const handleStartQuestionnaire = async (mode = 'chat') => {
+    if (!user) {
+      onAuthTrigger?.();
+      return;
+    }
+    
+    // For authenticated users, focus the main chat area and start questionnaire there
+    console.log('Sidebar nudge - focusing chat area for questionnaire start');
+    
+    // Dismiss the sidebar nudge since they're about to start in the main chat
+    handleSidebarNudgeDismiss();
+    
+    // Focus the main chat textarea
+    setTimeout(() => {
+      const chatInput = document.querySelector('.chat-panel textarea');
+      if (chatInput) {
+        chatInput.focus();
+        // Trigger questionnaire start by sending a special message
+        const event = new CustomEvent('startQuestionnaireFromSidebar', {
+          detail: { mode }
+        });
+        window.dispatchEvent(event);
+      }
+    }, 100);
+  };
 
   return (
     <aside 
@@ -130,26 +174,21 @@ const LeftSidebar = ({
             )}
           </div>
 
-          {/* Business Profile Progress Section */}
-          {user && businessProfileProgress && (
-            <div className="business-profile-section">
-              <h3 className="section-title">Business Profile</h3>
-              <ProfileProgressIndicator
-                current={businessProfileProgress.questions_completed}
-                total={businessProfileProgress.total_questions}
-                variant="compact"
-                size="small"
-                showLabels={false}
+          {/* Sidebar Nudge Section */}
+          {!isCollapsed && showSidebarNudge && !isLoadingAuth && (
+            <div className="sidebar-nudge-section">
+              <ProfileNudgeBanner
+                user={user}
+                progress={businessProfileProgress}
+                onStartQuestionnaire={handleStartQuestionnaire}
+                onDismiss={handleSidebarNudgeDismiss}
+                onOpenAuth={onAuthTrigger}
+                userType={getNudgeUserType()}
+                variant="sidebar"
+                isVisible={true}
+                canDismiss={true}
+                preferredMode="chat"
               />
-              <div className="profile-status">
-                {businessProfileProgress.completed_at ? (
-                  <span className="status-completed">✓ Complete</span>
-                ) : (
-                  <span className="status-progress">
-                    {businessProfileProgress.questions_completed}/{businessProfileProgress.total_questions} questions
-                  </span>
-                )}
-              </div>
             </div>
           )}
 

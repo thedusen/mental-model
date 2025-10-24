@@ -185,6 +185,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: flex;
+  align-items: center; /* Align input with surrounding content */
 }
 
 .session-meta {
@@ -304,13 +306,12 @@
 }
 
 .chat-history.sidebar-mode .session-item {
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
   border: 1px solid #e9ecef;
   border-radius: 8px;
   padding: 16px;
   background: #fff;
   transition: all 0.2s ease;
-  border-bottom: none;
 }
 
 .chat-history.sidebar-mode .session-item:hover {
@@ -355,6 +356,23 @@
 .chat-history.sidebar-mode .delete-button:hover {
   background: #f8d7da;
   color: #dc3545;
+}
+
+/* Sidebar mode session actions styling */
+.chat-history.sidebar-mode .session-actions {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.9) 20%, rgba(255, 255, 255, 0.95));
+}
+
+.chat-history.sidebar-mode .session-item:hover .session-actions {
+  background: linear-gradient(to right, transparent, rgba(248, 249, 250, 0.9) 20%, rgba(248, 249, 250, 0.95));
+}
+
+.chat-history.sidebar-mode .session-item.active .session-actions {
+  background: linear-gradient(to right, transparent, rgba(227, 242, 253, 0.9) 20%, rgba(227, 242, 253, 0.95));
+}
+
+.chat-history.sidebar-mode .session-item.editing .session-actions {
+  background: linear-gradient(to right, transparent, rgba(248, 249, 250, 0.9) 20%, rgba(248, 249, 250, 0.95));
 }
 
 .chat-history.sidebar-mode .loading-message,
@@ -603,7 +621,9 @@
 
 /* Session Editing Styles */
 .session-title-input {
-  width: 100%;
+  width: auto;
+  min-width: 120px;
+  max-width: 145px; /* Reduced by 20px more */
   padding: 2px 6px;
   border: 1px solid #007bff;
   border-radius: 4px;
@@ -613,6 +633,7 @@
   background: #fff;
   outline: none;
   color: #212529;
+  vertical-align: middle; /* Align with buttons */
 }
 
 .session-title-input:focus {
@@ -624,16 +645,48 @@
   display: flex;
   gap: 4px;
   align-items: center;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.9) 20%, rgba(255, 255, 255, 0.95));
+  padding: 2px 6px 2px 12px;
+  border-radius: 4px;
   opacity: 0;
   transition: opacity 0.2s ease;
+  pointer-events: none; /* Don't interfere with text selection when hidden */
 }
 
 .session-item:hover .session-actions {
   opacity: 1;
+  pointer-events: auto; /* Enable interaction on hover */
 }
 
 .session-item.active .session-actions {
   opacity: 1;
+  pointer-events: auto; /* Enable interaction when active */
+}
+
+/* Always show actions when in editing mode */
+.session-item.editing .session-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Hide timestamp during editing to improve spacing */
+.session-item.editing .session-meta {
+  display: none;
+}
+
+/* Better vertical alignment for editing mode */
+.session-item.editing .session-actions {
+  top: calc(50% - 2px); /* Slight adjustment for better alignment with input */
+}
+
+.session-item.editing .session-title {
+  display: flex;
+  align-items: center;
+  min-height: 28px; /* Ensure consistent height for proper action button alignment */
 }
 
 .edit-button, .save-button, .cancel-button {
@@ -704,12 +757,13 @@
 .session-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  position: relative; /* For absolute positioning of actions */
+  padding-right: 12px; /* Default padding when no actions */
 }
 
 .session-content {
   flex: 1;
+  width: 100%; /* Take full width */
   min-width: 0; /* Allow content to shrink */
 }
 

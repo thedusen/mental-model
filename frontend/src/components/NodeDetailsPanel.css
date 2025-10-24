@@ -233,7 +233,7 @@
 
 /* Card Actions Section */
 .card-actions {
-  padding: var(--spacing-3) var(--spacing-4);
+  padding: 16px;
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   background-color: var(--gray-25);
