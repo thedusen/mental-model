@@ -868,7 +868,7 @@ async def chat(query: ChatQuery):
 
         # Call Claude with conversation history and prompt caching
         response = anthropic_client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=8192,  # Increased for large context windows and extended responses
             system=[
                 {
@@ -1068,7 +1068,7 @@ async def chat_stream(query: ChatQuery):
 
                 # Stream response from Claude
                 with anthropic_client.messages.stream(
-                    model="claude-sonnet-4-20250514",
+                    model="claude-sonnet-4-5-20250929",
                     max_tokens=8192,
                     system=[
                         {
@@ -1835,7 +1835,7 @@ Title:"""
 
         # Use Anthropic to generate the title
         response = anthropic_client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=20,
             temperature=0.3,  # Lower temperature for more consistent titles
             messages=[{"role": "user", "content": title_prompt}],
